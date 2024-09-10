@@ -4,13 +4,21 @@ import React, { ReactNode, MouseEvent } from "react";
 interface TertiaryButtonProps {
     size?: "small" | "medium" | "large";
     variant?: "text" | "outlined";
-    color?: "primary" | "secondary";
+    color?: "primary" | "secondary" | "error";
     height?: string;
     width?: string;
     children: ReactNode;
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
-const TertiaryButton: React.FC<TertiaryButtonProps> = ({ width, height, size, color, children, variant, onClick }) => {
+const TertiaryButton: React.FC<TertiaryButtonProps> = ({
+    width,
+    height,
+    size,
+    color,
+    children,
+    variant,
+    onClick,
+}) => {
     return (
         <Button
             sx={{

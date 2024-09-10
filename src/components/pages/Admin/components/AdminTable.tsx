@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
 import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
 
 //import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
+import CreateNewAdmin from "./CreateNewAdmin";
 
 const adminData = [
     {
@@ -73,6 +74,16 @@ const adminData = [
 ];
 
 const AdminTable = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleAddUserClick = () => {
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); // Close the modal
+    };
+
     const columns = [
         { field: "first_name", headerName: "First Name", minWidth: 200, flex: 1 },
         { field: "last_name", headerName: "Last Name", minWidth: 200, flex: 1 },
@@ -123,11 +134,28 @@ const AdminTable = () => {
                 totalCount={adminData.length}
                 tableLabel="LIST OF SANGGUNIANG KABATAAN CHAIRPERSON"
                 actionButton={
-                    <PrimaryButton size="small" startIcon={<AddCircle />}>
+                    <PrimaryButton
+                        size="small"
+                        startIcon={<AddCircle />}
+                        onClick={handleAddUserClick}
+                    >
                         ADD USER
                     </PrimaryButton>
                 }
             />
+            {isModalOpen && (
+                <CreateNewAdmin
+                    id=""
+                    first_name=""
+                    last_name=""
+                    middle_name=""
+                    age={0}
+                    gender="male"
+                    email=""
+                    avatar=""
+                    onClose={handleCloseModal}
+                />
+            )}
         </>
     );
 };

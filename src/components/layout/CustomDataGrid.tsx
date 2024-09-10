@@ -32,7 +32,6 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 spacing={2}
                 justifyContent="space-between"
                 alignItems="center"
-                // marginBottom={2}
                 padding="10px 10px 15px 10px"
             >
                 <Stack direction="row" spacing={2}>
@@ -64,9 +63,12 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 }}
                 pageSizeOptions={[5]}
                 rowCount={totalCount}
-                onPaginationModelChange={changePage}
+                onPaginationModelChange={(model) => {
+                    const { page, pageSize } = model;
+                    changePage(page, pageSize); // Ensure you're passing both page and pageSize
+                }}
                 {...(!isNotPaginationModeServer && {
-                    paginationMode: "server",
+                    paginationMode: "client", // Only server mode if pagination is handled server-side
                 })}
                 slots={{
                     toolbar: () => (

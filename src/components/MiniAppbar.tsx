@@ -3,7 +3,11 @@ import { AppBar, Box, Toolbar, IconButton, Badge } from "@mui/material";
 
 import { Menu, AccountCircle, Notifications } from "@mui/icons-material/";
 
-const MiniAppbar = () => {
+interface MiniAppbarProps {
+    toggleSidebar: () => void;
+}
+
+const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar
@@ -18,6 +22,7 @@ const MiniAppbar = () => {
                         edge="start"
                         aria-label="menu"
                         sx={{ mr: 2, color: "primary.main" }}
+                        onClick={toggleSidebar}
                     >
                         <Menu />
                     </IconButton>

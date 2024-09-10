@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
 import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
+import CreateNewActivity from "./CreateNewActivity";
 
 const activitiesData = [
     {
@@ -18,6 +19,16 @@ const activitiesData = [
 ];
 
 const ActivitiesTable = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleCreateActivityClick = () => {
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); // Close the modal
+    };
+
     const columns = [
         { field: "activity_title", headerName: "Title", minWidth: 300, flex: 1 },
         { field: "date", headerName: "Date Publish", maxWidth: 160 },
@@ -65,11 +76,23 @@ const ActivitiesTable = () => {
                 totalCount={activitiesData.length}
                 tableLabel="LIST OF ACTIVITIES"
                 actionButton={
-                    <PrimaryButton size="small" startIcon={<AddCircle />}>
-                        CREATE PUBLICATION
+                    <PrimaryButton
+                        size="small"
+                        startIcon={<AddCircle />}
+                        onClick={handleCreateActivityClick}
+                    >
+                        CREATE ACTIVITIES
                     </PrimaryButton>
                 }
             />
+            {isModalOpen && (
+                <CreateNewActivity
+                    id=""
+                    activity_title=""
+                    activity_content=""
+                    onClose={handleCloseModal}
+                />
+            )}
         </>
     );
 };

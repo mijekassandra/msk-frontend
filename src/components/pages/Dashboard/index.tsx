@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Stack, Grid, Box } from "@mui/material";
+import { Stack, Grid, Collapse } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
@@ -16,7 +16,6 @@ import {
 //import components
 import BodyContainer from "../../containers/BodyContainer";
 import Sidebar from "../../Sidebar";
-import BarangaySeal from "../../containers/BarangaySeal";
 import MiniAppbar from "../../MiniAppbar";
 import DashboardBody from "../../containers/DashboardBody";
 import DashboardHome from "./components/DashboardHome";
@@ -76,11 +75,25 @@ const Dashboard = () => {
     const location = useLocation();
     const currentTab = location.pathname;
 
-    const [selectedTab, setSelectedTab] = useState(currentTab || "/dashboard");
+    const [selectedTab, setSelectedTab] = useState(currentTab ? currentTab : "/dashboard");
+    const [collapsedSidebar, setCollapsedSidebar] = useState(true);
+    const [showDrawer, setShowDrawer] = useState(false);
 
     const handleTabChange = (newValue: string) => {
         setSelectedTab(newValue);
         navigate(newValue);
+    };
+
+    const toggleSidebar = () => {
+        const isMobileView = window.innerWidth <= 899;
+
+        if (isMobileView) {
+            setShowDrawer(!showDrawer);
+            console.log("im here sa drawer");
+        } else {
+            setCollapsedSidebar(!collapsedSidebar);
+            console.log("im here sa collapsed");
+        }
     };
 
     useEffect(() => {
@@ -89,21 +102,48 @@ const Dashboard = () => {
         }
     }, [currentTab, selectedTab]);
 
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 899 && showDrawer) {
+                setShowDrawer(false);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, [showDrawer]);
+
     return (
         <BodyContainer
             content={
                 <Stack direction="row">
                     <Grid container>
-                        <Grid item md={3}>
-                            <BarangaySeal />
-                            <Sidebar
-                                tabs={dashboardTabs}
-                                initialValue={selectedTab}
-                                onChange={handleTabChange}
-                            />
+                        <Grid
+                            item
+                            md={3}
+                            sm={4}
+                            xs={12}
+                            sx={{
+                                display: collapsedSidebar ? "flex" : "none",
+                                "@media (min-width: 769px) and (max-width: 899px)": {
+                                    display: "flex", // Ensure sidebar shows in this range
+                                },
+                            }}
+                        >
+                            <Collapse in={collapsedSidebar} orientation="horizontal">
+                                <Sidebar
+                                    tabs={dashboardTabs}
+                                    initialValue={"selectedTab"}
+                                    onChange={handleTabChange}
+                                    mobileView={{
+                                        isShow: showDrawer,
+                                        action: toggleSidebar,
+                                    }}
+                                />
+                            </Collapse>
                         </Grid>
-                        <Grid item md={9} xs={12}>
-                            <MiniAppbar />
+                        <Grid item md={collapsedSidebar ? 9 : 12} xs={12}>
+                            <MiniAppbar toggleSidebar={toggleSidebar} />
                             <DashboardBody
                                 content={
                                     <>

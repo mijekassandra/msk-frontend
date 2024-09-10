@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
 import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
+import CreateAnnouncement from "./CreateAnnouncement";
 
 const announcementData = [
     {
@@ -28,6 +29,16 @@ const announcementData = [
 ];
 
 const AnnouncementTable = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleAddAnnouncementClick = () => {
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); // Close the modal
+    };
+
     const columns = [
         { field: "announcement_title", headerName: "Title" },
         { field: "date", headerName: "Date Publish" },
@@ -75,11 +86,23 @@ const AnnouncementTable = () => {
                 totalCount={announcementData.length}
                 tableLabel="LIST OF ANNOUNCEMENTS"
                 actionButton={
-                    <PrimaryButton size="small" startIcon={<AddCircle />}>
+                    <PrimaryButton
+                        size="small"
+                        startIcon={<AddCircle />}
+                        onClick={handleAddAnnouncementClick}
+                    >
                         CREATE ANNOUNCEMENT
                     </PrimaryButton>
                 }
             />
+            {isModalOpen && (
+                <CreateAnnouncement
+                    id=""
+                    announcement_title=""
+                    announcement_content=""
+                    onClose={handleCloseModal}
+                />
+            )}
         </>
     );
 };

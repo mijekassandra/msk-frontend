@@ -10,8 +10,8 @@ interface BarangaySealProps {
 }
 
 const BarangaySeal: React.FC<BarangaySealProps> = ({
-    barangay = "Sangguniang Kabataan Federation", // Default value for barangay
-    barangayLogo = DefaultLogo, // Default value for barangayLogo
+    barangay = "Sangguniang Kabataan Federation",
+    barangayLogo = DefaultLogo,
 }) => {
     return (
         <Stack

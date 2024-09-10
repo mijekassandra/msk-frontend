@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
 import { Visibility, BorderColor, Folder, AddCircle } from "@mui/icons-material";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
+import CreateNewPublication from "./CreateNewPublication";
 
 const publicationData = [
     {
@@ -27,6 +28,16 @@ const publicationData = [
 ];
 
 const PublicationTable = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleCreatePublicationClick = () => {
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); // Close the modal
+    };
+
     const columns = [
         { field: "publication_title", headerName: "Title", minWidth: 300, flex: 1 },
         { field: "date", headerName: "Date Publish", maxWidth: 160 },
@@ -74,11 +85,23 @@ const PublicationTable = () => {
                 totalCount={publicationData.length}
                 tableLabel="LIST OF PUBLICATIONS"
                 actionButton={
-                    <PrimaryButton size="small" startIcon={<AddCircle />}>
+                    <PrimaryButton
+                        size="small"
+                        startIcon={<AddCircle />}
+                        onClick={handleCreatePublicationClick}
+                    >
                         CREATE PUBLICATION
                     </PrimaryButton>
                 }
             />
+            {isModalOpen && (
+                <CreateNewPublication
+                    id=""
+                    publication_title=""
+                    publication_content=""
+                    onClose={handleCloseModal}
+                />
+            )}
         </>
     );
 };
