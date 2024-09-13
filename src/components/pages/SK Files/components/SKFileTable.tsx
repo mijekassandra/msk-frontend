@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
 
 // import icons
@@ -14,6 +14,7 @@ import {
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
+import UploadSKFile from "./UploadSKFile";
 
 const skFilesData = [
     {
@@ -47,6 +48,16 @@ const skFilesData = [
 ];
 
 const SKFileTable = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleUploadFileClick = () => {
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); // Close the modal
+    };
+
     const columns = [
         {
             field: "file_type",
@@ -113,11 +124,16 @@ const SKFileTable = () => {
                 totalCount={skFilesData.length}
                 tableLabel="LIST OF FILES"
                 actionButton={
-                    <PrimaryButton size="small" startIcon={<Publish />}>
+                    <PrimaryButton
+                        size="small"
+                        startIcon={<Publish />}
+                        onClick={handleUploadFileClick}
+                    >
                         Upload File
                     </PrimaryButton>
                 }
             />
+            {isModalOpen && <UploadSKFile id="" upload_file="" onClose={handleCloseModal} />}
         </>
     );
 };

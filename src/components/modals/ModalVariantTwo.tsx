@@ -5,6 +5,7 @@ import { Close } from "@mui/icons-material";
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
 
+// MODAL FOR PUBLISHING
 interface ModalVariantTwoProps {
     content: ReactNode;
     headerTitle?: string;

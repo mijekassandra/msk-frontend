@@ -4,7 +4,7 @@ import { Grid, Stack, TextField, Button } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 
 //import component
-import ModalVariantOne from "../../../modals/modalVariantOne";
+import ModalVariantOne from "../../../modals/ModalVariantOne";
 import CustomUpload from "../../../layout/CustomUpload";
 
 interface CreateNewAdminProps {
@@ -25,24 +25,10 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = (props: CreateNewAdminProp
             onClose={props.onClose}
             headerTitle="ADD NEW ADMIN"
             content={
-                <Grid container spacing={3}>
-                    <Grid item xs={6} width="100%">
-                        <Stack spacing={2}>
-                            <TextField id="outlined-basic" label="Firstname" variant="outlined" />
-                            <TextField id="outlined-basic" label="Lastname" variant="outlined" />
-                            <TextField id="outlined-basic" label="Middlename" variant="outlined" />
-                            <TextField id="outlined-basic" label="Age" variant="outlined" />
-                            <TextField id="outlined-basic" label="Gender" variant="outlined" />
-                        </Stack>
-                    </Grid>
-                    <Grid item xs={6} width="100%">
-                        <Stack spacing={2}>
-                            <TextField id="outlined-basic" label="Email" variant="outlined" />
-
-                            <CustomUpload label="Upload Avatar" />
-                        </Stack>
-                    </Grid>
-                </Grid>
+                <Stack spacing={1.5}>
+                    <TextField id="outlined-basic" label="username" variant="outlined" />
+                    <TextField id="outlined-basic" label="email" variant="outlined" />
+                </Stack>
             }
         />
     );

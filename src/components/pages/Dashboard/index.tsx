@@ -133,7 +133,7 @@ const Dashboard = () => {
                             <Collapse in={collapsedSidebar} orientation="horizontal">
                                 <Sidebar
                                     tabs={dashboardTabs}
-                                    initialValue={"selectedTab"}
+                                    initialValue={selectedTab}
                                     onChange={handleTabChange}
                                     mobileView={{
                                         isShow: showDrawer,

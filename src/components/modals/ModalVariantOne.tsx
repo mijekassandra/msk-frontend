@@ -5,6 +5,7 @@ import { Close } from "@mui/icons-material";
 // import components
 import TwoChoice from "../buttons/TwoChoice";
 
+// MODAL FOR FORMS
 interface ModalVariantOneProps {
     content: ReactNode;
     headerTitle?: string;

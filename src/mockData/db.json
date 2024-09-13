@@ -1,0 +1,50 @@
+{
+    "announcements": [
+      {
+      "announcement_id": 1,
+      "announcement_type": "Sports Event",
+      "user_id": 200,
+      "announcement_title": "SPORTSFEST 2024",
+      "announcement_content": "Join us for the annual SPORTSFEST, featuring various athletic competitions. Open to all students!",
+      "date": "2024-06-11 13:30:00",
+      "announcement_status": "Published"
+    },
+    {
+      "announcement_id": 2,
+      "announcement_type": "Community",
+      "user_id": 201,
+      "announcement_title": "Barangay Cleanup Drive",
+      "announcement_content": "Participate in our community cleanup drive. A great opportunity to contribute to our local environment.",
+      "date": "2024-05-29 10:30:00",
+      "announcement_status": "Published"
+    },
+      {
+        "announcement_id": 103,
+        "announcement_type": "Chairperson",
+        "user_id": 347,
+        "announcement_title": "Examination Guidelines",
+        "announcement_content": "Please check the new examination guidelines effective from November in your student portal.",
+        "date": "2024-09-15",
+        "announcement_status": "Published"
+      },
+      {
+        "announcement_id": 104,
+        "announcement_type": "Federation",
+        "user_id": 348,
+        "announcement_title": "Sports Meet",
+        "announcement_content": "Annual sports meet will be held in December. All students are encouraged to participate.",
+        "date": "2024-09-20",
+        "announcement_status": "Archived"
+      },
+      {
+        "announcement_id": 105,
+        "announcement_type": "Chairperson",
+        "user_id": 349,
+        "announcement_title": "Scholarship Applications",
+        "announcement_content": "Scholarship applications for the next academic year are now open. Deadline is November 30.",
+        "date": "2024-09-25",
+        "announcement_status": "Published"
+      }
+    ]
+}
+  

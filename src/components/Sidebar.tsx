@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     mobileView,
 }) => {
     const navigate = useNavigate();
-    const [tabValue, setTabValue] = useState(initialValue || "");
+    const [tabValue, setTabValue] = useState("");
 
     const handleChange = (newValue: string) => {
         setTabValue(newValue);
@@ -41,9 +41,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     };
 
     useEffect(() => {
-        if (initialValue) {
-            setTabValue(initialValue);
-        }
+        setTabValue(initialValue);
+        console.log(tabValue);
     }, [initialValue]);
 
     const tabList = () => (
