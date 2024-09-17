@@ -9,10 +9,7 @@ const Publication = () => {
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">FEDERATION PUBLICATION</Typography>
-            <DashboardCard
-                padding="10px 0px 0px 0px"
-                content={<PublicationTable />}
-            ></DashboardCard>
+            <DashboardCard padding="0px 0px 0px 0px" content={<PublicationTable />}></DashboardCard>
         </Stack>
     );
 };

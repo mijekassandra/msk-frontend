@@ -2,8 +2,6 @@ import React from "react";
 import { Stack, Typography } from "@mui/material";
 
 // import components
-import DashboardCard from "../../cards/DashboardCard";
-
 const AboutUs = () => {
     return (
         <Stack rowGap={5} padding="5px 10px">

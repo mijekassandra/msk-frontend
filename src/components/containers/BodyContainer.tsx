@@ -19,7 +19,8 @@ const BodyContainer: React.FC<BodyContainerProps> = ({
     return (
         <Stack
             sx={{
-                minHeight: "100vh", // Ensure the Box takes up at least 100% of the viewport height
+                height: "100vh", // Set height to full viewport height
+                overflow: "hidden", // Prevent overflowing outside of viewport
                 display: "flex",
                 ...(flexDirection && { flexDirection }),
                 ...(justifyContent && { justifyContent }),

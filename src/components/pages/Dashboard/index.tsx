@@ -116,8 +116,8 @@ const Dashboard = () => {
     return (
         <BodyContainer
             content={
-                <Stack direction="row">
-                    <Grid container>
+                <Stack direction="row" sx={{ height: "100%" }}>
+                    <Grid container sx={{ height: "100%" }}>
                         <Grid
                             item
                             md={3}
@@ -142,7 +142,12 @@ const Dashboard = () => {
                                 />
                             </Collapse>
                         </Grid>
-                        <Grid item md={collapsedSidebar ? 9 : 12} xs={12}>
+                        <Grid
+                            item
+                            md={collapsedSidebar ? 9 : 12}
+                            xs={12}
+                            sx={{ height: "100%", overflow: "auto" }}
+                        >
                             <MiniAppbar toggleSidebar={toggleSidebar} />
                             <DashboardBody
                                 content={

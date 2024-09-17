@@ -1,6 +1,6 @@
 import React from "react";
-import { DataGrid, GridColDef, GridToolbarQuickFilter } from "@mui/x-data-grid";
-import { Typography, Stack, Box } from "@mui/material";
+import { DataGrid, GridColDef, GridToolbarQuickFilter, GridRowId } from "@mui/x-data-grid";
+import { Typography, Stack, Box, CircularProgress } from "@mui/material";
 
 import { TocOutlined } from "@mui/icons-material";
 
@@ -13,6 +13,9 @@ interface CustomDataGridProps {
     isNotPaginationModeServer?: true;
     tableLabel?: string;
     actionButton?: React.ReactNode | (() => React.ReactNode);
+    isLoading?: boolean;
+    isFetching?: boolean;
+    getRowId?: (row: any) => GridRowId;
 }
 
 const CustomDataGrid: React.FC<CustomDataGridProps> = ({
@@ -24,6 +27,9 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
     isNotPaginationModeServer,
     tableLabel,
     actionButton,
+    isLoading,
+    isFetching,
+    getRowId,
 }) => {
     return (
         <Stack>
@@ -32,7 +38,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 spacing={2}
                 justifyContent="space-between"
                 alignItems="center"
-                padding="10px 10px 15px 10px"
+                padding="15px 10px 15px 10px"
             >
                 <Stack direction="row" spacing={2}>
                     <TocOutlined />
@@ -50,7 +56,9 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
 
             <DataGrid
                 rows={rows}
+                getRowId={getRowId}
                 onRowClick={onClickEvent}
+                loading={isLoading}
                 columns={columns.map((column) => ({
                     ...column,
                     flex: 1,
@@ -65,7 +73,10 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 rowCount={totalCount}
                 onPaginationModelChange={(model) => {
                     const { page, pageSize } = model;
-                    changePage(page, pageSize); // Ensure you're passing both page and pageSize
+                    // Call `changePage` only if it is provided
+                    if (changePage) {
+                        changePage(page, pageSize);
+                    }
                 }}
                 {...(!isNotPaginationModeServer && {
                     paginationMode: "client", // Only server mode if pagination is handled server-side

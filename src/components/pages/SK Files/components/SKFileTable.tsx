@@ -15,40 +15,30 @@ import {
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 import UploadSKFile from "./UploadSKFile";
+import ErrorDisplay from "../../../displays/ErrorDisplay";
+import LoadingDisplay from "../../../displays/LoadingDisplay";
 
-const skFilesData = [
-    {
-        id: 1,
-        file_name: "Agenda of the meeting.docx",
-        file_size: 5,
-        file_type: "docx",
-        upload_date: "2024-01-24 9:30am",
-    },
-    {
-        id: 2,
-        file_name: "Attendance.pdf",
-        file_size: 10,
-        file_type: "pdf",
-        upload_date: "2024-01-24 9:50am",
-    },
-    {
-        id: 3,
-        file_name: "Minutes.docx",
-        file_size: 20,
-        file_type: "docx",
-        upload_date: "2024-01-24 10:00am",
-    },
-    {
-        id: 4,
-        file_name: "Activity design.docx",
-        file_size: 10,
-        file_type: "docx",
-        upload_date: "2024-01-24 11:00am",
-    },
-];
+// import apiSlices
+import {
+    useGetSkFilesQuery,
+    useUploadSkFileMutation,
+    useDeleteSkFileMutation,
+} from "../api/skFileApi";
 
 const SKFileTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const {
+        data: allSkFiles = [],
+        isError: allSkFilesError,
+        isSuccess: allSkFilesSuccess,
+        isLoading: allSkFilesLoading,
+        isFetching: allSkFilesFetching,
+    } = useGetSkFilesQuery();
+
+    // mutations
+    const [uploadSkFile] = useUploadSkFileMutation();
+    const [deleteSkFile] = useDeleteSkFileMutation();
 
     const handleUploadFileClick = () => {
         setIsModalOpen(true); // Open the modal
@@ -57,6 +47,11 @@ const SKFileTable = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false); // Close the modal
     };
+
+    const rows = allSkFiles.map((file) => ({
+        ...file,
+        file_id: file.id,
+    }));
 
     const columns = [
         {
@@ -118,22 +113,30 @@ const SKFileTable = () => {
 
     return (
         <>
-            <CustomDataGrid
-                rows={skFilesData}
-                columns={columns}
-                totalCount={skFilesData.length}
-                tableLabel="LIST OF FILES"
-                actionButton={
-                    <PrimaryButton
-                        size="small"
-                        startIcon={<Publish />}
-                        onClick={handleUploadFileClick}
-                    >
-                        Upload File
-                    </PrimaryButton>
-                }
-            />
+            {allSkFilesSuccess ? (
+                <CustomDataGrid
+                    rows={rows}
+                    columns={columns}
+                    isLoading={allSkFilesLoading}
+                    totalCount={allSkFiles.length}
+                    tableLabel="LIST OF FILES"
+                    actionButton={
+                        <PrimaryButton
+                            size="small"
+                            startIcon={<Publish />}
+                            onClick={handleUploadFileClick}
+                        >
+                            Upload File
+                        </PrimaryButton>
+                    }
+                />
+            ) : allSkFilesError ? (
+                <ErrorDisplay />
+            ) : null}
+
             {isModalOpen && <UploadSKFile id="" upload_file="" onClose={handleCloseModal} />}
+
+            <LoadingDisplay open={allSkFilesLoading} />
         </>
     );
 };

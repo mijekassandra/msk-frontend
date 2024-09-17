@@ -3,6 +3,12 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
+//store
+import { store } from "./store.ts";
+
+// Redux
+import { Provider } from "react-redux";
+
 //import mui themeprovider
 import { createTheme, ThemeProvider } from "@mui/material";
 
@@ -105,8 +111,10 @@ const theme = createTheme({
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <ThemeProvider theme={theme}>
-            <App />
-        </ThemeProvider>
+        <Provider store={store}>
+            <ThemeProvider theme={theme}>
+                <App />
+            </ThemeProvider>
+        </Provider>
     </StrictMode>
 );

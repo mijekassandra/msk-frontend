@@ -44,7 +44,7 @@ const UploadSKFile: React.FC<UploadSKFileProps> = (props: UploadSKFileProps) => 
                             padding: "15px 10px",
                         }}
                     >
-                        <input type="file" multiple></input>
+                        <input type="file"></input>
                         <PrimaryButton size="small">UPLOAD FILE</PrimaryButton>
                     </Stack>
                 </Stack>

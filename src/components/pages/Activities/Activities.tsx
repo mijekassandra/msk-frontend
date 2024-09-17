@@ -9,7 +9,7 @@ const Activities = () => {
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">FEDERATION ACTIVITIES</Typography>
-            <DashboardCard padding="10px 0px 0px 0px" content={<ActivitiesTable />} />
+            <DashboardCard padding="0px 0px 0px 0px" content={<ActivitiesTable />} />
         </Stack>
     );
 };

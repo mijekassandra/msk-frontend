@@ -9,7 +9,7 @@ const SKFiles = () => {
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">FEDERATION FILES</Typography>
-            <DashboardCard padding="10px 0px 0px 0px" content={<SKFileTable />}></DashboardCard>
+            <DashboardCard padding="0px 0px 0px 0px" content={<SKFileTable />}></DashboardCard>
         </Stack>
     );
 };

@@ -10,8 +10,9 @@ interface ModalVariantTwoProps {
     content: ReactNode;
     headerTitle?: string;
     onClose: () => void;
+    onSave: () => void;
     subheader?: ReactNode;
-    onSubmit?: (event: MouseEvent<HTMLButtonElement>) => void;
+    mode: "create" | "edit" | "view";
 }
 
 const ModalVariantTwo: React.FC<ModalVariantTwoProps> = (props: ModalVariantTwoProps) => {
@@ -57,19 +58,27 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = (props: ModalVariantTwoP
                 </Stack>
                 <Divider />
                 <Stack marginBlock="20px">{props.content}</Stack>
-                <Stack direction="row" spacing={3} width="100%" justifyContent="center">
-                    <PrimaryButton
-                        size="small"
-                        variant="outlined"
-                        width="150px"
-                        onClick={props.onClose}
-                    >
-                        Cancel
-                    </PrimaryButton>
-                    <PrimaryButton size="small" width="150px" color="info">
-                        Publish
-                    </PrimaryButton>
-                </Stack>
+
+                {props.mode !== "view" ? (
+                    <Stack direction="row" spacing={3} width="100%" justifyContent="center">
+                        <PrimaryButton
+                            size="small"
+                            variant="outlined"
+                            width="150px"
+                            onClick={props.onClose}
+                        >
+                            Cancel
+                        </PrimaryButton>
+                        <PrimaryButton
+                            size="small"
+                            width="150px"
+                            color="info"
+                            onClick={props.onSave}
+                        >
+                            {props.mode === "create" ? "Publish" : "Save"}
+                        </PrimaryButton>
+                    </Stack>
+                ) : null}
             </Box>
         </Modal>
     );

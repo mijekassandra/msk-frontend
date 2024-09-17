@@ -9,7 +9,7 @@ const Admin = () => {
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">ADMIN INFORMATION</Typography>
-            <DashboardCard padding="10px 0px 0px 0px" content={<AdminTable />}></DashboardCard>
+            <DashboardCard padding="0px 0px 0px 0px" content={<AdminTable />}></DashboardCard>
         </Stack>
     );
 };

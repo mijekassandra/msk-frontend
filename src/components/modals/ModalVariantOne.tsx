@@ -12,15 +12,11 @@ interface ModalVariantOneProps {
     onClose: () => void;
     subheader?: ReactNode;
     onSubmit?: (event: MouseEvent<HTMLButtonElement>) => void;
+    onSave: () => void;
+    mode: "create" | "edit" | "view";
 }
 
-const ModalVariantOne: React.FC<ModalVariantOneProps> = ({
-    content,
-    headerTitle,
-    onClose,
-    subheader,
-    onSubmit,
-}) => {
+const ModalVariantOne: React.FC<ModalVariantOneProps> = (props: ModalVariantOneProps) => {
     return (
         <Modal
             disableAutoFocus
@@ -49,8 +45,8 @@ const ModalVariantOne: React.FC<ModalVariantOneProps> = ({
                         pb: "10px",
                     }}
                 >
-                    <Typography variant="h3">{headerTitle}</Typography>
-                    <IconButton onClick={onClose}>
+                    <Typography variant="h3">{props.headerTitle}</Typography>
+                    <IconButton onClick={props.onClose}>
                         <Close
                             sx={{
                                 fontSize: "20px",
@@ -60,17 +56,19 @@ const ModalVariantOne: React.FC<ModalVariantOneProps> = ({
                     </IconButton>
                 </Stack>
                 <Divider />
-                <Stack marginBlock="20px">{content}</Stack>
-                <Stack>
-                    <TwoChoice
-                        leftText="Cancel"
-                        rightText="Confirm"
-                        color="error"
-                        size="medium"
-                        leftOnClick={onClose}
-                        rightOnClick={onSubmit}
-                    />
-                </Stack>
+                <Stack marginBlock="20px">{props.content}</Stack>
+                {props.mode !== "view" ? (
+                    <Stack>
+                        <TwoChoice
+                            leftText="Cancel"
+                            rightText="Confirm"
+                            color="error"
+                            size="medium"
+                            leftOnClick={props.onClose}
+                            rightOnClick={props.onSave}
+                        />
+                    </Stack>
+                ) : null}
             </Box>
         </Modal>
     );

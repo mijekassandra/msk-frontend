@@ -1,95 +1,98 @@
 import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
 import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 //import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 import CreateNewAdmin from "./CreateNewAdmin";
+import LoadingDisplay from "../../../displays/LoadingDisplay";
+import ErrorDisplay from "../../../displays/ErrorDisplay";
 
-const adminData = [
-    {
-        id: 1,
-        first_name: "Juan",
-        last_name: "Dela Cruz",
-        middle_name: "Batumbakal",
-        age: 22,
-        gender: "Male",
-        email: "juan@gmail.com",
-    },
-    {
-        id: 2,
-        first_name: "Mara Lois",
-        last_name: "Romo",
-        middle_name: "Smith",
-        age: 21,
-        gender: "Female",
-        email: "mara@gmail.com",
-    },
-    {
-        id: 3,
-        first_name: "Princess Nina",
-        last_name: "Puzon",
-        middle_name: "Lee",
-        age: 20,
-        gender: "Femail",
-        email: "princess@gmail.com",
-    },
-    {
-        id: 4,
-        first_name: "Max",
-        last_name: "Verstappen",
-        middle_name: "Emilian",
-        age: 26,
-        gender: "Male",
-        email: "maxv@gmail.com",
-    },
-    {
-        id: 5,
-        first_name: "Lewis",
-        last_name: "Hamilton",
-        middle_name: "Carl",
-        age: 38,
-        gender: "Male",
-        email: "lewish@gmail.com",
-    },
-    {
-        id: 6,
-        first_name: "Charles",
-        last_name: "Leclerc",
-        middle_name: "Albert",
-        age: 25,
-        gender: "Male",
-        email: "charlesl@gmail.com",
-    },
-    {
-        id: 7,
-        first_name: "Lando",
-        last_name: "Norris",
-        middle_name: "Percy",
-        age: 23,
-        gender: "Male",
-        email: "landon@gmail.com",
-    },
-];
+// import apiSlices
+import {
+    useGetAccountsQuery,
+    useGetAccountByIDQuery,
+    useAddAccountMutation,
+    useEditAccountMutation,
+    useDeleteAccountMutation,
+} from "../api/accountApi";
 
 const AdminTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit
+    const [currentAcount, setCurrentAccount] = useState({}); // for edit modal
 
-    const handleAddUserClick = () => {
-        setIsModalOpen(true); // Open the modal
+    const {
+        data: allAccounts = [],
+        isError: allAccountsError,
+        isSuccess: allAccountsSuccess,
+        isLoading: allAccountsLoading,
+        isFetching: allAccountsFetching,
+    } = useGetAccountsQuery();
+
+    const [addAccount] = useAddAccountMutation();
+    const [editAccount] = useEditAccountMutation();
+    const [deleteAccount] = useDeleteAccountMutation();
+
+    const handleAddAccountClick = () => {
+        setModalMode("create");
+        setCurrentAccount({});
+        setIsModalOpen(true);
+    };
+
+    const handleEditAccountClick = (account: any) => {
+        setModalMode("edit");
+        setCurrentAccount(account);
+        setIsModalOpen(true);
+    };
+
+    const handleViewAccountClick = (account: any) => {
+        setModalMode("view");
+        setCurrentAccount(account);
+        setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false); // Close the modal
     };
 
+    const handleDeleteAccount = async (account: any) => {
+        // confirmation dialog
+        const result = await Swal.fire({
+            title: "Delete Account?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Delete!",
+        });
+
+        // if final confirmation
+        if (result.isConfirmed) {
+            try {
+                await deleteAccount(account.id);
+                Swal.fire("Deleted!", "The account has been deleted.", "success");
+            } catch (error) {
+                Swal.fire("Error!", "There was an error deleting the account.", "error");
+            }
+        }
+    };
+
+    const getNextId = (account: any) => {
+        // get the last announcement's id and increment it by 1
+        const lastId = account.length > 0 ? Number(account[account.length - 1].id) : 0;
+        return lastId + 1;
+    };
+
+    const rows = allAccounts.map((account) => ({
+        ...account,
+        account_id: account.id,
+    }));
+
     const columns = [
-        { field: "first_name", headerName: "First Name", minWidth: 200, flex: 1 },
-        { field: "last_name", headerName: "Last Name", minWidth: 200, flex: 1 },
-        { field: "middle_name", headerName: "Middle Name", minWidth: 200, flex: 1 },
-        { field: "age", headerName: "Age", maxWidth: 80, flex: 1 },
-        { field: "gender", headerName: "Gender", maxWidth: 100, flex: 1 },
+        { field: "username", headerName: "Username", minWidth: 200, flex: 1 },
         { field: "email", headerName: "Email", minWidth: 200, flex: 1 },
         {
             field: "action",
@@ -97,7 +100,10 @@ const AdminTable = () => {
             maxWidth: 160,
             renderCell: (params: any) => (
                 <Box>
-                    <IconButton aria-label="view">
+                    <IconButton
+                        aria-label="view"
+                        onClick={() => handleViewAccountClick(params.row)}
+                    >
                         <Visibility
                             sx={{
                                 color: "primary.dark",
@@ -105,7 +111,10 @@ const AdminTable = () => {
                             }}
                         />
                     </IconButton>
-                    <IconButton aria-label="edit">
+                    <IconButton
+                        aria-label="edit"
+                        onClick={() => handleEditAccountClick(params.row)}
+                    >
                         <BorderColor
                             sx={{
                                 color: "secondary.light",
@@ -113,7 +122,7 @@ const AdminTable = () => {
                             }}
                         />
                     </IconButton>
-                    <IconButton aria-label="folder">
+                    <IconButton aria-label="folder" onClick={() => handleDeleteAccount(params.row)}>
                         <Delete
                             sx={{
                                 color: "error.main",
@@ -128,34 +137,40 @@ const AdminTable = () => {
 
     return (
         <>
-            <CustomDataGrid
-                rows={adminData}
-                columns={columns}
-                totalCount={adminData.length}
-                tableLabel="LIST OF SANGGUNIANG KABATAAN CHAIRPERSON"
-                actionButton={
-                    <PrimaryButton
-                        size="small"
-                        startIcon={<AddCircle />}
-                        onClick={handleAddUserClick}
-                    >
-                        ADD USER
-                    </PrimaryButton>
-                }
-            />
+            {allAccountsSuccess ? (
+                <CustomDataGrid
+                    rows={rows}
+                    getRowId={(row: any) => row.id}
+                    isLoading={allAccountsLoading}
+                    columns={columns}
+                    totalCount={allAccounts.length}
+                    tableLabel="LIST OF SANGGUNIANG KABATAAN CHAIRPERSON"
+                    actionButton={
+                        <PrimaryButton
+                            size="small"
+                            startIcon={<AddCircle />}
+                            onClick={handleAddAccountClick}
+                        >
+                            ADD USER
+                        </PrimaryButton>
+                    }
+                />
+            ) : allAccountsError ? (
+                <ErrorDisplay />
+            ) : null}
+
             {isModalOpen && (
                 <CreateNewAdmin
-                    id=""
-                    first_name=""
-                    last_name=""
-                    middle_name=""
-                    age={0}
-                    gender="male"
-                    email=""
-                    avatar=""
+                    mode={modalMode}
+                    initialData={currentAcount}
                     onClose={handleCloseModal}
+                    addAccount={addAccount}
+                    editAccount={editAccount}
+                    totalCount={getNextId(allAccounts)}
                 />
             )}
+
+            <LoadingDisplay open={allAccountsLoading} />
         </>
     );
 };
