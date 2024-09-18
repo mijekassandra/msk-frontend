@@ -18,26 +18,6 @@ import {
     useDeletePublicationMutation,
 } from "../api/publicationApi";
 
-const publicationData = [
-    {
-        id: 1,
-        publication_title: "LAGONGLONG INTER-BARANGAY-SUMMER-LEAGUE",
-        publication_type: "",
-        publication_content: "",
-        date: "2024-04-25 1:30pm",
-        updated: "2024-04-25 1:30pm",
-    },
-    {
-        id: 2,
-        publication_title:
-            "Unlock Your Potential-Elevate Your Game with Intensive Basketball Skills Training!",
-        publication_type: "",
-        publication_content: "",
-        date: "2024-03-21 2:30pm",
-        updated: "2024-03-21 2:30pm",
-    },
-];
-
 const PublicationTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit

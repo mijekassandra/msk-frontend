@@ -172,24 +172,6 @@
       "date": "2024-09-15 20:42:31",
       "announcement_status": "Draft",
       "user_id": 0
-    },
-    {
-      "id": "12",
-      "announcement_type": "",
-      "announcement_title": "test5",
-      "announcement_content": "test5 edit",
-      "date": "2024-09-15 20:43:22",
-      "announcement_status": "Published",
-      "user_id": 0
-    },
-    {
-      "id": "13",
-      "announcement_title": "test6",
-      "announcement_content": "test6",
-      "announcement_type": "",
-      "date": "2024-09-16 15:56:56",
-      "announcement_status": "Archived",
-      "user_id": 0
     }
   ],
   "publications": [
@@ -240,25 +222,9 @@
     {
       "id": "7",
       "publication_title": "test2",
-      "publication_content": "hehehetestt2222",
+      "publication_content": "test 2 edited",
       "publication_type": "",
       "date": "2024-09-15 22:12:28",
-      "user_id": 0
-    },
-    {
-      "id": "8",
-      "publication_title": "TEST3",
-      "publication_content": "TEST3 EDIITTTTT",
-      "publication_type": "",
-      "date": "2024-09-16 15:57:37",
-      "user_id": 0
-    },
-    {
-      "id": "9",
-      "publication_title": "dasnida",
-      "publication_content": "dasdasd",
-      "publication_type": "",
-      "date": "2024-09-17 16:36:57",
       "user_id": 0
     }
   ],
@@ -322,8 +288,8 @@
     },
     {
       "id": "8",
-      "activity_title": "HALAAA",
-      "activity_content": "HAALLAAAA KA DIHAAA",
+      "activity_title": "HALAAAs",
+      "activity_content": "HAALLAAAA KA DIHAAAsad",
       "activity_type": "",
       "date": "2024-09-16 15:58:33",
       "user_id": 0

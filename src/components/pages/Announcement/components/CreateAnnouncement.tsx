@@ -95,6 +95,12 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                     text: "The annoucement has been successfully created.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             } else if (mode === "edit") {
                 await editAnnouncement({
@@ -106,6 +112,12 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                     text: "The annoucement has been successfully updated.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             }
             onClose(); // Close modal after successful save

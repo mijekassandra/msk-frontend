@@ -3,3 +3,29 @@
   padding: 0;
   font-family: Poppins, Roboto, sans-serif;
 }
+
+/* Custom styles for the SweetAlert2 title */
+.my-swal-title {
+  font-size: 22px !important;
+  font-weight: bold !important; 
+}
+
+/* Custom styles for the SweetAlert2 text */
+.my-swal-text {
+  font-size: 15px !important; 
+}
+
+/* Adjust the spacing and size of the SweetAlert2 modal */
+.my-swal-popup {
+  width: 450px !important; /
+}
+
+/* Custom styles for the SweetAlert2 button */
+.my-swal-button {
+  background-color: #007bff !important; 
+  color: white !important; 
+  border: none !important;
+  padding: 8px 16px !important; 
+  font-size: 16px !important; 
+  border-radius: 4px !important; 
+}

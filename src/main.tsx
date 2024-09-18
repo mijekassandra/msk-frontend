@@ -25,6 +25,8 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: "8px",
+                    background: "white",
+                    // fontFamily: "Helvetica Neue",
                 },
             },
         },

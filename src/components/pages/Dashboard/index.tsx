@@ -26,6 +26,8 @@ import Publication from "../Publication/Publication";
 import Activities from "../Activities/Activities";
 import Admin from "../Admin/Admin";
 import AboutUs from "../About Us/AboutUs";
+import ManageProfile from "../Settings/components/ManageProfile";
+import AccountSetting from "../Settings/components/AccountSetting";
 
 const dashboardTabs = [
     {
@@ -89,10 +91,8 @@ const Dashboard = () => {
 
         if (isMobileView) {
             setShowDrawer(!showDrawer);
-            console.log("im here sa drawer");
         } else {
             setCollapsedSidebar(!collapsedSidebar);
-            console.log("im here sa collapsed");
         }
     };
 
@@ -160,6 +160,8 @@ const Dashboard = () => {
                                         {selectedTab === "/activities" && <Activities />}
                                         {selectedTab === "/admin" && <Admin />}
                                         {selectedTab === "/about-us" && <AboutUs />}
+                                        {selectedTab === "/manage-profile" && <ManageProfile />}
+                                        {selectedTab === "/account-settings" && <AccountSetting />}
                                     </>
                                 }
                             />

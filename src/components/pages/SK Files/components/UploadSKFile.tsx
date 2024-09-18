@@ -1,21 +1,57 @@
-import React from "react";
-import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
-
-// import components
+import React, { useState } from "react";
+import { Stack, Typography } from "@mui/material";
 import ModalVariantThree from "../../../modals/ModalVariantThree";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 
 interface UploadSKFileProps {
-    id: string;
-    file_name?: string;
-    upload_file: string;
     onClose: () => void;
+    onUpload: (formData: FormData) => void;
 }
 
-const UploadSKFile: React.FC<UploadSKFileProps> = (props: UploadSKFileProps) => {
+const UploadSKFile: React.FC<UploadSKFileProps> = ({ onClose, onUpload }) => {
+    // Single state object to manage file data
+    const [fileData, setFileData] = useState<{
+        file: File | null;
+        fileName: string;
+        fileType: string;
+        fileSize: number;
+    }>({
+        file: null,
+        fileName: "",
+        fileType: "",
+        fileSize: 0,
+    });
+
+    // Handle file input change
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            const file = event.target.files[0];
+            setFileData({
+                file: file,
+                fileName: file.name,
+                fileType: file.name.split(".").pop() || "",
+                fileSize: file.size,
+            });
+        }
+    };
+
+    // Handle upload button click
+    const handleUploadClick = () => {
+        if (fileData.file) {
+            // Create FormData object
+            const formData = new FormData();
+            formData.append("file_name", fileData.fileName);
+            formData.append("file_size", fileData.fileSize.toString());
+            formData.append("file_type", fileData.fileType);
+            formData.append("upload_file", fileData.file);
+
+            onUpload(formData);
+        }
+    };
+
     return (
         <ModalVariantThree
-            onClose={props.onClose}
+            onClose={onClose}
             headerTitle="UPLOAD FILES"
             content={
                 <Stack>
@@ -27,13 +63,9 @@ const UploadSKFile: React.FC<UploadSKFileProps> = (props: UploadSKFileProps) => 
                     >
                         <Typography>
                             File Type:{" "}
-                            <span
-                                style={{
-                                    color: "red",
-                                }}
-                            >
+                            <span style={{ color: "red" }}>
                                 .docx .doc .pptx .ppt .xlsx .xls .pdf .odt
-                            </span>{" "}
+                            </span>
                         </Typography>
                     </Stack>
                     <Stack
@@ -44,12 +76,14 @@ const UploadSKFile: React.FC<UploadSKFileProps> = (props: UploadSKFileProps) => 
                             padding: "15px 10px",
                         }}
                     >
-                        <input type="file"></input>
-                        <PrimaryButton size="small">UPLOAD FILE</PrimaryButton>
+                        <input type="file" onChange={handleFileChange} />
+                        <PrimaryButton size="small" onClick={handleUploadClick}>
+                            UPLOAD FILE
+                        </PrimaryButton>
                     </Stack>
                 </Stack>
             }
-        ></ModalVariantThree>
+        />
     );
 };
 

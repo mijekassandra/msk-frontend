@@ -25,14 +25,15 @@ export const skFileApi = createApi({
                       ]
                     : [{ type: "SKFile", id: "SKFileLIST" }],
         }),
-        uploadSkFile: builder.mutation<SkFileApiProps, Partial<SkFileApiProps>>({
-            query: (newFile) => ({
+        uploadSkFile: builder.mutation<SkFileApiProps, FormData>({
+            query: (formData) => ({
                 url: "sk_files/",
                 method: "POST",
-                body: newFile,
+                body: formData,
             }),
             invalidatesTags: ["SKFile"],
         }),
+
         deleteSkFile: builder.mutation<void, number>({
             query: (id) => ({
                 url: `sk_files/${id}`,

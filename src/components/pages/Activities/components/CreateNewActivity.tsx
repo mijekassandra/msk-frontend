@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Stack, TextField } from "@mui/material";
 import Swal from "sweetalert2";
+import "../../../../index.css";
 
 //import components
 import ModalVariantTwo from "../../../modals/ModalVariantTwo";
@@ -89,6 +90,12 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                     text: "The activity has been successfully created.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             } else if (mode === "edit") {
                 await editActivity({
@@ -101,6 +108,12 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                     text: "The activity has been successfully updated.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             }
             onClose(); // Close modal after successful save

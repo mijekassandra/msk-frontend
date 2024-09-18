@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
     AppBar,
     Box,
@@ -28,6 +29,8 @@ interface MiniAppbarProps {
 }
 
 const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
+    const navigate = useNavigate();
+
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -40,6 +43,17 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
 
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
+
+    // Handle navigation for "Manage Profile" and "Account Setting"
+    const handleNavigation = (path: string) => {
+        navigate(path);
+        handleClose();
+    };
+
+    const handleLogout = () => {
+        navigate("/");
+        handleClose();
+    };
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -107,6 +121,7 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                                 borderRadius: "5px",
                                             },
                                         }}
+                                        onClick={() => handleNavigation("/manage-profile")}
                                     >
                                         <AccountBox fontSize="small" />
                                         <Typography>Manage Profile</Typography>
@@ -123,6 +138,7 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                                 borderRadius: "5px",
                                             },
                                         }}
+                                        onClick={() => handleNavigation("/account-settings")}
                                     >
                                         <Settings fontSize="small" />
                                         <Typography>Account Setting</Typography>
@@ -140,6 +156,7 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                                 borderRadius: "5px",
                                             },
                                         }}
+                                        onClick={() => handleLogout()}
                                     >
                                         <Logout fontSize="small" />
                                         <Typography>Logout</Typography>

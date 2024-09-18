@@ -89,6 +89,12 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                     text: "The publication has been successfully created.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             } else if (mode === "edit") {
                 await editPublication({
@@ -101,6 +107,12 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                     text: "The publication has been successfully updated.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             }
             onClose(); // Close modal after successful save

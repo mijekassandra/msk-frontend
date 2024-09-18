@@ -1,11 +1,23 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Stack, Typography, Grid } from "@mui/material";
 
 // import components
 import DashboardCard from "../../../cards/DashboardCard";
 import MenuCard from "../../../cards/MenuCard";
 
+// interface DashboardHomeProps {
+//     selectedTab: string;
+//     handleTabChange: (tab: string) => void;
+// }
+
 const DashboardHome = () => {
+    const navigate = useNavigate();
+
+    const handleNavigation = (path: string) => {
+        navigate(path);
+    };
+
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">DASHBOARD</Typography>
@@ -23,6 +35,7 @@ const DashboardHome = () => {
                                             PUBLICATION
                                         </Typography>
                                     }
+                                    onClick={() => handleNavigation("/publication")}
                                 />
                             </Grid>
                             <Grid item>
@@ -34,6 +47,7 @@ const DashboardHome = () => {
                                             ANNOUNCEMENT
                                         </Typography>
                                     }
+                                    onClick={() => handleNavigation("/announcement")}
                                 />
                             </Grid>
                             <Grid item>
@@ -45,6 +59,7 @@ const DashboardHome = () => {
                                             FILES
                                         </Typography>
                                     }
+                                    onClick={() => handleNavigation("/sk-files")}
                                 />
                             </Grid>
                             <Grid item>
@@ -56,6 +71,7 @@ const DashboardHome = () => {
                                             ACTIVITIES
                                         </Typography>
                                     }
+                                    onClick={() => handleNavigation("/activities")}
                                 />
                             </Grid>
                             <Grid item>
@@ -72,6 +88,7 @@ const DashboardHome = () => {
                                             SK BARANGAY SYSTEM
                                         </Typography>
                                     }
+                                    onClick={() => handleNavigation("/sk-system")}
                                 />
                             </Grid>
                         </Grid>

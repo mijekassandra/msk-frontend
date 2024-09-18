@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, MouseEvent } from "react";
 import { Card, Box, CardMedia, CardContent } from "@mui/material";
 
 interface MenuCardProps {
@@ -6,10 +6,11 @@ interface MenuCardProps {
     cardImage: string;
     url?: string;
     imgWidth?: string;
+    onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
 // Use this Card for Menu in Dashboard
-const MenuCard: React.FC<MenuCardProps> = ({ content, cardImage, imgWidth, url }) => {
+const MenuCard: React.FC<MenuCardProps> = ({ content, cardImage, imgWidth, url, onClick }) => {
     return (
         <Card
             elevation={0}
@@ -27,6 +28,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ content, cardImage, imgWidth, url }
                     boxShadow: 2, // Elevation 1 on hover
                 },
             }}
+            onClick={onClick}
         >
             <Box
                 sx={{

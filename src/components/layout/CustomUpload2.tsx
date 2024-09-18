@@ -1,7 +1,7 @@
-import React from "react";
-import { Button } from "@mui/material";
+import React, { useState } from "react";
+import { Button, IconButton, Box } from "@mui/material";
 
-import { CloudUpload, Panorama } from "@mui/icons-material";
+import { Panorama, Close } from "@mui/icons-material";
 
 interface CustomUpload2Props {
     label?: string;
@@ -10,6 +10,23 @@ interface CustomUpload2Props {
 }
 
 const CustomUpload2: React.FC<CustomUpload2Props> = (props: CustomUpload2Props) => {
+    const [fileName, setFileName] = useState<string | null>(null);
+
+    // Handle file input change
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files && event.target.files[0];
+        if (file) {
+            setFileName(file.name); // Update state with the selected file name
+        }
+        if (props.onChange) {
+            props.onChange(event); // Call the parent onChange handler if provided
+        }
+    };
+
+    const handleRemoveFile = (event: React.ChangeEvent<HTMLButtonElement>) => {
+        setFileName("");
+    };
+
     return (
         <Button
             component="label"
@@ -43,8 +60,19 @@ const CustomUpload2: React.FC<CustomUpload2Props> = (props: CustomUpload2Props) 
                 },
             }}
         >
-            {props.label}
-            <input type="file" hidden onChange={props.onChange} accept={props.accept} />
+            {/* Show the file name if it exists, otherwise show the label */}
+            <Box>
+                {/* <IconButton onClick={handleRemoveFile}>
+                    <Close
+                        sx={{
+                            fontSize: "20px",
+                            fontWeight: "bold",
+                        }}
+                    />
+                </IconButton> */}
+                {fileName || props.label || "Upload"}
+                <input type="file" hidden onChange={handleFileChange} accept={props.accept} />
+            </Box>
         </Button>
     );
 };

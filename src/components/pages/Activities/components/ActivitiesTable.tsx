@@ -78,15 +78,31 @@ const ActivitiesTable = () => {
             showCancelButton: true,
             confirmButtonColor: "#d33",
             confirmButtonText: "Delete!",
+            customClass: {
+                title: "my-swal-title",
+                htmlContainer: "my-swal-text",
+                popup: "my-swal-popup",
+            },
         });
 
         // if final confirmation
         if (result.isConfirmed) {
             try {
                 await deleteActivity(activity.id);
-                Swal.fire("Deleted!", "Your announcement has been deleted.", "success");
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "The activity has been deleted.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
+                });
             } catch (error) {
-                Swal.fire("Error!", "There was an error deleting the announcement.", "error");
+                console.log("Error: ", error);
             }
         }
     };

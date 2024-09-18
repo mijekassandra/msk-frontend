@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 
 //import component
 import ModalVariantOne from "../../../modals/ModalVariantOne";
-import CustomUpload from "../../../layout/CustomUpload";
 
 interface CreateNewAdminProps {
     mode: "create" | "edit" | "view";
@@ -106,6 +105,12 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                     text: "The account has been successfully created.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             } else if (mode === "edit") {
                 await editAccount({
@@ -118,6 +123,12 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                     text: "The account has been successfully updated.",
                     icon: "success",
                     confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
                 });
             }
             onClose(); // Close modal after successful save

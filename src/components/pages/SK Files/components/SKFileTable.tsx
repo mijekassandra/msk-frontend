@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
-
-// import icons
+import { Box, IconButton, Stack } from "@mui/material";
+import Swal from "sweetalert2";
 import {
     Download,
     Visibility,
@@ -11,14 +10,14 @@ import {
     PictureAsPdf,
 } from "@mui/icons-material";
 
-// import components
+// Import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 import UploadSKFile from "./UploadSKFile";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
 
-// import apiSlices
+// Import API
 import {
     useGetSkFilesQuery,
     useUploadSkFileMutation,
@@ -27,25 +26,62 @@ import {
 
 const SKFileTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const {
         data: allSkFiles = [],
         isError: allSkFilesError,
         isSuccess: allSkFilesSuccess,
         isLoading: allSkFilesLoading,
-        isFetching: allSkFilesFetching,
     } = useGetSkFilesQuery();
 
     // mutations
     const [uploadSkFile] = useUploadSkFileMutation();
     const [deleteSkFile] = useDeleteSkFileMutation();
 
-    const handleUploadFileClick = () => {
-        setIsModalOpen(true); // Open the modal
-    };
+    // open and close modal
+    const handleUploadFileClick = () => setIsModalOpen(true);
+    const handleCloseModal = () => setIsModalOpen(false);
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false); // Close the modal
+    // Handle file upload
+    const handleFileUpload = async (formData: FormData) => {
+        try {
+            // Show loading alert
+            Swal.fire({
+                title: "Uploading...",
+                text: "Please wait while the file is being uploaded.",
+                icon: "info",
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    title: "my-swal-title",
+                    htmlContainer: "my-swal-text",
+                    popup: "my-swal-popup",
+                    confirmButton: "my-swal-button",
+                },
+            });
+
+            // Perform the file upload
+            await uploadSkFile(formData).unwrap();
+
+            // Show success alert
+            Swal.fire({
+                title: "Success",
+                text: "File uploaded successfully!",
+                icon: "success",
+                customClass: {
+                    title: "my-swal-title",
+                    htmlContainer: "my-swal-text",
+                    popup: "my-swal-popup",
+                    confirmButton: "my-swal-button",
+                },
+            });
+
+            // Close the modal
+            handleCloseModal();
+        } catch (error) {
+            console.log("Error: ", error);
+        }
     };
 
     const rows = allSkFiles.map((file) => ({
@@ -83,28 +119,13 @@ const SKFileTable = () => {
             renderCell: (params: any) => (
                 <Box>
                     <IconButton aria-label="download">
-                        <Download
-                            sx={{
-                                color: "secondary.main",
-                                fontSize: "22px",
-                            }}
-                        />
+                        <Download sx={{ color: "secondary.main", fontSize: "22px" }} />
                     </IconButton>
                     <IconButton aria-label="view">
-                        <Visibility
-                            sx={{
-                                color: "primary.dark",
-                                fontSize: "22px",
-                            }}
-                        />
+                        <Visibility sx={{ color: "primary.dark", fontSize: "22px" }} />
                     </IconButton>
                     <IconButton aria-label="delete">
-                        <Delete
-                            sx={{
-                                color: "error.main",
-                                fontSize: "22px",
-                            }}
-                        />
+                        <Delete sx={{ color: "error.main", fontSize: "22px" }} />
                     </IconButton>
                 </Box>
             ),
@@ -134,7 +155,7 @@ const SKFileTable = () => {
                 <ErrorDisplay />
             ) : null}
 
-            {isModalOpen && <UploadSKFile id="" upload_file="" onClose={handleCloseModal} />}
+            {isModalOpen && <UploadSKFile onClose={handleCloseModal} onUpload={handleFileUpload} />}
 
             <LoadingDisplay open={allSkFilesLoading} />
         </>
