@@ -13,7 +13,7 @@ import {
 import { Person, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 
 // import images
-import BackgroundImage from "../assets/sample-bg.jpg";
+import BackgroundImage from "../assets/login_bg.jpg";
 import SKLogo from "../assets/Sangguniang_Kabataan_logo.jpg";
 
 // import components
@@ -41,7 +41,10 @@ const Login = () => {
                 >
                     <Card
                         sx={{
-                            maxWidth: "450px",
+                            maxWidth: {
+                                sm: "450px",
+                                xs: "300px",
+                            },
                             padding: "15px 25px 30px 25px",
                             borderRadius: "8px",
                         }}

@@ -28,6 +28,8 @@ import Admin from "../Admin/Admin";
 import AboutUs from "../About Us/AboutUs";
 import ManageProfile from "../Settings/components/ManageProfile";
 import AccountSetting from "../Settings/components/AccountSetting";
+import Profiling from "../AdminFeatures/Profiling/Profiling";
+import UserHome from "../UserFeatures/Home/UserHome";
 
 const dashboardTabs = [
     {
@@ -162,6 +164,12 @@ const Dashboard = () => {
                                         {selectedTab === "/about-us" && <AboutUs />}
                                         {selectedTab === "/manage-profile" && <ManageProfile />}
                                         {selectedTab === "/account-settings" && <AccountSetting />}
+
+                                        {/* admin components */}
+                                        {selectedTab === "/profiling" && <Profiling />}
+
+                                        {/* user components */}
+                                        {selectedTab === "/home" && <UserHome />}
                                     </>
                                 }
                             />

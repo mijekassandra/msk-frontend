@@ -33,7 +33,7 @@ export const accountApi = createApi({
                     : [{ type: "Account", id: "AccountLIST" }],
         }),
         getAccountByID: builder.query<AccountProps, number>({
-            query: (id) => `accounts/${id}`, // Use id in the URL
+            query: (id) => `accounts/${id}`,
             providesTags: (result, error, id) => [{ type: "Account", id }],
         }),
         addAccount: builder.mutation<void, Partial<AccountProps>>({

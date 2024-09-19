@@ -149,8 +149,9 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                     : "View Account"
             }
             mode={mode}
+            maxWidth="400px"
             content={
-                <Stack spacing={2.5}>
+                <Stack rowGap={2}>
                     <TextField
                         id="outlined-username"
                         name="username"

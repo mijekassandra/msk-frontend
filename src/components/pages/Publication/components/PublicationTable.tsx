@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
-import { Visibility, BorderColor, Folder, AddCircle } from "@mui/icons-material";
+import { Visibility, BorderColor, Archive, AddCircle } from "@mui/icons-material";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -101,8 +101,8 @@ const PublicationTable = () => {
                             }}
                         />
                     </IconButton>
-                    <IconButton aria-label="folder">
-                        <Folder
+                    <IconButton aria-label="archive">
+                        <Archive
                             sx={{
                                 color: "secondary.main",
                                 fontSize: "22px",

@@ -14,6 +14,7 @@ interface ModalVariantOneProps {
     onSubmit?: (event: MouseEvent<HTMLButtonElement>) => void;
     onSave: () => void;
     mode: "create" | "edit" | "view";
+    maxWidth?: string;
 }
 
 const ModalVariantOne: React.FC<ModalVariantOneProps> = (props: ModalVariantOneProps) => {
@@ -31,7 +32,7 @@ const ModalVariantOne: React.FC<ModalVariantOneProps> = (props: ModalVariantOneP
             <Box
                 sx={{
                     width: "100%",
-                    maxWidth: "500px",
+                    maxWidth: props.maxWidth,
                     bgcolor: "background.paper",
                     padding: "20px",
                     borderRadius: "12px",
@@ -56,7 +57,17 @@ const ModalVariantOne: React.FC<ModalVariantOneProps> = (props: ModalVariantOneP
                     </IconButton>
                 </Stack>
                 <Divider />
-                <Stack marginBlock="20px">{props.content}</Stack>
+                <Stack
+                    paddingTop="5px"
+                    marginBlock="20px"
+                    sx={{
+                        maxHeight: "480px",
+                        overflowY: "auto",
+                        paddingBottom: "15px",
+                    }}
+                >
+                    {props.content}
+                </Stack>
                 {props.mode !== "view" ? (
                     <Stack>
                         <TwoChoice

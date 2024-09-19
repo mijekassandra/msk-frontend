@@ -6,6 +6,7 @@ import { publicationApi } from './components/pages/Publication/api/publicationAp
 import { activityApi } from './components/pages/Activities/api/activityApi';
 import { accountApi } from './components/pages/Admin/api/accountApi';
 import { skFileApi } from './components/pages/SK Files/api/skFileApi';
+import { youthProfilingApi } from './components/pages/AdminFeatures/Profiling/api/profilingApi';
 
 export const store = configureStore({
     reducer: {
@@ -14,7 +15,8 @@ export const store = configureStore({
       [publicationApi.reducerPath]: publicationApi.reducer,
       [activityApi.reducerPath]: activityApi.reducer,
       [accountApi.reducerPath]: accountApi.reducer,
-      [skFileApi.reducerPath]: skFileApi.reducer
+      [skFileApi.reducerPath]: skFileApi.reducer,
+      [youthProfilingApi.reducerPath]: youthProfilingApi.reducer
     },
     // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query
     middleware: (getDefaultMiddleware) =>
@@ -23,7 +25,8 @@ export const store = configureStore({
         publicationApi.middleware,
         activityApi.middleware,
         accountApi.middleware,
-        skFileApi.middleware
+        skFileApi.middleware,
+        youthProfilingApi.middleware
       ),
   });
 

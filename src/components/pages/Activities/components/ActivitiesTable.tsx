@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
+import { Box, Typography, FormControlLabel, IconButton } from "@mui/material";
 import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
 import Swal from "sweetalert2";
 
@@ -18,17 +18,6 @@ import {
     useEditActivityMutation,
     useDeleteActivityMutation,
 } from "../api/activityApi";
-
-const activitiesData = [
-    {
-        id: 1,
-        activity_title: "KABATAAN KONTRA DROGA AT TERORISMO",
-        activity_type: "",
-        activity_content: "",
-        date: "2024-04-22 1:30pm",
-        updated: "2024-04-22 1:30pm",
-    },
-];
 
 const ActivitiesTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,7 +74,7 @@ const ActivitiesTable = () => {
             },
         });
 
-        // if final confirmation
+        // final confirmation
         if (result.isConfirmed) {
             try {
                 await deleteActivity(activity.id);
