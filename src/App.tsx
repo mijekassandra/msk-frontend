@@ -12,8 +12,8 @@ type UserRoleProps = "SuperAdmin" | "Admin" | "User";
 
 // Define the shape of the UserContext
 interface UserContextTypeProps {
-    userRole: "SuperAdmin" | "Admin" | "User";
-    setUserRole: React.Dispatch<React.SetStateAction<UserRoleProps>>;
+  userRole: "SuperAdmin" | "Admin" | "User";
+  setUserRole: React.Dispatch<React.SetStateAction<UserRoleProps>>;
 }
 
 // Create UserContext
@@ -21,31 +21,31 @@ const UserContext = createContext<UserContextTypeProps | undefined>(undefined);
 
 // Hook to use the UserContext
 const useUser = () => {
-    const context = useContext(UserContext);
-    if (!context) throw new Error("useUser must be used within a UserProvider");
-    return context;
+  const context = useContext(UserContext);
+  if (!context) throw new Error("useUser must be used within a UserProvider");
+  return context;
 };
 
 function App() {
-    const [userRole, setUserRole] = useState<UserRoleProps>("User"); // Default role
+  const [userRole, setUserRole] = useState<UserRoleProps>("User"); // Default role
 
-    return (
-        <UserContext.Provider value={{ userRole, setUserRole }}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/styles" element={<DesignSystem />} />
-                    <Route path="/" element={<Login />} />
-                    <Route path="/*" element={<Dashboard />} />
-                </Routes>
+  return (
+    <UserContext.Provider value={{ userRole, setUserRole }}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/styles" element={<DesignSystem />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/*" element={<Dashboard />} />
+        </Routes>
 
-                {/* <ProtectedRoute
+        {/* <ProtectedRoute
                     path="/dashboard/*"
                     element={Dashboard}
                     allowedRoles={["SuperAdmin", "Admin"]}
                 /> */}
-            </BrowserRouter>
-        </UserContext.Provider>
-    );
+      </BrowserRouter>
+    </UserContext.Provider>
+  );
 }
 
 export { useUser }; // Export useUser hook

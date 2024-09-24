@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Stack, Typography } from "@mui/material";
 
 import SampleImage from "../../../../assets/sample.png";
@@ -13,36 +14,50 @@ import ErrorDisplay from "../../../displays/ErrorDisplay";
 import { useGetPublicationsQuery } from "../../../pages/Publication/api/publicationApi";
 
 const UserHome = () => {
-    const {
-        data: allPublications = [],
-        isError: allPublicationsError,
-        isSuccess: allPublicationsSuccess,
-        isLoading: allPublicationsLoading,
-        isFetching: allPublicationsFetching,
-    } = useGetPublicationsQuery();
+  const navigate = useNavigate();
 
-    return (
-        <Stack>
-            <LogoHeader header="SK PUBLICATION" />
+  const {
+    data: allPublications = [],
+    isError: allPublicationsError,
+    // isSuccess: allPublicationsSuccess,
+    isLoading: allPublicationsLoading,
+    // isFetching: allPublicationsFetching,
+  } = useGetPublicationsQuery();
 
-            {!allPublicationsLoading && !allPublicationsError && (
-                <Stack gap={2} direction="row" flexWrap="wrap" justifyContent="space-evenly">
-                    {allPublications.map((publication) => (
-                        <BlogCard
-                            key={publication.id}
-                            bgColor="#e6e8fe"
-                            cardImage={SampleImage}
-                            cardTitle={publication.publication_title}
-                        />
-                    ))}
-                </Stack>
-            )}
+  const handleReadMore = (publication: any) => {
+    navigate(`/home/${publication.id}`, {
+      state: { publication },
+    });
+  };
 
-            {allPublicationsError && <ErrorDisplay />}
+  return (
+    <Stack>
+      <LogoHeader header="SK PUBLICATION" />
 
-            <LoadingDisplay open={allPublicationsLoading} />
+      {!allPublicationsLoading && !allPublicationsError && (
+        <Stack
+          gap={2}
+          direction="row"
+          flexWrap="wrap"
+          justifyContent="space-evenly"
+        >
+          {allPublications.map((publication) => (
+            <BlogCard
+              key={publication.id}
+              bgColor="#e6e8fe"
+              cardImage={SampleImage}
+              cardTitle={publication.publication_title}
+              onClick={() => handleReadMore(publication)}
+            />
+          ))}
         </Stack>
-    );
+      )}
+
+      {allPublicationsError && <ErrorDisplay />}
+
+      <LoadingDisplay open={allPublicationsLoading} />
+    </Stack>
+  );
 };
 
 export default UserHome;
