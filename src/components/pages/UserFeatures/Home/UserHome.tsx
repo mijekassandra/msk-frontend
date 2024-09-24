@@ -25,10 +25,6 @@ const UserHome = () => {
         <Stack>
             <LogoHeader header="SK PUBLICATION" />
 
-            {/* Display Error State */}
-            {allPublicationsError && <ErrorDisplay />}
-
-            {/* Map through publications and display BlogCard */}
             {!allPublicationsLoading && !allPublicationsError && (
                 <Stack gap={2} direction="row" flexWrap="wrap" justifyContent="space-evenly">
                     {allPublications.map((publication) => (
@@ -41,6 +37,8 @@ const UserHome = () => {
                     ))}
                 </Stack>
             )}
+
+            {allPublicationsError && <ErrorDisplay />}
 
             <LoadingDisplay open={allPublicationsLoading} />
         </Stack>

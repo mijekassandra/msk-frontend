@@ -1,5 +1,5 @@
 import React, { MouseEvent } from "react";
-import { Card, CardMedia, CardHeader, CardActions, Typography } from "@mui/material";
+import { Stack, Card, CardMedia, CardHeader, CardActions, Typography } from "@mui/material";
 
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
@@ -28,7 +28,28 @@ const BlogCard: React.FC<BlogCardProps> = ({ bgColor, cardImage, cardTitle, onCl
             }}
         >
             <CardMedia component="img" height="160px" image={cardImage} />
-            <CardHeader title={<Typography variant="h5">{cardTitle}</Typography>} />
+
+            <Stack
+                sx={{
+                    width: "100%",
+                    paddingBlock: "15px",
+                }}
+            >
+                <Typography
+                    variant="h5"
+                    sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
+                        WebkitLineClamp: "2",
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {cardTitle}
+                </Typography>
+            </Stack>
+
+            {/* <CardHeader title={<Typography variant="h5">{cardTitle}</Typography>} /> */}
             <CardActions>
                 <PrimaryButton size="small" color="info" onClick={onClick}>
                     Read More
