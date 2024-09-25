@@ -32,6 +32,7 @@ import UserHome from "../UserFeatures/Home/UserHome";
 import PublicationDetails from "../UserFeatures/Home/PublicationDetails"; // Import the component
 import DashboardBody from "../../containers/DashboardBody";
 import UserAnnouncement from "../UserFeatures/Announcement/UserAnnouncement";
+import UserSKActivities from "../UserFeatures/SK Activities/UserSKActivities";
 
 const dashboardTabs = [
   { tab: "/dashboard", label: "DASHBOARD", icon: <HomeOutlined /> },
@@ -141,11 +142,16 @@ const Dashboard = () => {
                     {/* admin components */}
                     <Route path="/profiling" element={<Profiling />} />
                     <Route path="/home" element={<UserHome />} />
+
                     {/* user components */}
                     <Route path="/home/:id" element={<PublicationDetails />} />
                     <Route
                       path="/user-announcements"
                       element={<UserAnnouncement />}
+                    />
+                    <Route
+                      path="/sk-activities"
+                      element={<UserSKActivities />}
                     />
                   </Routes>
                 }

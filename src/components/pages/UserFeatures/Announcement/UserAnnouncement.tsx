@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Stack, Typography } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 
 // import components
 import LogoHeader from "../../../displays/LogoHeader";
@@ -15,14 +15,27 @@ const UserAnnouncement = () => {
   const {
     data: allAnnouncements = [],
     isError: allAnnouncementsError,
-    isSuccess: allAnnouncementsSuccess,
     isLoading: allAnnouncementsLoading,
-    isFetching: allAnouncementsFetching,
   } = useGetAnnouncementsQuery();
 
   return (
     <Stack gap={2}>
       <LogoHeader header="ANNOUNCEMENT" />
+
+      <Stack direction="row" justifyContent="flex-end" marginBlock={1}>
+        <TextField
+          id="outlined-basic"
+          variant="outlined"
+          placeholder="Search"
+          sx={{
+            width: 400,
+            minWidth: {
+              sm: 300,
+              xs: "100%",
+            },
+          }}
+        />
+      </Stack>
 
       {!allAnnouncementsLoading && !allAnnouncementsError && (
         <Stack gap={4} direction="column" justifyContent="center">

@@ -1,5 +1,5 @@
 import React, { MouseEvent } from "react";
-import { Box, Grid, Typography, Rating } from "@mui/material";
+import { Stack, Grid, Typography, Rating } from "@mui/material";
 
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
@@ -33,18 +33,17 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
   return (
     <Grid
       container
-      rowSpacing={{ lg: 2 }}
-      columnSpacing={4}
+      gap={{ xs: 2, md: 4 }}
+      justifyContent="space-between"
       sx={{
         borderRadius: "2px",
-        border: "1px solid black",
-        padding: "30px 40px 30px 0px",
+        border: "1px solid #CCCCCC",
+        padding: "20px 30px 40px 30px",
       }}
     >
       <Grid
         item
         md={4}
-        sm={5}
         xs={12}
         sx={{
           display: "grid",
@@ -52,7 +51,8 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
           gap: "20px",
         }}
       >
-        <Box
+        <Grid
+          item
           sx={{
             display: "flex",
             alignItems: "center",
@@ -60,14 +60,14 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
           }}
         >
           <img src={barangayLogo} height="40px" />
-          <Box>
+          <Stack>
             <Typography variant="subtitle1">{barangay}</Typography>
             <Typography variant="body1" color={"gray"}>
               {date}
             </Typography>
-          </Box>
-        </Box>
-        <Box
+          </Stack>
+        </Grid>
+        <Stack
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -81,12 +81,12 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
             width="100%"
             style={{ borderRadius: "16px" }}
           />
-          <Box>
+          <Stack>
             <PrimaryButton size="medium" color="info" onClick={onClick}>
               Provide Feedback
             </PrimaryButton>
-          </Box>
-        </Box>
+          </Stack>
+        </Stack>
       </Grid>
       <Grid
         item
@@ -95,8 +95,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
           alignContent: "space-between",
           gap: "32px",
         }}
-        md={8}
-        sm={7}
+        md={7}
         xs={12}
       >
         <Typography variant="h4" fontWeight={600} textAlign={"center"}>
@@ -105,17 +104,23 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
         <Typography variant="subtitle1" fontFamily="Poppins">
           {content}
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "32px",
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent={{
+            md: "flex-end",
+            xs: "space-between",
           }}
+          gap={{
+            md: 6,
+            xs: 1,
+          }}
+          flex="flex-wrap"
         >
           <Typography variant="subtitle1">{views} views</Typography>
           <Typography variant="subtitle1">{comments} comments </Typography>
           <Rating name="read-only" value={rating} />
-        </Box>
+        </Stack>
       </Grid>
     </Grid>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 
 interface AnnouncementCardProps {
   barangay: string;
@@ -25,7 +25,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
       justifyContent="space-between"
       sx={{
         borderRadius: "4px",
-        border: "1px solid black",
+        border: "1px solid #CCCCCC",
         padding: "20px 30px 40px 30px",
       }}
     >
@@ -72,7 +72,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
           alignContent: "flex-start",
           gap: "32px",
         }}
-        md={7.5}
+        md={7}
         xs={12}
       >
         <Typography variant="h4" fontWeight={600} textAlign={"center"}>

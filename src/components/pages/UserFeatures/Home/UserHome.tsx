@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Stack, Typography } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 
 import SampleImage from "../../../../assets/sample.png";
 
@@ -31,8 +31,23 @@ const UserHome = () => {
   };
 
   return (
-    <Stack>
+    <Stack gap={2}>
       <LogoHeader header="SK PUBLICATION" />
+
+      <Stack direction="row" justifyContent="flex-end" marginBlock={1}>
+        <TextField
+          id="outlined-basic"
+          variant="outlined"
+          placeholder="Search"
+          sx={{
+            width: 400,
+            minWidth: {
+              sm: 300,
+              xs: "100%",
+            },
+          }}
+        />
+      </Stack>
 
       {!allPublicationsLoading && !allPublicationsError && (
         <Stack

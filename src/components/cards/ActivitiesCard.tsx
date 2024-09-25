@@ -1,5 +1,5 @@
 import React, { MouseEvent } from "react";
-import { Box, Stack, Grid, Typography } from "@mui/material";
+import { Stack, Grid, Typography } from "@mui/material";
 import { CalendarMonth, LocationOn } from "@mui/icons-material/";
 
 // import components
@@ -28,12 +28,12 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
   return (
     <Grid
       container
-      rowSpacing={{ xs: 2 }}
-      columnSpacing={4}
+      gap={{ xs: 2, md: 4 }}
+      justifyContent="space-between"
       sx={{
         borderRadius: "4px",
-        border: "1px solid black",
-        padding: "10px 30px 30px 0px",
+        border: "1px solid #CCCCCC",
+        padding: "20px 30px 40px 30px",
       }}
     >
       <Grid
@@ -46,12 +46,12 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
         }}
       >
         <img src={barangayLogo} height="40px" />
-        <Box>
+        <Stack>
           <Typography variant="subtitle1">{barangay}</Typography>
           <Typography variant="body1" color={"gray"}>
             {date}
           </Typography>
-        </Box>
+        </Stack>
       </Grid>
       <Grid
         item
@@ -63,21 +63,14 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
           gap: "20px",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "24px",
-          }}
-        >
+        <Stack>
           <img
             src={cardImage}
             height="200px"
             width="100%"
             style={{ borderRadius: "16px" }}
           />
-        </Box>
+        </Stack>
       </Grid>
       <Grid
         item
@@ -86,7 +79,7 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
           alignContent: "flex-start",
           gap: "32px",
         }}
-        md={8}
+        md={7}
         xs={12}
       >
         <Typography variant="h3" fontWeight={600} textAlign={"center"}>
