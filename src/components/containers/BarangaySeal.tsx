@@ -23,7 +23,7 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
                 padding: "15px 10px",
             }}
         >
-            <img width="120px" src={barangayLogo} alt="Barangay Logo" />
+            <img width="140px" src={barangayLogo} alt="Barangay Logo" />
             <Typography variant="h3" color="white" textAlign="center">
                 {barangay}
             </Typography>
