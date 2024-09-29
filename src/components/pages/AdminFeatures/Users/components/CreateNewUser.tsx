@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Stack, TextField } from "@mui/material";
 import Swal from "sweetalert2";
 
-//import component
-import ModalVariantOne from "../../../modals/ModalVariantOne";
+// import components
+import ModalVariantOne from "../../../../modals/ModalVariantOne";
 
-interface CreateNewAdminProps {
+interface CreateNewUserProps {
     mode: "create" | "edit" | "view";
     initialData?: {
         id?: number;
@@ -15,7 +15,7 @@ interface CreateNewAdminProps {
         username?: string;
         password?: string;
         date_of_birth?: string;
-        gender?: "Female" | "Male" | "Prefer not to say";
+        gender?: "female" | "male";
         address?: string;
         email?: string;
         date?: string;
@@ -26,7 +26,7 @@ interface CreateNewAdminProps {
     totalCount: number;
 }
 
-const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
+const CreateNewUser: React.FC<CreateNewUserProps> = ({
     mode,
     initialData = {},
     onClose,
@@ -176,4 +176,4 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
     );
 };
 
-export default CreateNewAdmin;
+export default CreateNewUser;

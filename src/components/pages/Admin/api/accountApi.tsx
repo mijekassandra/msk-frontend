@@ -8,7 +8,7 @@ interface AccountProps {
     username: string;
     password: string;
     date_of_birth: string;
-    gender: "female" | "male";
+    gender: "Female" | "Male" | "Prefer not to say";
     address: string;
     email: string;
     date: string;

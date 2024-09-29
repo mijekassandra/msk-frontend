@@ -35,6 +35,8 @@ import PublicationDetails from "../UserFeatures/Home/PublicationDetails"; // Imp
 import DashboardBody from "../../containers/DashboardBody";
 import UserAnnouncement from "../UserFeatures/Announcement/UserAnnouncement";
 import UserSKActivities from "../UserFeatures/SK Activities/UserSKActivities";
+import UserSKFiles from "../UserFeatures/SK Files/UserSKFiles";
+import User from "../AdminFeatures/Users/User";
 
 const dashboardTabs = [
     // TODO users first
@@ -150,7 +152,6 @@ const Dashboard = () => {
                                         <Route path="/publication" element={<Publication />} />
                                         <Route path="/activities" element={<Activities />} />
                                         <Route path="/admin" element={<Admin />} />
-                                        <Route path="/about-us" element={<AboutUs />} />
                                         <Route path="/manage-profile" element={<ManageProfile />} />
                                         <Route
                                             path="/account-settings"
@@ -158,6 +159,7 @@ const Dashboard = () => {
                                         />
                                         {/* admin components */}
                                         <Route path="/profiling" element={<Profiling />} />
+                                        <Route path="/users" element={<User />} />
 
                                         {/* user components */}
                                         <Route path="/home" element={<UserHome />} />
@@ -166,10 +168,14 @@ const Dashboard = () => {
                                             path="/user-announcements"
                                             element={<UserAnnouncement />}
                                         />
+                                        <Route path="/user-sk-files" element={<UserSKFiles />} />
                                         <Route
                                             path="/sk-activities"
                                             element={<UserSKActivities />}
                                         />
+
+                                        {/* all roles componentes */}
+                                        <Route path="/about-us" element={<AboutUs />} />
                                     </Routes>
                                 }
                             />
