@@ -12,6 +12,7 @@ interface PrimaryButtonProps {
   width?: string;
   startIcon?: React.ReactElement<SvgIconProps>;
   endIcon?: React.ReactElement<SvgIconProps>;
+  disabled?: boolean;
 
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
@@ -24,6 +25,8 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   width,
   startIcon,
   endIcon,
+  disabled = false,
+
   onClick,
 }) => {
   return (
@@ -39,6 +42,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       disableElevation
       startIcon={startIcon}
       endIcon={endIcon}
+      disabled={disabled}
       onClick={onClick}
     >
       {children}

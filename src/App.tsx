@@ -4,10 +4,11 @@ import "./App.css";
 
 // Pages
 import DesignSystem from "./components/DesignSystem";
-import Login from "./features/Login";
+import Login from "./features/Login/Login";
 import Dashboard from "./components/pages/Dashboard/index";
-import ProtectedRoute from "./PrivateRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
+// Define user roles
 type UserRoleProps = "SuperAdmin" | "Admin" | "User";
 
 // Define the shape of the UserContext
