@@ -8,7 +8,7 @@ import AnnouncementTable from "./components/AnnouncementTable";
 const Announcement = () => {
     return (
         <Stack rowGap={3}>
-            <Typography variant="h2">FEDERATION PUBLICATION</Typography>
+            <Typography variant="h2">FEDERATION ANNOUNCEMENT</Typography>
             <DashboardCard
                 padding="0px 0px 0px 0px"
                 content={<AnnouncementTable />}

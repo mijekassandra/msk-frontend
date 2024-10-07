@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Box, Typography, FormControlLabel, IconButton, Stack } from "@mui/material";
+import { Box, Typography, FormControlLabel, IconButton } from "@mui/material";
 import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
 import Swal from "sweetalert2";
 
-//import components
-import CustomDataGrid from "../../../layout/CustomDataGrid";
-import PrimaryButton from "../../../buttons/PrimaryButton";
-import CreateNewAdmin from "./CreateNewAdmin";
-import LoadingDisplay from "../../../displays/LoadingDisplay";
-import ErrorDisplay from "../../../displays/ErrorDisplay";
+// import components
+import CustomDataGrid from "../../../../layout/CustomDataGrid";
+import PrimaryButton from "../../../../buttons/PrimaryButton";
+import LoadingDisplay from "../../../../displays/LoadingDisplay";
+import ErrorDisplay from "../../../../displays/ErrorDisplay";
+import CreateNewUser from "./CreateNewUser";
 
 // import apiSlices
 import {
@@ -17,9 +17,9 @@ import {
     useAddAccountMutation,
     useEditAccountMutation,
     useDeleteAccountMutation,
-} from "../api/accountApi";
+} from "../../../Admin/api/accountApi";
 
-const AdminTable = () => {
+const UserTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit
     const [currentAcount, setCurrentAccount] = useState({}); // for edit modal
@@ -160,7 +160,7 @@ const AdminTable = () => {
                     isLoading={allAccountsLoading}
                     columns={columns}
                     totalCount={allAccounts.length}
-                    tableLabel="LIST OF SANGGUNIANG KABATAAN CHAIRPERSON"
+                    tableLabel="LIST OF USERS"
                     actionButton={
                         <PrimaryButton
                             size="small"
@@ -176,7 +176,7 @@ const AdminTable = () => {
             ) : null}
 
             {isModalOpen && (
-                <CreateNewAdmin
+                <CreateNewUser
                     mode={modalMode}
                     initialData={currentAcount}
                     onClose={handleCloseModal}
@@ -191,4 +191,4 @@ const AdminTable = () => {
     );
 };
 
-export default AdminTable;
+export default UserTable;

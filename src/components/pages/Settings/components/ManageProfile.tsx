@@ -113,7 +113,7 @@ const ManageProfile = () => {
                                         margin="dense"
                                     />
                                 </Grid>
-                                <Grid item sm={1.5} xs={12}>
+                                <Grid item sm={2} xs={12}>
                                     <Typography variant="body1">Sex</Typography>
                                     <TextField
                                         fullWidth
@@ -130,6 +130,7 @@ const ManageProfile = () => {
                                         </MenuItem>
                                         <MenuItem value="female">Female</MenuItem>
                                         <MenuItem value="male">Male</MenuItem>
+                                        <MenuItem value="male">Prefer not to say</MenuItem>
                                     </TextField>
                                 </Grid>
                                 <Grid item sm={2} xs={12}>

@@ -73,7 +73,6 @@ const ProfilingTable = () => {
         { field: "first_name", headerName: "First Name", minWidth: 200, flex: 1 },
         { field: "last_name", headerName: "Last Name", maxWidth: 200, flex: 1 },
         { field: "age", headerName: "Age", maxWidth: 80 },
-        { field: "civil_status", headerName: "Civil Status", maxWidth: 120 },
         { field: "sex", headerName: "Sex", width: 80 },
         { field: "voter_status", headerName: "Voter Status", maxWidth: 120 },
         { field: "educational_attainment", headerName: "HEA", maxWidth: 120 },

@@ -11,6 +11,7 @@ interface ModalVariantThreeProps {
     headerTitle?: string;
     onClose: () => void;
     subheader?: ReactNode;
+    headerIcon: ReactNode | string;
 }
 
 const ModalVariantThree: React.FC<ModalVariantThreeProps> = (props: ModalVariantThreeProps) => {
@@ -34,10 +35,34 @@ const ModalVariantThree: React.FC<ModalVariantThreeProps> = (props: ModalVariant
                     borderRadius: "4px",
                 }}
             >
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h4" fontWeight={600}>
-                        {props.headerTitle}
-                    </Typography>
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    marginBottom={1}
+                >
+                    <Stack direction="row" gap={1}>
+                        <IconButton
+                            sx={{
+                                backgroundColor: "black",
+                                borderRadius: "50%",
+                                width: "28px",
+                                height: "28px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "white",
+                                fontSize: "16px",
+                            }}
+                        >
+                            {props.headerIcon}
+                        </IconButton>
+
+                        <Typography variant="h4" fontWeight={600}>
+                            {props.headerTitle}
+                        </Typography>
+                    </Stack>
+
                     <IconButton onClick={props.onClose}>
                         <Close
                             sx={{
@@ -47,6 +72,7 @@ const ModalVariantThree: React.FC<ModalVariantThreeProps> = (props: ModalVariant
                         />
                     </IconButton>
                 </Stack>
+                <Divider />
                 <Stack marginBlock="20px">{props.content}</Stack>
             </Box>
         </Modal>

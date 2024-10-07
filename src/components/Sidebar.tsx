@@ -87,43 +87,42 @@ const Sidebar: React.FC<SidebarProps> = ({
     );
 
     return (
-        <>
-            <Paper
-                elevation={0}
-                sx={{
-                    height: height || "100vh",
-                    borderRadius: "0px",
-                    background: "#030A59",
-                    paddingBlock: "0 20px",
-                    display: { md: "grid", xs: "none" },
-                    gap: "12px",
-                    alignContent: "flex-start",
-                }}
-            >
-                {mobileView?.isShow ? (
-                    <Drawer
-                        open={mobileView?.isShow}
-                        onClose={mobileView?.action}
-                        sx={{
-                            display: mobileView?.isShow ? "flex" : "none",
-                        }}
+        <Paper
+            elevation={0}
+            sx={{
+                height: height || "100vh",
+                borderRadius: "0px",
+                background: "#030A59",
+                paddingBlock: "0 20px",
+                display: { md: "grid", xs: "none" },
+                gap: "12px",
+                alignContent: "flex-start",
+                width: "100%",
+            }}
+        >
+            {mobileView?.isShow ? (
+                <Drawer
+                    open={mobileView?.isShow}
+                    onClose={mobileView?.action}
+                    sx={{
+                        display: mobileView?.isShow ? "flex" : "none",
+                    }}
+                >
+                    <Stack
+                        spacing={2}
+                        sx={{ width: "280px", background: "#030A59", height: "100%" }}
                     >
-                        <Stack
-                            spacing={2}
-                            sx={{ width: "280px", background: "#030A59", height: "100%" }}
-                        >
-                            <BarangaySeal />
-                            {tabList()}
-                        </Stack>
-                    </Drawer>
-                ) : (
-                    <>
                         <BarangaySeal />
                         {tabList()}
-                    </>
-                )}
-            </Paper>
-        </>
+                    </Stack>
+                </Drawer>
+            ) : (
+                <>
+                    <BarangaySeal />
+                    {tabList()}
+                </>
+            )}
+        </Paper>
     );
 };
 
