@@ -7,8 +7,7 @@ interface PublicationProps {
   title: string;
   type: string;
   content: string;
-  date: string;
-  account_id: number;
+  attachment: File;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;
@@ -46,11 +45,21 @@ export const publicationApi = createApi({
       providesTags: (result, error, id) => [{ type: "Publication", id }],
     }),
     addPublication: builder.mutation<void, Partial<PublicationProps>>({
-      query: (publicationDetails) => ({
-        url: "publication/",
-        method: "POST",
-        body: publicationDetails,
-      }),
+      query: (publicationDetails) => {
+        const formData = new FormData();
+        formData.append("title", publicationDetails.title || "");
+        formData.append("content", publicationDetails.content || "");
+
+        if (publicationDetails.attachment) {
+          formData.append("attachment", publicationDetails.attachment);
+        }
+
+        return {
+          url: "publication/",
+          method: "POST",
+          body: formData,
+        };
+      },
       invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
     }),
     editPublication: builder.mutation<

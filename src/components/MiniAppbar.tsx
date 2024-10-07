@@ -44,6 +44,7 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
   const dispatch = useDispatch();
   const [logout, { isLoading }] = useLogoutMutation();
 
+  // authenticiation
   const userDetail = useSelector((state: RootState) => state.auth.user);
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -67,14 +68,12 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     handleClose();
   };
 
-  console.log("user details: ", userDetail);
-
   // Handle Logout
   const handleLogout = async () => {
     try {
       await logout().unwrap(); // Perform the logout request
       dispatch(logoutSuccess()); // Clear the token from Redux state
-      navigate("/"); // Redirect to login after successful logout
+      navigate("/");
       handleClose();
     } catch (error) {
       console.error("Logout failed:", error); // Handle any error that occurs

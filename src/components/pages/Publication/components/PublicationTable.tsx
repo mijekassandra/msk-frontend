@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { Box, Typography, FormControlLabel, IconButton, Stack, Switch } from "@mui/material";
-import { Visibility, BorderColor, Archive, AddCircle } from "@mui/icons-material";
+import { Box, IconButton } from "@mui/material";
+import {
+  Visibility,
+  BorderColor,
+  Archive,
+  AddCircle,
+} from "@mui/icons-material";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -11,146 +16,139 @@ import LoadingDisplay from "../../../displays/LoadingDisplay";
 
 // import apiSlices
 import {
-    useGetPublicationsQuery,
-    useGetPublicationByIDQuery,
-    useAddPublicationMutation,
-    useEditPublicationMutation,
-    useDeletePublicationMutation,
+  useGetPublicationsQuery,
+  useAddPublicationMutation,
+  useEditPublicationMutation,
 } from "../api/publicationApi";
 
 const PublicationTable = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit
-    const [currentPublication, setCurrentPublication] = useState({}); // for edit modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
+    "create"
+  ); // for modal mode, either create or edit
+  const [currentPublication, setCurrentPublication] = useState({}); // for edit modal
 
-    const {
-        data: allPublications = [],
-        isError: allPublicationsError,
-        isSuccess: allPublicationsSuccess,
-        isLoading: allPublicationsLoading,
-        isFetching: allPublicationsFetching,
-    } = useGetPublicationsQuery();
+  const {
+    data: allPublications = [],
+    isError: allPublicationsError,
+    isSuccess: allPublicationsSuccess,
+    isLoading: allPublicationsLoading,
+  } = useGetPublicationsQuery();
 
-    //mutations
-    const [addPublication] = useAddPublicationMutation();
-    const [editPublication] = useEditPublicationMutation();
-    const [deletePublication] = useDeletePublicationMutation();
+  //   console.log("data pub: ", allPublications);
 
-    const handleCreatePublicationClick = () => {
-        setModalMode("create");
-        setCurrentPublication({});
-        setIsModalOpen(true); // Open the modal
-    };
+  //mutations
+  const [addPublication] = useAddPublicationMutation();
+  const [editPublication] = useEditPublicationMutation();
 
-    const handleEditPublicationClick = (publication: any) => {
-        setModalMode("edit");
-        setCurrentPublication(publication);
-        setIsModalOpen(true); // Open the modal
-    };
+  const handleCreatePublicationClick = () => {
+    setModalMode("create");
+    setCurrentPublication({});
+    setIsModalOpen(true); // Open the modal
+  };
 
-    const handleViewPublicationClick = (publication: any) => {
-        setModalMode("view");
-        setCurrentPublication(publication);
-        setIsModalOpen(true); // Open the modal
-    };
+  const handleEditPublicationClick = (publication: any) => {
+    setModalMode("edit");
+    setCurrentPublication(publication);
+    setIsModalOpen(true); // Open the modal
+  };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false); // Close the modal
-    };
+  const handleViewPublicationClick = (publication: any) => {
+    setModalMode("view");
+    setCurrentPublication(publication);
+    setIsModalOpen(true); // Open the modal
+  };
 
-    const getNextId = (publication: any) => {
-        // get the last announcement's id and increment it by 1
-        const lastId = publication.length > 0 ? Number(publication[publication.length - 1].id) : 0;
-        return lastId + 1;
-    };
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
 
-    const rows = allPublications.map((publication) => ({
-        ...publication,
-        publication_id: publication.id,
-    }));
+  const rows = allPublications.map((publication) => ({
+    ...publication,
+    publication_id: publication.id,
+  }));
 
-    const columns = [
-        { field: "publication_title", headerName: "Title", minWidth: 300, flex: 1 },
-        { field: "publication_type", headerName: "Type", maxWidth: 160 },
-        { field: "date", headerName: "Date Publish", maxWidth: 160 },
-        {
-            field: "action",
-            headerName: "Action",
-            maxWidth: 160,
-            renderCell: (params: any) => (
-                <Box>
-                    <IconButton
-                        aria-label="view"
-                        onClick={() => handleViewPublicationClick(params.row)}
-                    >
-                        <Visibility
-                            sx={{
-                                color: "primary.dark",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton>
-                    <IconButton
-                        aria-label="edit"
-                        onClick={() => handleEditPublicationClick(params.row)}
-                    >
-                        <BorderColor
-                            sx={{
-                                color: "secondary.light",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton>
-                    <IconButton aria-label="archive">
-                        <Archive
-                            sx={{
-                                color: "secondary.main",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton>
-                </Box>
-            ),
-        },
-    ];
+  const columns = [
+    { field: "publication_title", headerName: "Title", minWidth: 300, flex: 1 },
+    { field: "publication_type", headerName: "Type", maxWidth: 160 },
+    { field: "date", headerName: "Date Publish", maxWidth: 160 },
+    {
+      field: "action",
+      headerName: "Action",
+      maxWidth: 160,
+      renderCell: (params: any) => (
+        <Box>
+          <IconButton
+            aria-label="view"
+            onClick={() => handleViewPublicationClick(params.row)}
+          >
+            <Visibility
+              sx={{
+                color: "primary.dark",
+                fontSize: "22px",
+              }}
+            />
+          </IconButton>
+          <IconButton
+            aria-label="edit"
+            onClick={() => handleEditPublicationClick(params.row)}
+          >
+            <BorderColor
+              sx={{
+                color: "secondary.light",
+                fontSize: "22px",
+              }}
+            />
+          </IconButton>
+          <IconButton aria-label="archive">
+            <Archive
+              sx={{
+                color: "secondary.main",
+                fontSize: "22px",
+              }}
+            />
+          </IconButton>
+        </Box>
+      ),
+    },
+  ];
 
-    return (
-        <>
-            {allPublicationsSuccess ? (
-                <CustomDataGrid
-                    rows={rows}
-                    columns={columns}
-                    isLoading={allPublicationsLoading}
-                    totalCount={allPublications.length}
-                    tableLabel="LIST OF PUBLICATIONS"
-                    actionButton={
-                        <PrimaryButton
-                            size="small"
-                            startIcon={<AddCircle />}
-                            onClick={handleCreatePublicationClick}
-                        >
-                            CREATE PUBLICATION
-                        </PrimaryButton>
-                    }
-                />
-            ) : allPublicationsError ? (
-                <ErrorDisplay />
-            ) : null}
+  return (
+    <>
+      {allPublicationsSuccess ? (
+        <CustomDataGrid
+          rows={rows}
+          columns={columns}
+          isLoading={allPublicationsLoading}
+          totalCount={allPublications.length}
+          tableLabel="LIST OF PUBLICATIONS"
+          actionButton={
+            <PrimaryButton
+              size="small"
+              startIcon={<AddCircle />}
+              onClick={handleCreatePublicationClick}
+            >
+              CREATE PUBLICATION
+            </PrimaryButton>
+          }
+        />
+      ) : allPublicationsError ? (
+        <ErrorDisplay />
+      ) : null}
 
-            {isModalOpen && (
-                <CreateNewPublication
-                    mode={modalMode}
-                    initialData={currentPublication}
-                    onClose={handleCloseModal}
-                    addPublication={addPublication}
-                    editPublication={editPublication}
-                    totalCount={getNextId(allPublications)}
-                />
-            )}
+      {isModalOpen && (
+        <CreateNewPublication
+          mode={modalMode}
+          initialData={currentPublication}
+          onClose={handleCloseModal}
+          addPublication={addPublication}
+          editPublication={editPublication}
+        />
+      )}
 
-            <LoadingDisplay open={allPublicationsLoading} />
-        </>
-    );
+      <LoadingDisplay open={allPublicationsLoading} />
+    </>
+  );
 };
 
 export default PublicationTable;

@@ -8,46 +8,16 @@ import Login from "./features/Login/Login";
 import Dashboard from "./components/pages/Dashboard/index";
 import ProtectedRoute from "./ProtectedRoute";
 
-// Define user roles
-type UserRoleProps = "SuperAdmin" | "Admin" | "User";
-
-// Define the shape of the UserContext
-interface UserContextTypeProps {
-  userRole: "SuperAdmin" | "Admin" | "User";
-  setUserRole: React.Dispatch<React.SetStateAction<UserRoleProps>>;
-}
-
-// Create UserContext
-const UserContext = createContext<UserContextTypeProps | undefined>(undefined);
-
-// Hook to use the UserContext
-const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) throw new Error("useUser must be used within a UserProvider");
-  return context;
-};
-
 function App() {
-  const [userRole, setUserRole] = useState<UserRoleProps>("User"); // Default role
-
   return (
-    <UserContext.Provider value={{ userRole, setUserRole }}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/styles" element={<DesignSystem />} />
-          <Route path="/" element={<Login />} />
-          <Route path="/*" element={<Dashboard />} />
-        </Routes>
-
-        {/* <ProtectedRoute
-                    path="/dashboard/*"
-                    element={Dashboard}
-                    allowedRoles={["SuperAdmin", "Admin"]}
-                /> */}
-      </BrowserRouter>
-    </UserContext.Provider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/styles" element={<DesignSystem />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/*" element={<ProtectedRoute element={<Dashboard />} />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export { useUser }; // Export useUser hook
 export default App;
