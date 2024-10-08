@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Stack, TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
@@ -32,6 +32,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
   // logged in user details
   const userDetail = useSelector((state: RootState) => state.auth.user);
 
+  // form data to populate form with selected data
   const [formData, setFormData] = useState({
     id: initialData.id || "",
     title: initialData.title || "",
@@ -40,36 +41,16 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
     attachment: initialData.attachment || "",
   });
 
+  // handle changes the formdata state when there are input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    if (mode === "edit" && initialData) {
-      setFormData({
-        id: initialData.id || 0, // Ensure id is a number
-        title: initialData.title || "",
-        content: initialData.content || "",
-        type: initialData.type || "",
-        attachment: initialData.attachment || "",
-      });
-    }
-  }, [mode, initialData]);
-
+  // submit button
   const handleSubmitPublication = async () => {
     try {
-      const publicationData = {
-        id: formData.id,
-        type: formData.type,
-        title: formData.title,
-        content: formData.content,
-        attachment: formData.attachment,
-        account_id: userDetail.id, // from Redux (logged-in user)
-      };
+      const publicationData = { ...formData, account_id: userDetail.id };
 
       if (mode === "create") {
         await addPublication(publicationData);

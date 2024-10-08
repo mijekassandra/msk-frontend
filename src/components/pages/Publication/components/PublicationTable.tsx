@@ -65,7 +65,7 @@ const PublicationTable = () => {
 
   const rows = allPublications.map((publication) => ({
     ...publication,
-    publication_id: publication.id,
+    id: publication.id,
   }));
 
   const columns = [

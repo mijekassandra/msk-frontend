@@ -5,7 +5,7 @@ import {
   GridToolbarQuickFilter,
   GridRowId,
 } from "@mui/x-data-grid";
-import { Typography, Stack, Box, CircularProgress } from "@mui/material";
+import { Typography, Stack, Box } from "@mui/material";
 
 import { TocOutlined } from "@mui/icons-material";
 
@@ -33,7 +33,6 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
   tableLabel,
   actionButton,
   isLoading,
-  isFetching,
   getRowId,
 }) => {
   return (

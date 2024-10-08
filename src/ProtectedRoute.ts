@@ -21,7 +21,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
     return null;
   }
 
-  return element; // Render the element if token exists
+  return element;
 };
 
 export default ProtectedRoute;

@@ -7,10 +7,11 @@ import authReducer from "../slice/authSlice";
 import { announcementApi } from "./components/pages/Announcement/api/announcementApi";
 import { publicationApi } from "./components/pages/Publication/api/publicationApi";
 import { activityApi } from "./components/pages/Activities/api/activityApi";
-import { accountApi } from "./components/pages/Admin/api/accountApi";
+import { userApi } from "./components/pages/Admin/api/userApi";
 import { skFileApi } from "./components/pages/SK Files/api/skFileApi";
 import { youthProfilingApi } from "./components/pages/AdminFeatures/Profiling/api/profilingApi";
 import { apiSlice } from "../slice/apiSlice";
+import { accountApi } from "./components/pages/Settings/components/api/accountApi";
 
 export const store = configureStore({
   reducer: {
@@ -18,10 +19,11 @@ export const store = configureStore({
     [announcementApi.reducerPath]: announcementApi.reducer,
     [publicationApi.reducerPath]: publicationApi.reducer,
     [activityApi.reducerPath]: activityApi.reducer,
-    [accountApi.reducerPath]: accountApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
     [skFileApi.reducerPath]: skFileApi.reducer,
     [youthProfilingApi.reducerPath]: youthProfilingApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
+    [accountApi.reducerPath]: accountApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query
   middleware: (getDefaultMiddleware) =>
@@ -29,10 +31,11 @@ export const store = configureStore({
       announcementApi.middleware,
       publicationApi.middleware,
       activityApi.middleware,
-      accountApi.middleware,
+      userApi.middleware,
       skFileApi.middleware,
       youthProfilingApi.middleware,
-      apiSlice.middleware
+      apiSlice.middleware,
+      accountApi.middleware
     ),
 });
 
