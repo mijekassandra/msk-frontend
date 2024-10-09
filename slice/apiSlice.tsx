@@ -7,9 +7,9 @@ const { VITE_APP_ENDPOINT } = import.meta.env;
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: VITE_APP_ENDPOINT, // Update this to your backend's base URL
+    baseUrl: VITE_APP_ENDPOINT,
     prepareHeaders: (headers, { getState }) => {
-      const state = getState() as RootState; // Cast to your RootState type
+      const state = getState() as RootState;
       const token = state.auth.token; // Access the token
 
       if (token) {
@@ -18,18 +18,21 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
+  tagTypes: ["User"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
         url: "/login",
         method: "POST",
         body: credentials,
+        invalidatesTags: ["User"],
       }),
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
         url: "/logout",
         method: "POST",
+        invalidatesTags: ["User"],
       }),
     }),
   }),

@@ -69,9 +69,9 @@ const PublicationTable = () => {
   }));
 
   const columns = [
-    { field: "publication_title", headerName: "Title", minWidth: 300, flex: 1 },
-    { field: "publication_type", headerName: "Type", maxWidth: 160 },
-    { field: "date", headerName: "Date Publish", maxWidth: 160 },
+    { field: "title", headerName: "Title", minWidth: 300, flex: 1 },
+    { field: "type", headerName: "Type", maxWidth: 160 },
+    { field: "created_at", headerName: "Date Publish", maxWidth: 160 },
     {
       field: "action",
       headerName: "Action",

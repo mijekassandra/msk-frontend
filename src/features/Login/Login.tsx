@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../slice/authSlice";
+import { accountApi } from "../../components/pages/Settings/components/api/accountApi";
 
 import {
   Stack,
@@ -50,6 +51,10 @@ const Login = () => {
 
       // Dispatch the loginSuccess action with the appropriate payload
       dispatch(loginSuccess({ token: response.token, data: response.data }));
+
+      // Invalidate the "User" tag to refetch or clear cached user-related data
+      dispatch(accountApi.util.invalidateTags(["Account"]));
+
       navigate("/dashboard");
     } catch (error) {
       const typedError = error as {

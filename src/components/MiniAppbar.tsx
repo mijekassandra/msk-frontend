@@ -76,7 +76,7 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
       navigate("/");
       handleClose();
     } catch (error) {
-      console.error("Logout failed:", error); // Handle any error that occurs
+      console.error("Logout failed:", error);
     }
   };
 
