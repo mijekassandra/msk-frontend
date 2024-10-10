@@ -59,13 +59,16 @@ export const userApi = createApi({
       query: (id) => `/users/${id}`,
       providesTags: (result, error, id) => [{ type: "User", id }],
     }),
-    registerUser: builder.mutation<void, Partial<AccountProps>>({
+    registerUser: builder.mutation<
+      { data: AccountProps },
+      Partial<AccountProps>
+    >({
       query: (accountDetails) => ({
         url: "/register",
         method: "POST",
         body: accountDetails,
       }),
-      invalidatesTags: [{ type: "User", id: "UserLIST" }], // Invalidate the list to refetch
+      invalidatesTags: [{ type: "User", id: "UserLIST" }],
     }),
     editUser: builder.mutation<void, { id: number; account: object }>({
       query: ({ id, account }) => ({

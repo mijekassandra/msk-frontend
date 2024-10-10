@@ -120,7 +120,6 @@ const PublicationTable = () => {
           rows={rows}
           columns={columns}
           isLoading={allPublicationsLoading}
-          totalCount={allPublications.length}
           tableLabel="LIST OF PUBLICATIONS"
           actionButton={
             <PrimaryButton

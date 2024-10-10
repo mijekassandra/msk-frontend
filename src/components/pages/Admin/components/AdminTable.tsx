@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  FormControlLabel,
-  IconButton,
-  Stack,
-} from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import {
   Visibility,
   BorderColor,
@@ -42,7 +36,6 @@ const AdminTable = () => {
     isError: allUsersError,
     isSuccess: allUsersSuccess,
     isLoading: allUsersLoading,
-    isFetching: allUsersFetching,
   } = useGetUsersQuery();
 
   const [addAccount] = useRegisterUserMutation();
@@ -118,6 +111,12 @@ const AdminTable = () => {
     { field: "username", headerName: "Username", minWidth: 200, flex: 1 },
     { field: "email", headerName: "Email", minWidth: 200, flex: 1 },
     {
+      field: "account_status",
+      headerName: "Account Status",
+      minWidth: 200,
+      flex: 1,
+    },
+    {
       field: "action",
       headerName: "Action",
       maxWidth: 160,
@@ -166,10 +165,10 @@ const AdminTable = () => {
       {allUsersSuccess ? (
         <CustomDataGrid
           rows={rows}
-          getRowId={(row) => row.id}
+          // getRowId={(row) => row.id}
+          getRowId={(row, index) => row.id ?? `${row.username}-${index}`} // For the mean time, use id if available, otherwise generate one
           isLoading={allUsersLoading}
           columns={columns}
-          totalCount={allUsers.length}
           tableLabel="LIST OF SANGGUNIANG KABATAAN CHAIRPERSON"
           actionButton={
             <PrimaryButton

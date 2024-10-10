@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../slice/authSlice";
 import { accountApi } from "../../components/pages/Settings/components/api/accountApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 import {
   Stack,
@@ -32,6 +34,9 @@ const Login = () => {
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation(); // Use RTK Query mutation
 
+  // logged in user details
+  const userDetail = useSelector((state: RootState) => state.auth.user);
+
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -55,14 +60,31 @@ const Login = () => {
       // Invalidate the "User" tag to refetch or clear cached user-related data
       dispatch(accountApi.util.invalidateTags(["Account"]));
 
-      navigate("/dashboard");
+      // Delay navigation to ensure that userDetail is updated
+      setTimeout(() => {
+        const role = response.data?.role || userDetail.role; // Ensure role is available
+
+        if (
+          role === "Super Admin" ||
+          role === "Federation" ||
+          role === "Chairperson"
+        ) {
+          navigate("/dashboard");
+        } else {
+          navigate("/home");
+        }
+      }, 100); // Small delay to ensure state update
     } catch (error) {
       const typedError = error as {
         data: { status: string; message: string; error?: any };
       };
-      console.log("Login failed:", typedError.data.message);
-      setErrorDisplay(typedError.data.message);
 
+      const errorMessage =
+        typedError?.data?.message || "An unexpected error occurred";
+      console.log("Login failed:", errorMessage);
+      setErrorDisplay(errorMessage);
+
+      // Clear error message after 5 seconds
       setTimeout(() => {
         setErrorDisplay("");
       }, 5000);
@@ -169,7 +191,6 @@ const Login = () => {
                 />
               </Stack>
 
-              {/* General error inline */}
               {errorDisplay && (
                 <Typography
                   variant="caption"
@@ -186,7 +207,7 @@ const Login = () => {
                 <PrimaryButton
                   size="large"
                   onClick={handleLogin}
-                  disabled={isLoading} // Disable if loading
+                  disabled={isLoading}
                 >
                   {isLoading ? "Logging in..." : "LOGIN"}
                 </PrimaryButton>

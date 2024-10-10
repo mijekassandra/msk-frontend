@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Stack, TextField } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Stack, TextField, MenuItem } from "@mui/material";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 
 //import component
 import ModalVariantOne from "../../../modals/ModalVariantOne";
@@ -12,6 +14,7 @@ interface CreateNewAdminProps {
     username?: string;
     email?: string;
     role?: string;
+    barangay?: string;
   };
   onClose: () => void;
   addAccount: any;
@@ -25,26 +28,34 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
   addAccount,
   editAccount,
 }) => {
+  // logged in user details
+  const userDetail = useSelector((state: RootState) => state.auth.user);
+
+  console.log("userdetail:", userDetail.role);
+
   const [formData, setFormData] = useState({
-    id: initialData.id || "",
     username: initialData.username || "",
     email: initialData.email || "",
     role: initialData.role || "",
+    barangay: initialData.barangay || "",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "id" ? Number(value) : value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmitAccount = async () => {
     try {
       const accountData = {
         ...formData,
-        user_type: "Chairperson",
+        role:
+          userDetail?.role === "Chairperson"
+            ? "User"
+            : userDetail?.role === "Federation" ||
+              userDetail?.role === "Super Admin"
+            ? "Chairperson"
+            : "Default Role",
       };
 
       if (mode === "create") {
@@ -120,6 +131,29 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             onChange={handleInputChange}
             disabled={mode === "view"}
           />
+          <TextField
+            fullWidth
+            label="Barangay"
+            select
+            variant="outlined"
+            name="barangay"
+            placeholder="Select Barangay"
+            value={formData.barangay}
+            onChange={handleInputChange}
+            disabled={mode === "view"}
+          >
+            <MenuItem value="">Select Barangay</MenuItem>
+            <MenuItem value="Poblacion">Poblacion</MenuItem>
+            <MenuItem value="Kabulawan">Kabulawan</MenuItem>
+            <MenuItem value="Dampil">Dampil</MenuItem>
+            <MenuItem value="Manaol">Manaol</MenuItem>
+            <MenuItem value="Banglay">Banglay</MenuItem>
+            <MenuItem value="Tabok">Tabok</MenuItem>
+            <MenuItem value="Kauswagan">Kauswagan</MenuItem>
+            <MenuItem value="Gaston">Gaston</MenuItem>
+            <MenuItem value="Lumbo">Lumbo</MenuItem>
+            <MenuItem value="Umagos">Umagos</MenuItem>
+          </TextField>
         </Stack>
       }
     />

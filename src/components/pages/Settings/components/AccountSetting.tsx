@@ -120,7 +120,6 @@ const AccountSetting = () => {
             </Grid>
             <Grid item sm={12}>
               <TwoChoice
-                leftText="Cancel"
                 rightText="Update"
                 size="medium"
                 justifyContent="flex-start"
