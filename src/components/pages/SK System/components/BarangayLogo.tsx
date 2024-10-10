@@ -51,7 +51,7 @@ const BarangayLogo = () => {
               width="130"
             />
             <Typography variant="h5" textAlign="center" marginTop={2}>
-              {barangay.barangayName.toUpperCase()}
+              {"BRGY."} {barangay.barangayName.toUpperCase()}
             </Typography>
           </Grid>
         ))}

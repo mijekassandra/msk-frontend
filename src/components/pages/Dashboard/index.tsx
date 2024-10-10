@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Stack, Grid, Collapse } from "@mui/material";
+import { Stack, Grid } from "@mui/material";
 import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
@@ -76,6 +76,8 @@ const Dashboard = () => {
 
   // logged in user details
   const userDetail = useSelector((state: RootState) => state.auth.user);
+
+  // predefine selected tab
   const [selectedTab, setSelectedTab] = useState(
     currentTab ? currentTab : "/dashboard"
   );
@@ -155,7 +157,7 @@ const Dashboard = () => {
       );
     }
 
-    return false; // defauklt showing nothing if no valid role is found
+    return false; // default showing nothing if no valid role is found
   });
 
   return (
