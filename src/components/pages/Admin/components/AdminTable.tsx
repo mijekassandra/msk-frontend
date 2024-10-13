@@ -7,6 +7,8 @@ import {
   AddCircle,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 
 //import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -25,6 +27,9 @@ import {
 } from "../api/userApi";
 
 const AdminTable = () => {
+  // logged in user details
+  const userDetail = useSelector((state: RootState) => state.auth.user);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
     "create"
@@ -107,12 +112,40 @@ const AdminTable = () => {
     id: account.id,
   }));
 
+  const filteredRows = React.useMemo(() => {
+    // return data that are only Chairperson
+    if (userDetail.role === "Super Admin" || userDetail.role === "Federation") {
+      return rows.filter((row) => row.role === "Chairperson");
+    }
+
+    // return data that are Users on their barangays
+    else if (userDetail.role === "Chairperson") {
+      return rows.filter(
+        (row) => row.role === "User" && row.barangay === userDetail.barangay
+      );
+    }
+    // Default, return all rows if no condition is met
+    return rows;
+  }, [rows, userDetail.role, userDetail.barangay]);
+
   const columns = [
     { field: "username", headerName: "Username", minWidth: 200, flex: 1 },
     { field: "email", headerName: "Email", minWidth: 200, flex: 1 },
     {
       field: "account_status",
       headerName: "Account Status",
+      minWidth: 200,
+      flex: 1,
+    },
+    {
+      field: "role",
+      headerName: "Role",
+      minWidth: 200,
+      flex: 1,
+    },
+    {
+      field: "barangay",
+      headerName: "Barangay",
       minWidth: 200,
       flex: 1,
     },
@@ -164,9 +197,9 @@ const AdminTable = () => {
     <>
       {allUsersSuccess ? (
         <CustomDataGrid
-          rows={rows}
+          rows={filteredRows}
           // getRowId={(row) => row.id}
-          getRowId={(row, index) => row.id ?? `${row.username}-${index}`} // For the mean time, use id if available, otherwise generate one
+          getRowId={(row, index) => row.id ?? `${row.username}-${index}`}
           isLoading={allUsersLoading}
           columns={columns}
           tableLabel="LIST OF SANGGUNIANG KABATAAN CHAIRPERSON"

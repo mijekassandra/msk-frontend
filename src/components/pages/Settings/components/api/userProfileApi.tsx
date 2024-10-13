@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../../../../store";
+import { updateProfileSuccess } from "../../../../../../slice/authSlice";
 
 const { VITE_APP_ENDPOINT } = import.meta.env;
 
@@ -17,25 +18,35 @@ const baseQuery = fetchBaseQuery({
 });
 
 // Define the API slice
-export const accountApi = createApi({
-  reducerPath: "accountApi",
+export const userProfile = createApi({
+  reducerPath: "userProfile",
   baseQuery,
-  tagTypes: ["Account"],
+  tagTypes: ["UserProfile"],
   endpoints: (builder) => ({
     // Get profile endpoint
     getUserProfile: builder.query({
       query: () => "/profile",
-      providesTags: ["Account"],
+      providesTags: ["UserProfile"],
     }),
 
-    // Update profile endpoint
+    // Update profile endpoint with dispatch to update the userDetails
     updateProfile: builder.mutation({
       query: (formData) => ({
         url: "/profile",
         method: "PUT",
         body: formData,
       }),
-      invalidatesTags: ["Account"],
+      invalidatesTags: ["UserProfile"],
+      async onQueryStarted(formData, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+
+          // Dispatch the updateProfileSuccess action with the updated profile data
+          dispatch(updateProfileSuccess(data.data)); // Only dispatch the "data" field from response
+        } catch (error) {
+          console.error("Update profile failed:", error);
+        }
+      },
     }),
 
     // Change password endpoint
@@ -45,7 +56,7 @@ export const accountApi = createApi({
         method: "PUT",
         body: { oldPassword, newPassword, confirmPassword },
       }),
-      invalidatesTags: ["Account"],
+      invalidatesTags: ["UserProfile"],
     }),
   }),
 });
@@ -55,4 +66,4 @@ export const {
   useGetUserProfileQuery,
   useUpdateProfileMutation,
   useChangePasswordMutation,
-} = accountApi;
+} = userProfile;

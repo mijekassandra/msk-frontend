@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../slice/authSlice";
-import { accountApi } from "../../components/pages/Settings/components/api/accountApi";
+import { userProfile } from "../../components/pages/Settings/components/api/userProfileApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
@@ -58,7 +58,7 @@ const Login = () => {
       dispatch(loginSuccess({ token: response.token, data: response.data }));
 
       // Invalidate the "User" tag to refetch or clear cached user-related data
-      dispatch(accountApi.util.invalidateTags(["Account"]));
+      dispatch(userProfile.util.invalidateTags(["UserProfile"]));
 
       // Delay navigation to ensure that userDetail is updated
       setTimeout(() => {
@@ -90,6 +90,10 @@ const Login = () => {
       }, 5000);
     }
   };
+
+  useEffect(() => {
+    console.log("Updated user detail: ", userDetail);
+  }, [userDetail]);
 
   return (
     <BodyContainer

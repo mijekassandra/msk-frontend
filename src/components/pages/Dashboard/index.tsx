@@ -54,6 +54,7 @@ const dashboardTabs = [
   { tab: "/admin", label: "ADMIN", icon: <AdminPanelSettingsOutlined /> },
 
   // TODO admin only
+  { tab: "/users", label: "USERS", icon: <AdminPanelSettingsOutlined /> },
   { tab: "/profiling", label: "PROFILING", icon: <ContactPageOutlined /> },
 
   // TODO users only
@@ -142,6 +143,7 @@ const Dashboard = () => {
         tab.tab === "/publication" ||
         tab.tab === "/activities" ||
         tab.tab === "/profiling" ||
+        tab.tab === "/users" ||
         tab.tab === "/about-us"
       );
     }
@@ -224,6 +226,7 @@ const Dashboard = () => {
                     )}
                     {userDetail.role === "Chairperson" && (
                       <>
+                        <Route path="/users" element={<Admin />} />
                         <Route path="/profiling" element={<Profiling />} />
                       </>
                     )}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Stack, TextField } from "@mui/material";
+import { Stack, TextField, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -40,15 +40,42 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
     type: initialData.type || "",
     attachment: initialData.attachment || "",
   });
+  const [errorDisplay, setErrorDisplay] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({
+    title: false,
+    content: false,
+  });
 
-  // handle changes the formdata state when there are input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear field errors on input change
+    setFieldErrors((prev) => ({ ...prev, [name]: false }));
+  };
+
+  const validateForm = () => {
+    const errors = {
+      title: !formData.title,
+      content: !formData.content,
+    };
+
+    setFieldErrors(errors);
+
+    // Check if any errors exist
+    return !Object.values(errors).some((error) => error === true);
   };
 
   // submit button
   const handleSubmitPublication = async () => {
+    // Validate form before submitting
+    const isValid = validateForm();
+
+    if (!isValid) {
+      setErrorDisplay("Please fill in all required fields");
+      return;
+    }
+
     try {
       const publicationData = { ...formData, account_id: userDetail.id };
 
@@ -88,7 +115,17 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
       }
       onClose(); // Close modal after successful save
     } catch (error) {
-      console.error("Error saving publication:", error);
+      const typedError = error as {
+        data: { status: string; message: string; error?: any };
+      };
+      const errorMessage =
+        typedError?.data?.message || "An unexpected error occurred";
+      console.log("Publication Failed:", errorMessage);
+      setErrorDisplay(errorMessage);
+
+      setTimeout(() => {
+        setErrorDisplay("");
+      }, 5000);
     }
   };
 
@@ -112,6 +149,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
             label="Title"
             variant="outlined"
             value={formData.title}
+            error={fieldErrors.title}
             onChange={handleInputChange}
             disabled={mode === "view"}
           />
@@ -124,9 +162,15 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
             minRows={5}
             maxRows={10}
             value={formData.content}
+            error={fieldErrors.content}
             onChange={handleInputChange}
             disabled={mode === "view"}
           />
+          {errorDisplay && (
+            <Typography variant="caption" textAlign="right" color="error.main">
+              {errorDisplay}
+            </Typography>
+          )}
           <CustomUpload2 label="Attach Files" />
         </Stack>
       }

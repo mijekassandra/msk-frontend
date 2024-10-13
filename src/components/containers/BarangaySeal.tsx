@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Avatar } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
@@ -13,7 +13,6 @@ interface BarangaySealProps {
 }
 
 const BarangaySeal: React.FC<BarangaySealProps> = ({
-  barangay = "Sangguniang Kabataan Federation",
   barangayLogo = DefaultLogo,
 }) => {
   // logged in user details
@@ -24,7 +23,7 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
   let finalLogo = barangayLogo;
 
   // If the user is a Chairperson, append their barangay
-  if (userDetail.role === "Chairperson") {
+  if (userDetail?.role === "Chairperson") {
     const userBarangay = userDetail.barangay;
     const matchingBarangay = barangays.Barangays.find(
       (b) => b.barangayName === userBarangay
@@ -35,12 +34,15 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
       finalLogo = matchingBarangay.logo; // Update logo based on matched barangay
     }
   } else if (
-    userDetail.role === "Super Admin" ||
-    userDetail.role === "Federation"
+    userDetail?.role === "Super Admin" ||
+    userDetail?.role === "Federation"
   ) {
     // If Federation or Super Admin, show "Sangguniang Kabataan Federation"
     finalBarangay = "Sangguniang Kabataan Federation";
     finalLogo = DefaultLogo;
+  } else {
+    finalBarangay = `${userDetail?.last_name}, ${userDetail?.first_name}`;
+    finalLogo = "";
   }
 
   return (
@@ -52,8 +54,19 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
         justifyContent: "center",
         padding: "15px 10px",
       }}
+      gap={1}
     >
-      <img width="140px" src={finalLogo} alt="Barangay Logo" />
+      {userDetail?.role !== "User" && (
+        <img width="140px" src={finalLogo} alt="Logo" />
+      )}
+
+      {userDetail?.role === "User" && (
+        <Avatar
+          sx={{ width: "120px", height: "120px" }}
+          src={userDetail?.profile_img || undefined}
+          alt={`${userDetail?.first_name} ${userDetail?.last_name}`}
+        />
+      )}
       <Typography variant="h3" color="white" textAlign="center">
         {finalBarangay}
       </Typography>

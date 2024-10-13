@@ -6,6 +6,8 @@ import {
   Archive,
   AddCircle,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -67,6 +69,13 @@ const PublicationTable = () => {
     ...publication,
     id: publication.id,
   }));
+
+  // const filteredRows = React.useMemo(() => {
+
+  //   // return data that are from chairperson and their respective barangay
+
+  //   if(userDetail.role === "Chairperson" || userDetail.barangay ===)
+  // })
 
   const columns = [
     { field: "title", headerName: "Title", minWidth: 300, flex: 1 },

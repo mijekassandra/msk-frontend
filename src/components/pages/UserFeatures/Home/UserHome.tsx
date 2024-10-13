@@ -61,7 +61,7 @@ const UserHome = () => {
               key={publication.id}
               bgColor="#e6e8fe"
               cardImage={SampleImage}
-              cardTitle={publication.publication_title}
+              cardTitle={publication.title}
               onClick={() => handleReadMore(publication)}
             />
           ))}

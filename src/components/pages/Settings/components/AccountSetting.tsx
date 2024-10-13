@@ -7,7 +7,7 @@ import DashboardCard from "../../../cards/DashboardCard";
 import TwoChoice from "../../../buttons/TwoChoice";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
 
-import { useChangePasswordMutation } from "./api/accountApi";
+import { useChangePasswordMutation } from "./api/userProfileApi";
 
 const AccountSetting = () => {
   // State for passwords
@@ -46,6 +46,7 @@ const AccountSetting = () => {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      setErrorDisplay("");
       setFieldError(false);
     } catch (error) {
       const typedError = error as {

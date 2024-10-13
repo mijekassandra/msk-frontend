@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Stack, TextField, MenuItem } from "@mui/material";
+import { Stack, TextField, MenuItem, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -31,21 +31,50 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
   // logged in user details
   const userDetail = useSelector((state: RootState) => state.auth.user);
 
-  console.log("userdetail:", userDetail.role);
-
+  // states
   const [formData, setFormData] = useState({
     username: initialData.username || "",
     email: initialData.email || "",
     role: initialData.role || "",
     barangay: initialData.barangay || "",
   });
+  const [errorDisplay, setErrorDisplay] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({
+    username: false,
+    email: false,
+    barangay: false,
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear field errors on input change
+    setFieldErrors((prev) => ({ ...prev, [name]: false }));
+  };
+
+  const validateForm = () => {
+    const errors = {
+      username: !formData.username,
+      email: !formData.email,
+      barangay: !formData.barangay,
+    };
+
+    setFieldErrors(errors);
+
+    // Check if any errors exist
+    return !Object.values(errors).some((error) => error === true);
   };
 
   const handleSubmitAccount = async () => {
+    // Validate form before submitting
+    const isValid = validateForm();
+
+    if (!isValid) {
+      setErrorDisplay("Please fill in all required fields");
+      return;
+    }
+
     try {
       const accountData = {
         ...formData,
@@ -60,7 +89,6 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
 
       if (mode === "create") {
         await addAccount(accountData);
-
         Swal.fire({
           title: "Success!",
           text: "The account has been successfully created.",
@@ -78,7 +106,6 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
           id: String(accountData.id),
           account: accountData,
         });
-
         Swal.fire({
           title: "Success!",
           text: "The account has been successfully updated.",
@@ -92,9 +119,19 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
           },
         });
       }
-      onClose(); // Close modal after successful save
+      onClose();
     } catch (error) {
-      console.error("Error saving publication:", error);
+      const typedError = error as {
+        data: { status: string; message: string; error?: any };
+      };
+      const errorMessage =
+        typedError?.data?.message || "An unexpected error occurred";
+      console.log("Failed:", errorMessage);
+      setErrorDisplay(errorMessage);
+
+      setTimeout(() => {
+        setErrorDisplay("");
+      }, 5000);
     }
   };
 
@@ -120,6 +157,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             variant="outlined"
             value={formData.username}
             onChange={handleInputChange}
+            error={fieldErrors.username}
             disabled={mode === "view"}
           />
           <TextField
@@ -128,6 +166,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             label="Email"
             variant="outlined"
             value={formData.email}
+            error={fieldErrors.email}
             onChange={handleInputChange}
             disabled={mode === "view"}
           />
@@ -139,6 +178,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             name="barangay"
             placeholder="Select Barangay"
             value={formData.barangay}
+            error={fieldErrors.barangay}
             onChange={handleInputChange}
             disabled={mode === "view"}
           >
@@ -154,6 +194,11 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             <MenuItem value="Lumbo">Lumbo</MenuItem>
             <MenuItem value="Umagos">Umagos</MenuItem>
           </TextField>
+          {errorDisplay && (
+            <Typography variant="caption" textAlign="right" color="error.main">
+              {errorDisplay}
+            </Typography>
+          )}
         </Stack>
       }
     />

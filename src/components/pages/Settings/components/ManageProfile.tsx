@@ -13,7 +13,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "@reduxjs/toolkit/query";
 
 // import components
 import DashboardCard from "../../../cards/DashboardCard";
@@ -24,24 +25,20 @@ import LoadingDisplay from "../../../displays/LoadingDisplay";
 import {
   useGetUserProfileQuery,
   useUpdateProfileMutation,
-} from "./api/accountApi";
-import { updateProfileSuccess } from "../../../../../slice/authSlice";
+} from "./api/userProfileApi";
 
 const ManageProfile = () => {
-  const dispatch = useDispatch();
-
   // get and update profile
-  const {
-    data: userProfile,
-    isLoading: userProfileLoading,
-    error,
-    refetch,
-  } = useGetUserProfileQuery();
+  const { data: userProfile, isLoading: userProfileLoading } =
+    useGetUserProfileQuery();
   const [updateProfile, { isLoading: updateProfileLoading }] =
     useUpdateProfileMutation();
 
   // Combine the loading states
   const isLoading = userProfileLoading || updateProfileLoading;
+
+  // logged in user details
+  const userDetail = useSelector((state: RootState) => state.auth);
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -89,8 +86,6 @@ const ManageProfile = () => {
     try {
       const response = await updateProfile(formDataToSend).unwrap();
 
-      // dispatch(updateUserSuccess(response));
-
       Swal.fire({
         title: "Success!",
         text: "The profile has been updated successfully.",
@@ -134,7 +129,12 @@ const ManageProfile = () => {
         interest: userProfile.data.interest || "",
       });
     }
-  }, [userProfile]); // Run this effect when userProfile is updated
+  }, [userProfile]); // refetch when updated the profile
+
+  useEffect(() => {
+    console.log("Updated user detail: ", userDetail);
+  }, [userDetail]);
+
   return (
     <Stack rowGap={3}>
       <Typography variant="h2">Manage Profile</Typography>

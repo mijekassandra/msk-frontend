@@ -18,7 +18,12 @@ const authSlice = createSlice({
       state.user = null;
     },
     updateProfileSuccess: (state, action) => {
-      state.user = action.payload.user;
+      if (state.user) {
+        state.user = {
+          ...state.user, // Keep existing properties like "role"
+          ...action.payload, // Override with updated profile properties
+        };
+      }
     },
   },
 });
