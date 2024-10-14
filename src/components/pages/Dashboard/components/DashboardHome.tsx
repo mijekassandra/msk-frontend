@@ -9,53 +9,48 @@ import DashboardCard from "../../../cards/DashboardCard";
 import MenuCard from "../../../cards/MenuCard";
 
 const DashboardHome = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  // logged in user details
-  const userDetail = useSelector((state: RootState) => state.auth.user);
+    // logged in user details
+    const userDetail = useSelector((state: RootState) => state.auth.user);
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
+    const handleNavigation = (path: string) => {
+        navigate(path);
+    };
 
-  return (
-    <Stack rowGap={3}>
-      <Typography variant="h2">DASHBOARD</Typography>
-      <DashboardCard
-        padding="30px 20px"
-        content={
-          <Typography variant="h3" textAlign="center">
-            <Grid
-              container
-              spacing={1.5}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Grid item>
-                <MenuCard
-                  cardImage="src/assets/blogging.png"
-                  imgWidth="130px"
-                  content={
-                    <Typography variant="subtitle1" textAlign="center">
-                      PUBLICATION
-                    </Typography>
-                  }
-                  onClick={() => handleNavigation("/publication")}
-                />
-              </Grid>
-              <Grid item>
-                <MenuCard
-                  cardImage="src/assets/announcements.png"
-                  imgWidth="110px"
-                  content={
-                    <Typography variant="subtitle1" textAlign="center">
-                      ANNOUNCEMENT
-                    </Typography>
-                  }
-                  onClick={() => handleNavigation("/announcement")}
-                />
-              </Grid>
-              <Grid item>
+    return (
+        <Stack rowGap={3}>
+            <Typography variant="h2">DASHBOARD</Typography>
+            <DashboardCard
+                padding="30px 20px"
+                content={
+                    <Typography variant="h3" textAlign="center">
+                        <Grid container spacing={3} justifyContent="center" alignItems="center">
+                            <Grid item>
+                                <MenuCard
+                                    cardImage="src/assets/blogging.png"
+                                    imgWidth="130px"
+                                    content={
+                                        <Typography variant="subtitle1" textAlign="center">
+                                            PUBLICATION
+                                        </Typography>
+                                    }
+                                    onClick={() => handleNavigation("/publication")}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <MenuCard
+                                    cardImage="src/assets/announcements.png"
+                                    imgWidth="110px"
+                                    content={
+                                        <Typography variant="subtitle1" textAlign="center">
+                                            ANNOUNCEMENT
+                                        </Typography>
+                                    }
+                                    onClick={() => handleNavigation("/announcement")}
+                                />
+                            </Grid>
+                            {/* <Grid item>
                 <MenuCard
                   cardImage="src/assets/folder_files.png"
                   imgWidth="120px"
@@ -66,21 +61,21 @@ const DashboardHome = () => {
                   }
                   onClick={() => handleNavigation("/sk-files")}
                 />
-              </Grid>
-              <Grid item>
-                <MenuCard
-                  cardImage="src/assets/activities.png"
-                  imgWidth="120px"
-                  content={
-                    <Typography variant="subtitle1" textAlign="center">
-                      ACTIVITIES
-                    </Typography>
-                  }
-                  onClick={() => handleNavigation("/activities")}
-                />
-              </Grid>
+              </Grid> */}
+                            <Grid item>
+                                <MenuCard
+                                    cardImage="src/assets/activities.png"
+                                    imgWidth="120px"
+                                    content={
+                                        <Typography variant="subtitle1" textAlign="center">
+                                            ACTIVITIES
+                                        </Typography>
+                                    }
+                                    onClick={() => handleNavigation("/activities")}
+                                />
+                            </Grid>
 
-              {userDetail.role === "Super Admin" ||
+                            {/* {userDetail.role === "Super Admin" ||
               userDetail.role === "Federation" ? (
                 <Grid item>
                   <MenuCard
@@ -99,9 +94,9 @@ const DashboardHome = () => {
                     onClick={() => handleNavigation("/sk-system")}
                   />
                 </Grid>
-              ) : null}
+              ) : null} */}
 
-              {userDetail.role === "Chairperson" ? (
+                            {/* {userDetail.role === "Chairperson" ? (
                 <Grid item>
                   <MenuCard
                     cardImage="src/assets/kk-profiling.png"
@@ -119,13 +114,13 @@ const DashboardHome = () => {
                     onClick={() => handleNavigation("/profiling")}
                   />
                 </Grid>
-              ) : null}
-            </Grid>
-          </Typography>
-        }
-      />
-    </Stack>
-  );
+              ) : null} */}
+                        </Grid>
+                    </Typography>
+                }
+            />
+        </Stack>
+    );
 };
 
 export default DashboardHome;
