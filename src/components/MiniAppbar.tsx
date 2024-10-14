@@ -34,6 +34,7 @@ import LoadingDisplay from "./displays/LoadingDisplay";
 // import apiSlices
 import { logoutSuccess } from "../../slice/authSlice";
 import { useLogoutMutation } from "../../slice/apiSlice";
+import { userApi } from "./pages/Admin/api/userApi";
 
 interface MiniAppbarProps {
   toggleSidebar: () => void;
@@ -73,6 +74,9 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     try {
       await logout().unwrap(); // Perform the logout request
       dispatch(logoutSuccess()); // Clear the token from Redux state
+      dispatch(userApi.util.resetApiState()); // Clear all RTK Query caches to remove stale data
+
+      // redirect back 2 logout
       navigate("/");
       handleClose();
     } catch (error) {

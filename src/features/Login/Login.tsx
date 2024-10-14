@@ -62,7 +62,7 @@ const Login = () => {
 
       // Delay navigation to ensure that userDetail is updated
       setTimeout(() => {
-        const role = response.data?.role || userDetail.role; // Ensure role is available
+        const role = response.data?.role || userDetail?.role; // Ensure role is available
 
         if (
           role === "Super Admin" ||

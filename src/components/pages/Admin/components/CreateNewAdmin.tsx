@@ -42,7 +42,6 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
   const [fieldErrors, setFieldErrors] = useState({
     username: false,
     email: false,
-    barangay: false,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
@@ -57,7 +56,6 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
     const errors = {
       username: !formData.username,
       email: !formData.email,
-      barangay: !formData.barangay,
     };
 
     setFieldErrors(errors);
@@ -78,6 +76,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
     try {
       const accountData = {
         ...formData,
+        barangay: formData.barangay || userDetail?.barangay, // Default to userDetail's barangay if formData.barangay is empty
         role:
           userDetail?.role === "Chairperson"
             ? "User"
@@ -89,6 +88,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
 
       if (mode === "create") {
         await addAccount(accountData);
+
         Swal.fire({
           title: "Success!",
           text: "The account has been successfully created.",
@@ -170,30 +170,35 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             onChange={handleInputChange}
             disabled={mode === "view"}
           />
-          <TextField
-            fullWidth
-            label="Barangay"
-            select
-            variant="outlined"
-            name="barangay"
-            placeholder="Select Barangay"
-            value={formData.barangay}
-            error={fieldErrors.barangay}
-            onChange={handleInputChange}
-            disabled={mode === "view"}
-          >
-            <MenuItem value="">Select Barangay</MenuItem>
-            <MenuItem value="Poblacion">Poblacion</MenuItem>
-            <MenuItem value="Kabulawan">Kabulawan</MenuItem>
-            <MenuItem value="Dampil">Dampil</MenuItem>
-            <MenuItem value="Manaol">Manaol</MenuItem>
-            <MenuItem value="Banglay">Banglay</MenuItem>
-            <MenuItem value="Tabok">Tabok</MenuItem>
-            <MenuItem value="Kauswagan">Kauswagan</MenuItem>
-            <MenuItem value="Gaston">Gaston</MenuItem>
-            <MenuItem value="Lumbo">Lumbo</MenuItem>
-            <MenuItem value="Umagos">Umagos</MenuItem>
-          </TextField>
+
+          {(userDetail?.role === "Super Admin" ||
+            userDetail?.role === "Super Admin") && (
+            <TextField
+              fullWidth
+              label="Barangay"
+              select
+              variant="outlined"
+              name="barangay"
+              placeholder="Select Barangay"
+              value={formData.barangay}
+              error={fieldErrors?.barangay}
+              onChange={handleInputChange}
+              disabled={mode === "view"}
+            >
+              <MenuItem value="">Select Barangay</MenuItem>
+              <MenuItem value="Poblacion">Poblacion</MenuItem>
+              <MenuItem value="Kabulawan">Kabulawan</MenuItem>
+              <MenuItem value="Dampil">Dampil</MenuItem>
+              <MenuItem value="Manaol">Manaol</MenuItem>
+              <MenuItem value="Banglay">Banglay</MenuItem>
+              <MenuItem value="Tabok">Tabok</MenuItem>
+              <MenuItem value="Kauswagan">Kauswagan</MenuItem>
+              <MenuItem value="Gaston">Gaston</MenuItem>
+              <MenuItem value="Lumbo">Lumbo</MenuItem>
+              <MenuItem value="Umagos">Umagos</MenuItem>
+            </TextField>
+          )}
+
           {errorDisplay && (
             <Typography variant="caption" textAlign="right" color="error.main">
               {errorDisplay}

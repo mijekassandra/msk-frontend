@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../../../../store";
-import { useSelector } from "react-redux";
 
 interface UserProps {
   id: number;
@@ -38,12 +37,13 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-//define api service for accounts
+// Define API service for accounts
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery,
   tagTypes: ["User"],
   endpoints: (builder) => ({
+    // Fetch all users
     getUsers: builder.query<AccountProps[], void>({
       query: () => "/users",
       transformResponse: (response: { data: AccountProps[] }) => response.data,
@@ -51,14 +51,18 @@ export const userApi = createApi({
         result
           ? [
               ...result.map(({ id }) => ({ type: "User", id } as const)),
-              { type: "User", id: "UserLIST" },
+              { type: "User", id: "LIST" },
             ]
-          : [{ type: "User", id: "UserLIST" }],
+          : [{ type: "User", id: "LIST" }],
     }),
+
+    // Fetch a user by ID
     getUserByID: builder.query<UserProps, number>({
       query: (id) => `/users/${id}`,
       providesTags: (result, error, id) => [{ type: "User", id }],
     }),
+
+    // Register a new user
     registerUser: builder.mutation<
       { data: AccountProps },
       Partial<AccountProps>
@@ -68,24 +72,34 @@ export const userApi = createApi({
         method: "POST",
         body: accountDetails,
       }),
-      invalidatesTags: [{ type: "User", id: "UserLIST" }],
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
-    editUser: builder.mutation<void, { id: number; account: object }>({
+
+    // Edit an existing user
+    editUser: builder.mutation<
+      void,
+      { id: number; account: Partial<AccountProps> }
+    >({
       query: ({ id, account }) => ({
-        url: `/user/${id}`,
+        url: `/users/${id}`,
         method: "PATCH",
         body: account,
       }),
-      invalidatesTags: [{ type: "User", id: "UserLIST" }], // Invalidate the list to refetch
+      invalidatesTags: (result, error, { id }) => [
+        { type: "User", id },
+        { type: "User", id: "LIST" },
+      ],
     }),
-    deleteUser: builder.mutation<void, number>({
+
+    // Changes a user's status, deac or activate
+    changeAccountStatus: builder.mutation<void, number>({
       query: (id) => ({
-        url: `/user/${id}`, // Use id in the URL
-        method: "DELETE",
+        url: `/user/${id}/change-status`,
+        method: "PUT",
       }),
       invalidatesTags: (result, error, id) => [
         { type: "User", id },
-        { type: "User", id: "UserLIST" },
+        { type: "User", id: "LIST" },
       ],
     }),
   }),
@@ -96,5 +110,5 @@ export const {
   useGetUserByIDQuery,
   useRegisterUserMutation,
   useEditUserMutation,
-  useDeleteUserMutation,
+  useChangeAccountStatusMutation,
 } = userApi;

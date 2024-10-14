@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { Box, IconButton } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, IconButton, Alert } from "@mui/material";
 import {
   Visibility,
   BorderColor,
-  Delete,
+  ToggleOff,
+  ToggleOn,
   AddCircle,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
@@ -24,12 +25,17 @@ import {
   useRegisterUserMutation,
   useEditUserMutation,
   useDeleteUserMutation,
+  useChangeAccountStatusMutation,
 } from "../api/userApi";
 
 const AdminTable = () => {
   // logged in user details
   const userDetail = useSelector((state: RootState) => state.auth.user);
 
+  const [alert, setAlert] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
     "create"
@@ -41,11 +47,12 @@ const AdminTable = () => {
     isError: allUsersError,
     isSuccess: allUsersSuccess,
     isLoading: allUsersLoading,
+    refetch,
   } = useGetUsersQuery();
 
   const [addAccount] = useRegisterUserMutation();
   const [editAccount] = useEditUserMutation();
-  const [deleteAccount] = useDeleteUserMutation();
+  const [changeAccountStatus] = useChangeAccountStatusMutation();
 
   const handleAddAccountClick = () => {
     setModalMode("create");
@@ -65,46 +72,36 @@ const AdminTable = () => {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false); // Close the modal
+  const handleToggleAccountStatus = async (account: any) => {
+    try {
+      await changeAccountStatus(account.id).unwrap(); // Trigger the mutation
+
+      // Show success alert
+      setAlert({
+        type: "success",
+        message: `User ${account.username} status has been updated successfully.`,
+      });
+
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlert(null);
+      }, 5000);
+    } catch (error) {
+      // Show error alert
+      setAlert({
+        type: "error",
+        message: `Failed to update the status for user ${account.username}.`,
+      });
+
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlert(null);
+      }, 5000);
+    }
   };
 
-  const handleDeleteAccount = async (account: any) => {
-    // confirmation dialog
-    const result = await Swal.fire({
-      title: "Delete Account?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Delete!",
-      customClass: {
-        title: "my-swal-title",
-        htmlContainer: "my-swal-text",
-        popup: "my-swal-popup",
-      },
-    });
-
-    // if final confirmation
-    if (result.isConfirmed) {
-      try {
-        await deleteAccount(account.id);
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your account has been deleted.",
-          icon: "success",
-          customClass: {
-            title: "my-swal-title",
-            htmlContainer: "my-swal-text",
-            popup: "my-swal-popup",
-            confirmButton: "my-swal-button",
-          },
-          confirmButtonText: "OK",
-        });
-      } catch (error) {
-        console.log("Error: ", error);
-      }
-    }
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Close the modal
   };
 
   const rows = allUsers.map((account) => ({
@@ -114,19 +111,28 @@ const AdminTable = () => {
 
   const filteredRows = React.useMemo(() => {
     // return data that are only Chairperson
-    if (userDetail.role === "Super Admin" || userDetail.role === "Federation") {
+    if (
+      userDetail?.role === "Super Admin" ||
+      userDetail?.role === "Federation"
+    ) {
       return rows.filter((row) => row.role === "Chairperson");
     }
 
     // return data that are Users on their barangays
-    else if (userDetail.role === "Chairperson") {
+    else if (userDetail?.role === "Chairperson") {
       return rows.filter(
-        (row) => row.role === "User" && row.barangay === userDetail.barangay
+        (row) => row.role === "User" && row.barangay === userDetail?.barangay
       );
     }
     // Default, return all rows if no condition is met
     return rows;
-  }, [rows, userDetail.role, userDetail.barangay]);
+  }, [rows, userDetail?.role, userDetail?.barangay]);
+
+  useEffect(() => {
+    // When the user role changes, we want to refetch the users list to make sure it's accurate
+    refetch();
+    console.log(`${userDetail?.role}:'s list are: `, filteredRows);
+  }, [userDetail?.role, refetch]);
 
   const columns = [
     { field: "username", headerName: "Username", minWidth: 200, flex: 1 },
@@ -178,15 +184,24 @@ const AdminTable = () => {
             />
           </IconButton>
           <IconButton
-            aria-label="folder"
-            onClick={() => handleDeleteAccount(params.row)}
+            aria-label="toggle-status"
+            onClick={() => handleToggleAccountStatus(params.row)}
           >
-            <Delete
-              sx={{
-                color: "error.main",
-                fontSize: "22px",
-              }}
-            />
+            {params.row.account_status === "active" ? (
+              <ToggleOn
+                sx={{
+                  color: "success.main",
+                  fontSize: "35px",
+                }}
+              />
+            ) : (
+              <ToggleOff
+                sx={{
+                  color: "grey.500",
+                  fontSize: "35px",
+                }}
+              />
+            )}
           </IconButton>
         </Box>
       ),
@@ -225,6 +240,21 @@ const AdminTable = () => {
           addAccount={addAccount}
           editAccount={editAccount}
         />
+      )}
+
+      {alert && (
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
+          }}
+        >
+          <Alert variant="filled" severity={alert.type}>
+            {alert.message}
+          </Alert>
+        </Box>
       )}
 
       <LoadingDisplay open={allUsersLoading} />

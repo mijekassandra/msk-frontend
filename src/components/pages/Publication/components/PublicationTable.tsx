@@ -74,7 +74,7 @@ const PublicationTable = () => {
 
   //   // return data that are from chairperson and their respective barangay
 
-  //   if(userDetail.role === "Chairperson" || userDetail.barangay ===)
+  //   if(userDetail?.role === "Chairperson" || userDetail.barangay ===)
   // })
 
   const columns = [
