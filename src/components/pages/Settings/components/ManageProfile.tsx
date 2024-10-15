@@ -260,6 +260,7 @@ const ManageProfile = () => {
                                         placeholder="Select Gender"
                                         value={formData.gender}
                                         onChange={handleInputChange}
+                                        label="Gender"
                                     >
                                         <MenuItem value="" disabled>
                                             Select Gender
@@ -280,6 +281,7 @@ const ManageProfile = () => {
                                         name="civil_status"
                                         value={formData.civil_status}
                                         onChange={handleInputChange}
+                                        label="Civil Status"
                                     >
                                         <MenuItem value="" disabled>
                                             Select Civil Status
@@ -361,6 +363,7 @@ const ManageProfile = () => {
                                         name="voter_status"
                                         value={formData.voter_status}
                                         onChange={handleInputChange}
+                                        label="Status"
                                     >
                                         <MenuItem value="" disabled>
                                             Select Status
@@ -380,6 +383,7 @@ const ManageProfile = () => {
                                         name="educational_attainment"
                                         value={formData.educational_attainment}
                                         onChange={handleInputChange}
+                                        label="Civil Status"
                                     >
                                         <MenuItem value="" disabled>
                                             Select Educational Attainment

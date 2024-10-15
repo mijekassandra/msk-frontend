@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Box, Typography, FormControlLabel, IconButton } from "@mui/material";
 import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -11,15 +13,12 @@ import ErrorDisplay from "../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
 
 // import apiSlices
-import {
-    useGetYouthProfilingsQuery,
-    useGetYouthProfilingByIDQuery,
-    useAddYouthProfilingMutation,
-    useEditYouthProfilingMutation,
-    useDeleteYouthProfilingMutation,
-} from "./api/profilingApi";
+import { useGetUsersQuery, useEditUserMutation } from "../../Admin/api/userApi";
 
 const ProfilingTable = () => {
+    // logged in user details
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit
     const [currentProfiling, setCurrentProfiling] = useState({});
@@ -29,13 +28,9 @@ const ProfilingTable = () => {
         isError: allYouthProfilingError,
         isSuccess: allYouthProfilingSuccess,
         isLoading: allYouthProfilingLoading,
-        isFetching: allYouthProfilingFetching,
-    } = useGetYouthProfilingsQuery();
+    } = useGetUsersQuery();
 
-    // mutations
-    const [addYouthProfiling] = useAddYouthProfilingMutation();
-    const [editYouthProfiling] = useEditYouthProfilingMutation();
-    const [deleteYouthProfiling] = useDeleteYouthProfilingMutation();
+    const [editUser] = useEditUserMutation();
 
     const handleAddProfilingClick = () => {
         setModalMode("create");
@@ -59,23 +54,31 @@ const ProfilingTable = () => {
         setIsModalOpen(false);
     };
 
-    const getNextId = (profile: any) => {
-        const lastId = profile.length > 0 ? Number(profile[profile.length - 1].id) : 0;
-        return lastId + 1;
+    const calculateAge = (dateOfBirth: string) => {
+        const birthDate = new Date(dateOfBirth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            return age - 1;
+        }
+        return age;
     };
 
-    const rows = allYouthProfiling.map((profile) => ({
-        ...profile,
-        youth_profile_id: profile.id,
-    }));
+    const filteredRows = allYouthProfiling
+        .filter((profile) => profile.barangay === userDetail?.barangay) // Filter profiles by barangay
+        .map((profile) => ({
+            ...profile,
+            age: calculateAge(profile.date_of_birth),
+            id: profile.id,
+        }));
 
     const columns = [
-        { field: "first_name", headerName: "First Name", minWidth: 200, flex: 1 },
-        { field: "last_name", headerName: "Last Name", maxWidth: 200, flex: 1 },
+        { field: "first_name", headerName: "First Name", minWidth: 180, flex: 1 },
+        { field: "last_name", headerName: "Last Name", maxWidth: 180, flex: 1 },
         { field: "age", headerName: "Age", maxWidth: 80 },
-        { field: "sex", headerName: "Sex", width: 80 },
+        { field: "gender", headerName: "Gender", width: 80 },
         { field: "voter_status", headerName: "Voter Status", maxWidth: 120 },
-        { field: "educational_attainment", headerName: "HEA", maxWidth: 120 },
         {
             field: "action",
             headerName: "Action",
@@ -121,7 +124,7 @@ const ProfilingTable = () => {
         <>
             {allYouthProfilingSuccess ? (
                 <CustomDataGrid
-                    rows={rows}
+                    rows={filteredRows}
                     columns={columns}
                     getRowId={(row: any) => row.id}
                     isLoading={allYouthProfilingLoading}
@@ -146,9 +149,8 @@ const ProfilingTable = () => {
                     mode={modalMode}
                     initialData={currentProfiling}
                     onClose={handleCloseModal}
-                    addYouthProfiling={addYouthProfiling}
-                    editYouthProfiling={editYouthProfiling}
-                    totalCount={getNextId(allYouthProfiling)}
+                    // addYouthProfiling={addYouthProfiling}
+                    editYouthProfiling={editUser}
                 />
             )}
         </>
