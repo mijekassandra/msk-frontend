@@ -72,7 +72,7 @@ const PublicationTable = () => {
             console.log("allPublications: ", allPublications);
             return allPublications; // Show all publications for Super Admin or Federation
         } else if (userDetail?.role === "Chairperson") {
-            return allPublications.filter((publication) => publication.role === "Chairperson");
+            return allPublications.filter((publication) => publication.type === "Chairperson");
         }
         return allPublications;
     }, [allPublications, userDetail?.role]);

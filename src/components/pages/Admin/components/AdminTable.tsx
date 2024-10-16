@@ -176,6 +176,7 @@ const AdminTable = () => {
                     <IconButton
                         aria-label="toggle-status"
                         onClick={() => handleToggleAccountStatus(params.row)}
+                        disabled={!allUsers.some((user) => user.id === params.row.id)} // Disable if user doesn't exist
                     >
                         {params.row.account_status === "active" ? (
                             <ToggleOn

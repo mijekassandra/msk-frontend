@@ -260,7 +260,11 @@ const ManageProfile = () => {
                                         placeholder="Select Gender"
                                         value={formData.gender}
                                         onChange={handleInputChange}
-                                        label="Gender"
+                                        label="Select Gender"
+                                        InputLabelProps={{
+                                            shrink: false,
+                                            style: { display: formData.gender ? "none" : "block" },
+                                        }}
                                     >
                                         <MenuItem value="" disabled>
                                             Select Gender
@@ -281,7 +285,13 @@ const ManageProfile = () => {
                                         name="civil_status"
                                         value={formData.civil_status}
                                         onChange={handleInputChange}
-                                        label="Civil Status"
+                                        label="Select Civil Status"
+                                        InputLabelProps={{
+                                            shrink: false,
+                                            style: {
+                                                display: formData.civil_status ? "none" : "block",
+                                            },
+                                        }}
                                     >
                                         <MenuItem value="" disabled>
                                             Select Civil Status
@@ -363,7 +373,13 @@ const ManageProfile = () => {
                                         name="voter_status"
                                         value={formData.voter_status}
                                         onChange={handleInputChange}
-                                        label="Status"
+                                        label="Select Status"
+                                        InputLabelProps={{
+                                            shrink: false,
+                                            style: {
+                                                display: formData.voter_status ? "none" : "block",
+                                            },
+                                        }}
                                     >
                                         <MenuItem value="" disabled>
                                             Select Status
@@ -383,7 +399,15 @@ const ManageProfile = () => {
                                         name="educational_attainment"
                                         value={formData.educational_attainment}
                                         onChange={handleInputChange}
-                                        label="Civil Status"
+                                        label="Select Educational Attainment"
+                                        InputLabelProps={{
+                                            shrink: false,
+                                            style: {
+                                                display: formData.educational_attainment
+                                                    ? "none"
+                                                    : "block",
+                                            },
+                                        }}
                                     >
                                         <MenuItem value="" disabled>
                                             Select Educational Attainment
