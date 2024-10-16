@@ -37,6 +37,9 @@ import DashboardBody from "../../containers/DashboardBody";
 import UserAnnouncement from "../UserFeatures/Announcement/UserAnnouncement";
 import UserSKActivities from "../UserFeatures/SK Activities/UserSKActivities";
 import UserSKFiles from "../UserFeatures/SK Files/UserSKFiles";
+import PublicationList from "../../../features/Login/PublicationList";
+import AnnouncementList from "../../../features/Login/AnnouncementList";
+import ActivitiesList from "../../../features/Login/ActivitiesList";
 
 const dashboardTabs = [
   // TODO users first
@@ -222,6 +225,18 @@ const Dashboard = () => {
                         />
                         <Route path="/publication" element={<Publication />} />
                         <Route path="/activities" element={<Activities />} />
+                        <Route
+                          path="/publication-list"
+                          element={<PublicationList />}
+                        />
+                        <Route
+                          path="/announcement-list"
+                          element={<AnnouncementList />}
+                        />
+                        <Route
+                          path="/activities-list"
+                          element={<ActivitiesList />}
+                        />
                       </>
                     )}
                     {userDetail?.role === "Chairperson" && (

@@ -7,6 +7,7 @@ interface PublicationProps {
   type: string;
   content: string;
   attachment: File;
+  created_at: string;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;

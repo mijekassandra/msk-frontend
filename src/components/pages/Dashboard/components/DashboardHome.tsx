@@ -40,7 +40,7 @@ const DashboardHome = () => {
                       PUBLICATION
                     </Typography>
                   }
-                  onClick={() => handleNavigation("/publication")}
+                  onClick={() => handleNavigation("/publication-list")}
                 />
               </Grid>
               <Grid item>
@@ -52,7 +52,7 @@ const DashboardHome = () => {
                       ANNOUNCEMENT
                     </Typography>
                   }
-                  onClick={() => handleNavigation("/announcement")}
+                  onClick={() => handleNavigation("/announcement-list")}
                 />
               </Grid>
               {/* <Grid item>
@@ -76,7 +76,7 @@ const DashboardHome = () => {
                       ACTIVITIES
                     </Typography>
                   }
-                  onClick={() => handleNavigation("/activities")}
+                  onClick={() => handleNavigation("/activities-list")}
                 />
               </Grid>
 
