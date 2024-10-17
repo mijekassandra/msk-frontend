@@ -81,7 +81,6 @@ const Login = () => {
 
       const errorMessage =
         typedError?.data?.message || "An unexpected error occurred";
-      console.log("Login failed:", errorMessage);
       setErrorDisplay(errorMessage);
 
       // Clear error message after 5 seconds
@@ -91,9 +90,9 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("Updated user detail: ", userDetail);
-  }, [userDetail]);
+  // useEffect(() => {
+  //   console.log("Updated user detail: ", userDetail);
+  // }, [userDetail]);
 
   return (
     <BodyContainer
