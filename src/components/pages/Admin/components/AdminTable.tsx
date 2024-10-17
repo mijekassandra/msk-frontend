@@ -48,6 +48,8 @@ const AdminTable = () => {
         setModalMode("create");
         setCurrentAccount({});
         setIsModalOpen(true);
+
+        console.log("allUsers, ", allUsers);
     };
 
     const handleEditAccountClick = (account: any) => {
@@ -71,6 +73,8 @@ const AdminTable = () => {
                 type: "success",
                 message: updatedAccount.message,
             });
+
+            console.log("updated account ", account);
         } catch (error) {
             console.error("Error changing status:", error);
 
@@ -175,8 +179,10 @@ const AdminTable = () => {
                     </IconButton>
                     <IconButton
                         aria-label="toggle-status"
-                        onClick={() => handleToggleAccountStatus(params.row)}
-                        disabled={!allUsers.some((user) => user.id === params.row.id)} // Disable if user doesn't exist
+                        onClick={() => {
+                            handleToggleAccountStatus(params.row);
+                        }}
+                        disabled={!allUsers.some((user) => user.id === params.row.id)}
                     >
                         {params.row.account_status === "active" ? (
                             <ToggleOn
