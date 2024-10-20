@@ -6,7 +6,7 @@ import PrimaryButton from "../buttons/PrimaryButton";
 
 interface BlogCardProps {
   bgColor: string;
-  cardImage: string;
+  cardImage: File | null;
   cardTitle: string;
 
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;

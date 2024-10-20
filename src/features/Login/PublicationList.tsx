@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "@reduxjs/toolkit/query";
 import { formatDate } from "../../utils/dateUtil.js";
@@ -15,6 +15,9 @@ import PublicationCard from "../../components/cards/PublicationCard";
 
 // api
 import { useGetPublicationsQuery } from "../../components/pages/Publication/api/publicationApi";
+
+// file endpoint
+const { VITE_FILE_ENDPOINT } = import.meta.env;
 
 const PublicationList = () => {
   // logged in user role
@@ -60,7 +63,7 @@ const PublicationList = () => {
             barangay=""
             barangayLogo=""
             date={formatDate(publication.created_at)}
-            cardImage=""
+            cardImage={VITE_FILE_ENDPOINT + publication.attachment}
             title={publication.title}
             content={publication.content}
             views={24}

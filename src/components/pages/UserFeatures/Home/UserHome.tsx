@@ -13,6 +13,9 @@ import ErrorDisplay from "../../../displays/ErrorDisplay";
 // import api
 import { useGetPublicationsQuery } from "../../../pages/Publication/api/publicationApi";
 
+// file endpoint
+const { VITE_FILE_ENDPOINT } = import.meta.env;
+
 const UserHome = () => {
   const navigate = useNavigate();
 
@@ -60,7 +63,7 @@ const UserHome = () => {
             <BlogCard
               key={publication.id}
               bgColor="#e6e8fe"
-              cardImage={SampleImage}
+              cardImage={VITE_FILE_ENDPOINT + publication.attachment}
               cardTitle={publication.title}
               onClick={() => handleReadMore(publication)}
             />

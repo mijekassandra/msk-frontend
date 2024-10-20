@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, IconButton } from "@mui/material";
 import {
   Visibility,
@@ -28,7 +28,7 @@ const PublicationTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
     "create"
-  ); // for modal mode, either create or edit
+  );
   const [currentPublication, setCurrentPublication] = useState({}); // for edit modal
 
   // logged in user role
@@ -39,6 +39,7 @@ const PublicationTable = () => {
     isError: allPublicationsError,
     isSuccess: allPublicationsSuccess,
     isLoading: allPublicationsLoading,
+    refetch,
   } = useGetPublicationsQuery();
 
   //   console.log("data pub: ", allPublications);
@@ -68,6 +69,11 @@ const PublicationTable = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false); // Close the modal
   };
+
+  // Force refetch if needed
+  useEffect(() => {
+    refetch();
+  }, []);
 
   // const rows = allPublications.map((publication) => ({
   //     ...publication,

@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Stack, Typography } from "@mui/material";
+import { formatDate } from "../../../../utils/dateUtil.js";
 
 // import components
 import PublicationCard from "../../../cards/PublicationCard";
 import FeedbackForm from "./FeedbackForm";
 import CommentsList from "./CommentsList";
+
+// file endpoint
+const { VITE_FILE_ENDPOINT } = import.meta.env;
 
 const PublicationDetails = () => {
   const { id } = useParams(); // Get the publication ID from the URL
@@ -41,8 +45,8 @@ const PublicationDetails = () => {
           <PublicationCard
             barangay=""
             barangayLogo=""
-            date={publication.date}
-            cardImage=""
+            date={formatDate(publication.created_at)}
+            cardImage={VITE_FILE_ENDPOINT + publication.attachment}
             title={publication.title}
             content={publication.content}
             views={24}

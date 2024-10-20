@@ -6,7 +6,7 @@ interface PublicationProps {
   title: string;
   type: string;
   content: string;
-  attachment: File;
+  attachment: File | null;
   created_at: string;
 }
 
@@ -31,7 +31,7 @@ export const publicationApi = createApi({
   tagTypes: ["Publication"],
   endpoints: (builder) => ({
     getPublications: builder.query<PublicationProps[], void>({
-      query: () => "publication/",
+      query: () => "/publication",
       providesTags: (result) =>
         result
           ? [
@@ -41,41 +41,36 @@ export const publicationApi = createApi({
           : [{ type: "Publication", id: "PublicationLIST" }],
     }),
     getPublicationByID: builder.query<PublicationProps, number>({
-      query: (id) => `publication/${id}`, // Use id in the URL
+      query: (id) => `/publication/${id}`, // Use id in the URL
       providesTags: (result, error, id) => [{ type: "Publication", id }],
     }),
-    addPublication: builder.mutation<void, Partial<PublicationProps>>({
-      query: (publicationDetails) => {
-        const formData = new FormData();
-        formData.append("title", publicationDetails.title || "");
-        formData.append("content", publicationDetails.content || "");
-
-        if (publicationDetails.attachment) {
-          formData.append("attachment", publicationDetails.attachment);
-        }
+    addPublication: builder.mutation<void, FormData>({
+      query: (formData) => {
+        console.log("Publication Details:", formData); // This will now be a valid FormData object
 
         return {
-          url: "publication/",
+          url: "/publication",
           method: "POST",
           body: formData,
         };
       },
       invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
     }),
+
     editPublication: builder.mutation<
       void,
       { id: number; publication: object }
     >({
       query: ({ id, publication }) => ({
-        url: `publication/${id}`,
-        method: "PATCH",
+        url: `/publication/${id}`,
+        method: "PUT",
         body: publication,
       }),
       invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
     }),
     deletePublication: builder.mutation<PublicationProps, number>({
       query: (id) => ({
-        url: `publication/${id}`, // Use id in the URL
+        url: `/publication/${id}`, // Use id in the URL
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [{ type: "Publication", id }],

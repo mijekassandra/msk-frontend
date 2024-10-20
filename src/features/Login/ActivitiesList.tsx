@@ -10,6 +10,7 @@ import { formatDate } from "../../utils/dateUtil.js";
 import LogoHeader from "../../components/displays/LogoHeader";
 import LoadingDisplay from "../../components/displays/LoadingDisplay";
 import ErrorDisplay from "../../components/displays/ErrorDisplay";
+import ActivitiesCard from "../../components/cards/ActivitiesCard.js";
 
 const ActivitiesList = () => {
   return (
@@ -17,7 +18,14 @@ const ActivitiesList = () => {
       <LogoHeader header="SK ACTIVITIES" />
 
       <Stack gap={5}>
-        <Typography>hello</Typography>
+        <ActivitiesCard
+          barangay="SK Gaston"
+          barangayLogo=""
+          date="May 24, 204"
+          cardImage=""
+          title="SPORTSFEST 2024"
+          location="Brgy. Gaston, Lagonglong Mis. Or"
+        />
       </Stack>
 
       {/* {allPublicationsError && <ErrorDisplay />}
