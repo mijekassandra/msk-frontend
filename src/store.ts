@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 // auth
 import authReducer from "../slice/authSlice";
+import adminReducer from "../slice/adminSlice"
 
 // queries
 import { announcementApi } from "./components/pages/Announcement/api/announcementApi";
@@ -13,9 +14,11 @@ import { youthProfilingApi } from "./components/pages/AdminFeatures/Profiling/ap
 import { apiSlice } from "../slice/apiSlice";
 import { userProfile } from "./components/pages/Settings/components/api/userProfileApi";
 
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    admin: adminReducer,
     [announcementApi.reducerPath]: announcementApi.reducer,
     [publicationApi.reducerPath]: publicationApi.reducer,
     [activityApi.reducerPath]: activityApi.reducer,
@@ -41,5 +44,4 @@ export const store = configureStore({
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
