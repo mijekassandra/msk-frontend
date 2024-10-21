@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Paper, Box, Typography, Stack, IconButton, Drawer } from "@mui/material";
 
+// import components
 import BarangaySeal from "./containers/BarangaySeal";
 
 interface TabItemProps {
@@ -18,7 +19,7 @@ interface SidebarProps {
     height?: string;
     mobileView?: {
         isShow: boolean;
-        action: () => void; // Function to toggle the drawer state
+        action: () => void;
     };
 }
 

@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Stack, Grid } from "@mui/material";
+import { Stack, Grid, Fab } from "@mui/material";
 import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
+import { resetAdminState } from "../../../../slice/adminSlice";
 
 import {
-  AdminPanelSettingsOutlined,
-  ArticleOutlined,
-  CampaignOutlined,
-  ContactPageOutlined,
-  EventOutlined,
-  FolderOutlined,
-  GroupOutlined,
-  HomeOutlined,
-  InfoOutlined,
+    AdminPanelSettingsOutlined,
+    ArticleOutlined,
+    CampaignOutlined,
+    ContactPageOutlined,
+    EventOutlined,
+    FolderOutlined,
+    GroupOutlined,
+    HomeOutlined,
+    InfoOutlined,
+    ArrowBackIos,
 } from "@mui/icons-material";
 
 // Import components
@@ -41,248 +43,325 @@ import PublicationList from "../../../features/Login/PublicationList";
 import AnnouncementList from "../../../features/Login/AnnouncementList";
 import ActivitiesList from "../../../features/Login/ActivitiesList";
 
-const dashboardTabs = [
-  // TODO users first
-  { tab: "/home", label: "HOME", icon: <HomeOutlined /> },
-
-  // TODO super admin and admin, for admin view, just filter out to from what barangay the logged in role is
-  { tab: "/dashboard", label: "DASHBOARD", icon: <HomeOutlined /> },
-  { tab: "/sk-system", label: "SK SYSTEM", icon: <GroupOutlined /> },
-  { tab: "/sk-files", label: "SK FILES", icon: <FolderOutlined /> },
-  { tab: "/announcement", label: "ANNOUNCEMENT", icon: <CampaignOutlined /> },
-  { tab: "/publication", label: "PUBLICATION", icon: <ArticleOutlined /> },
-  { tab: "/activities", label: "ACTIVITIES", icon: <EventOutlined /> },
-
-  // TODO super admin only
-  { tab: "/admin", label: "ADMIN", icon: <AdminPanelSettingsOutlined /> },
-
-  // TODO admin only
-  { tab: "/users", label: "USERS", icon: <AdminPanelSettingsOutlined /> },
-  { tab: "/profiling", label: "PROFILING", icon: <ContactPageOutlined /> },
-
-  // TODO users only
-  {
-    tab: "/user-announcements",
-    label: "ANNOUNCEMENTS",
-    icon: <CampaignOutlined />,
-  },
-  { tab: "/user-sk-files", label: "SK FILES", icon: <FolderOutlined /> },
-  { tab: "/sk-activities", label: "ACTIVITIES", icon: <EventOutlined /> },
-
-  // TODO all users
-  { tab: "/about-us", label: "ABOUT US", icon: <InfoOutlined /> },
-];
-
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const currentTab = location.pathname;
+    const navigate = useNavigate();
+    const location = useLocation();
+    const currentTab = location.pathname;
 
-  // logged in user details
-  const userDetail = useSelector((state: RootState) => state.auth.user);
+    const dispatch = useDispatch();
 
-  // predefine selected tab
-  const [selectedTab, setSelectedTab] = useState(
-    currentTab ? currentTab : "/dashboard"
-  );
-  const [collapsedSidebar, setCollapsedSidebar] = useState(true);
-  const [showDrawer, setShowDrawer] = useState(false);
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    const selectedBarangay = useSelector((state: RootState) => state.admin.selectedBarangay);
 
-  const handleTabChange = (newValue: string) => {
-    navigate(newValue);
-  };
+    // logged in user details
+    const userDetail = useSelector((state: RootState) => state.auth.user);
 
-  const toggleSidebar = () => {
-    const isMobileView = window.innerWidth <= 899;
+    // predefine selected tab
+    const [selectedTab, setSelectedTab] = useState(currentTab ? currentTab : "/dashboard");
+    const [collapsedSidebar, setCollapsedSidebar] = useState(true);
+    const [showDrawer, setShowDrawer] = useState(false);
 
-    if (isMobileView) {
-      setShowDrawer(!showDrawer);
-    } else {
-      setCollapsedSidebar(!collapsedSidebar);
-    }
-  };
-
-  useEffect(() => {
-    if (currentTab !== selectedTab) {
-      setSelectedTab(currentTab);
-    }
-  }, [currentTab, selectedTab]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 899 && showDrawer) {
-        setShowDrawer(false);
-      }
+    const handleTabChange = (newValue: string) => {
+        navigate(newValue);
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [showDrawer]);
+    const toggleSidebar = () => {
+        const isMobileView = window.innerWidth <= 899;
 
-  const visibleTabs = dashboardTabs.filter((tab) => {
-    if (
-      userDetail?.role === "Super Admin" ||
-      userDetail?.role === "Federation"
-    ) {
-      // Super Admin and Federation see the same tabs
-      return (
-        tab.tab === "/dashboard" ||
-        tab.tab === "/sk-system" ||
-        tab.tab === "/sk-files" ||
-        tab.tab === "/announcement" ||
-        tab.tab === "/publication" ||
-        tab.tab === "/activities" ||
-        tab.tab === "/admin" ||
-        tab.tab === "/about-us"
-      );
-    }
+        if (isMobileView) {
+            setShowDrawer(!showDrawer);
+        } else {
+            setCollapsedSidebar(!collapsedSidebar);
+        }
+    };
 
-    if (userDetail?.role === "Chairperson") {
-      // Chairperson sees SK files, announcement, publication, activities, profiling
-      return (
-        tab.tab === "/dashboard" ||
-        tab.tab === "/sk-files" ||
-        tab.tab === "/announcement" ||
-        tab.tab === "/publication" ||
-        tab.tab === "/activities" ||
-        tab.tab === "/profiling" ||
-        tab.tab === "/users" ||
-        tab.tab === "/about-us"
-      );
-    }
+    useEffect(() => {
+        if (currentTab !== selectedTab) {
+            setSelectedTab(currentTab);
+        }
+    }, [currentTab, selectedTab]);
 
-    if (userDetail?.role === "User") {
-      // Users see home, user announcements, user SK files, and SK activities
-      return (
-        tab.tab === "/home" ||
-        tab.tab === "/user-announcements" ||
-        tab.tab === "/user-sk-files" ||
-        tab.tab === "/sk-activities" ||
-        tab.tab === "/about-us"
-      );
-    }
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 899 && showDrawer) {
+                setShowDrawer(false);
+            }
+        };
 
-    return false; // default showing nothing if no valid role is found
-  });
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, [showDrawer]);
 
-  return (
-    <BodyContainer
-      content={
-        <Stack direction="row" sx={{ height: "100%" }}>
-          <Grid container sx={{ height: "100%" }}>
-            <Grid
-              item
-              md={2.5}
-              sm={4}
-              xs={12}
-              sx={{
-                display: collapsedSidebar ? "flex" : "none",
-                "@media (min-width: 769px) and (max-width: 899px)": {
-                  display: "flex",
-                },
-              }}
-            >
-              {/* <Collapse in={collapsedSidebar} orientation="horizontal"> */}
-              <Sidebar
-                tabs={visibleTabs}
-                initialValue={selectedTab}
-                onChange={handleTabChange}
-                mobileView={{
-                  isShow: showDrawer,
-                  action: toggleSidebar,
-                }}
-              />
-              {/* </Collapse> */}
-            </Grid>
-            <Grid
-              item
-              md={collapsedSidebar ? 9.5 : 12}
-              xs={12}
-              sx={{ height: "100%", overflow: "auto" }}
-            >
-              <MiniAppbar toggleSidebar={toggleSidebar} />
-              <DashboardBody
-                content={
-                  <Routes>
-                    {(userDetail?.role === "Super Admin" ||
-                      userDetail?.role === "Federation") && (
-                      <>
-                        <Route path="/sk-system" element={<SKSystem />} />
-                        <Route path="/admin" element={<Admin />} />
-                      </>
+    const getDashboardTabs = (adminMode, selectedBarangay, userRole) => {
+        if (userRole === "Super Admin" || userRole === "Federation") {
+            if (adminMode && selectedBarangay) {
+                // Generate barangay-specific view tabs
+                return [
+                    {
+                        tab: `/view/${selectedBarangay}/sk-files`,
+                        label: "SK FILES",
+                        icon: <FolderOutlined />,
+                    },
+                    {
+                        tab: `/view/${selectedBarangay}/announcement`,
+                        label: "ANNOUNCEMENT",
+                        icon: <CampaignOutlined />,
+                    },
+                    {
+                        tab: `/view/${selectedBarangay}/publication`,
+                        label: "PUBLICATION",
+                        icon: <ArticleOutlined />,
+                    },
+                    {
+                        tab: `/view/${selectedBarangay}/activities`,
+                        label: "ACTIVITIES",
+                        icon: <EventOutlined />,
+                    },
+                    {
+                        tab: `/view/${selectedBarangay}/users`,
+                        label: "USERS",
+                        icon: <AdminPanelSettingsOutlined />,
+                    },
+                    {
+                        tab: `/view/${selectedBarangay}/profiling`,
+                        label: "PROFILING",
+                        icon: <ContactPageOutlined />,
+                    },
+                ];
+            }
+
+            // Default Super Admin view
+            return [
+                { tab: "/dashboard", label: "DASHBOARD", icon: <HomeOutlined /> },
+                { tab: "/sk-system", label: "SK SYSTEM", icon: <GroupOutlined /> },
+                { tab: "/sk-files", label: "SK FILES", icon: <FolderOutlined /> },
+                { tab: "/announcement", label: "ANNOUNCEMENT", icon: <CampaignOutlined /> },
+                { tab: "/publication", label: "PUBLICATION", icon: <ArticleOutlined /> },
+                { tab: "/activities", label: "ACTIVITIES", icon: <EventOutlined /> },
+                { tab: "/admin", label: "ADMIN", icon: <AdminPanelSettingsOutlined /> },
+                { tab: "/about-us", label: "ABOUT US", icon: <InfoOutlined /> },
+            ];
+        }
+
+        if (userRole === "Chairperson") {
+            // Chairperson's tabs
+            return [
+                { tab: "/dashboard", label: "DASHBOARD", icon: <HomeOutlined /> },
+                { tab: "/sk-files", label: "SK FILES", icon: <FolderOutlined /> },
+                { tab: "/announcement", label: "ANNOUNCEMENT", icon: <CampaignOutlined /> },
+                { tab: "/publication", label: "PUBLICATION", icon: <ArticleOutlined /> },
+                { tab: "/activities", label: "ACTIVITIES", icon: <EventOutlined /> },
+                { tab: "/profiling", label: "PROFILING", icon: <ContactPageOutlined /> },
+                { tab: "/users", label: "USERS", icon: <AdminPanelSettingsOutlined /> },
+                { tab: "/about-us", label: "ABOUT US", icon: <InfoOutlined /> },
+            ];
+        }
+
+        if (userRole === "User") {
+            // User-specific tabs
+            return [
+                { tab: "/home", label: "HOME", icon: <HomeOutlined /> },
+                { tab: "/user-announcements", label: "ANNOUNCEMENTS", icon: <CampaignOutlined /> },
+                { tab: "/user-sk-files", label: "SK FILES", icon: <FolderOutlined /> },
+                { tab: "/sk-activities", label: "ACTIVITIES", icon: <EventOutlined /> },
+                { tab: "/about-us", label: "ABOUT US", icon: <InfoOutlined /> },
+            ];
+        }
+
+        return []; // Return an empty array if no valid role is found
+    };
+
+    const visibleTabs = getDashboardTabs(adminMode, selectedBarangay, userDetail?.role);
+
+    const handleBackToDashboard = () => {
+        dispatch(resetAdminState()); // Reset admin mode and selected barangay
+        navigate("/sk-system");
+    };
+
+    return (
+        <BodyContainer
+            content={
+                <Stack direction="row" sx={{ height: "100%" }}>
+                    {adminMode && (
+                        <Fab
+                            size="small"
+                            variant="extended"
+                            aria-label="back-to-dashboard"
+                            onClick={handleBackToDashboard}
+                            sx={{
+                                color: "primary.light",
+                                position: "fixed",
+                                bottom: "40px",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                zIndex: 1000,
+                                padding: "7px 20px",
+                                fontSize: "14px",
+                            }}
+                        >
+                            <ArrowBackIos sx={{ fontSize: "16px" }} />
+                            Back to Super Admin View
+                        </Fab>
                     )}
 
-                    {(userDetail?.role === "Super Admin" ||
-                      userDetail?.role === "Federation" ||
-                      userDetail?.role === "Chairperson") && (
-                      <>
-                        <Route path="/dashboard" element={<DashboardHome />} />
+                    <Grid container sx={{ height: "100%" }}>
+                        <Grid
+                            item
+                            md={2.5}
+                            sm={4}
+                            xs={12}
+                            sx={{
+                                display: collapsedSidebar ? "flex" : "none",
+                                "@media (min-width: 769px) and (max-width: 899px)": {
+                                    display: "flex",
+                                },
+                            }}
+                        >
+                            {/* <Collapse in={collapsedSidebar} orientation="horizontal"> */}
+                            <Sidebar
+                                tabs={visibleTabs}
+                                initialValue={selectedTab}
+                                onChange={handleTabChange}
+                                mobileView={{
+                                    isShow: showDrawer,
+                                    action: toggleSidebar,
+                                }}
+                            />
+                            {/* </Collapse> */}
+                        </Grid>
+                        <Grid
+                            item
+                            md={collapsedSidebar ? 9.5 : 12}
+                            xs={12}
+                            sx={{ height: "100%", overflow: "auto" }}
+                        >
+                            <MiniAppbar toggleSidebar={toggleSidebar} />
+                            <DashboardBody
+                                content={
+                                    <Routes>
+                                        {(userDetail?.role === "Super Admin" ||
+                                            userDetail?.role === "Federation") && (
+                                            <>
+                                                <Route path="/sk-system" element={<SKSystem />} />
+                                                <Route path="/admin" element={<Admin />} />
+                                            </>
+                                        )}
 
-                        <Route path="/sk-files" element={<SKFiles />} />
-                        <Route
-                          path="/announcement"
-                          element={<Announcement />}
-                        />
-                        <Route path="/publication" element={<Publication />} />
-                        <Route path="/activities" element={<Activities />} />
-                        <Route
-                          path="/publication-list"
-                          element={<PublicationList />}
-                        />
-                        <Route
-                          path="/announcement-list"
-                          element={<AnnouncementList />}
-                        />
-                        <Route
-                          path="/activities-list"
-                          element={<ActivitiesList />}
-                        />
-                      </>
-                    )}
-                    {userDetail?.role === "Chairperson" && (
-                      <>
-                        <Route path="/users" element={<Admin />} />
-                        <Route path="/profiling" element={<Profiling />} />
-                      </>
-                    )}
+                                        {(userDetail?.role === "Super Admin" ||
+                                            userDetail?.role === "Federation" ||
+                                            userDetail?.role === "Chairperson") && (
+                                            <>
+                                                <Route
+                                                    path="/dashboard"
+                                                    element={<DashboardHome />}
+                                                />
 
-                    {userDetail?.role === "User" && (
-                      <>
-                        <Route path="/home" element={<UserHome />} />
-                        <Route
-                          path="/home/:id"
-                          element={<PublicationDetails />}
-                        />
-                        <Route
-                          path="/user-announcements"
-                          element={<UserAnnouncement />}
-                        />
-                        <Route
-                          path="/user-sk-files"
-                          element={<UserSKFiles />}
-                        />
-                        <Route
-                          path="/sk-activities"
-                          element={<UserSKActivities />}
-                        />
-                      </>
-                    )}
-                    {/* Routes for all users */}
-                    <Route path="/about-us" element={<AboutUs />} />
-                    <Route path="/manage-profile" element={<ManageProfile />} />
-                    <Route
-                      path="/account-settings"
-                      element={<AccountSetting />}
-                    />
-                  </Routes>
-                }
-              />
-            </Grid>
-          </Grid>
-        </Stack>
-      }
-    ></BodyContainer>
-  );
+                                                <Route path="/sk-files" element={<SKFiles />} />
+                                                <Route
+                                                    path="/announcement"
+                                                    element={<Announcement />}
+                                                />
+                                                <Route
+                                                    path="/publication"
+                                                    element={<Publication />}
+                                                />
+                                                <Route
+                                                    path="/activities"
+                                                    element={<Activities />}
+                                                />
+                                                <Route
+                                                    path="/publication-list"
+                                                    element={<PublicationList />}
+                                                />
+                                                <Route
+                                                    path="/announcement-list"
+                                                    element={<AnnouncementList />}
+                                                />
+                                                <Route
+                                                    path="/activities-list"
+                                                    element={<ActivitiesList />}
+                                                />
+                                            </>
+                                        )}
+                                        {userDetail?.role === "Chairperson" && (
+                                            <>
+                                                <Route path="/users" element={<Admin />} />
+                                                <Route path="/profiling" element={<Profiling />} />
+                                            </>
+                                        )}
+
+                                        {userDetail?.role === "User" && (
+                                            <>
+                                                <Route path="/home" element={<UserHome />} />
+                                                <Route
+                                                    path="/home/:id"
+                                                    element={<PublicationDetails />}
+                                                />
+                                                <Route
+                                                    path="/user-announcements"
+                                                    element={<UserAnnouncement />}
+                                                />
+                                                <Route
+                                                    path="/user-sk-files"
+                                                    element={<UserSKFiles />}
+                                                />
+                                                <Route
+                                                    path="/sk-activities"
+                                                    element={<UserSKActivities />}
+                                                />
+                                            </>
+                                        )}
+
+                                        {/* Admin Mode routes for Super Admin viewing barangay-specific views */}
+                                        {(userDetail?.role === "Super Admin" ||
+                                            userDetail?.role === "Federation") &&
+                                            adminMode &&
+                                            selectedBarangay && (
+                                                <>
+                                                    <Route
+                                                        path="/view/:barangayName/sk-files"
+                                                        element={<SKFiles readOnly />}
+                                                    />
+                                                    <Route
+                                                        path="/view/:barangayName/announcement"
+                                                        element={<Announcement readOnly />}
+                                                    />
+                                                    <Route
+                                                        path="/view/:barangayName/publication"
+                                                        element={<Publication readOnly />}
+                                                    />
+                                                    <Route
+                                                        path="/view/:barangayName/activities"
+                                                        element={<Activities readOnly />}
+                                                    />
+                                                    <Route
+                                                        path="/view/:barangayName/users"
+                                                        element={<Admin readOnly />}
+                                                    />
+                                                    <Route
+                                                        path="/view/:barangayName/profiling"
+                                                        element={<Profiling readOnly />}
+                                                    />
+                                                </>
+                                            )}
+
+                                        {/* Routes for all users */}
+                                        <Route path="/about-us" element={<AboutUs />} />
+                                        <Route path="/manage-profile" element={<ManageProfile />} />
+                                        <Route
+                                            path="/account-settings"
+                                            element={<AccountSetting />}
+                                        />
+                                    </Routes>
+                                }
+                            />
+                        </Grid>
+                    </Grid>
+                </Stack>
+            }
+        ></BodyContainer>
+    );
 };
 
 export default Dashboard;
