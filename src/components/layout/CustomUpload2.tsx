@@ -7,6 +7,7 @@ interface CustomUpload2Props {
     label?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     accept?: string;
+    mode?: string;
 }
 
 const CustomUpload2: React.FC<CustomUpload2Props> = (props: CustomUpload2Props) => {
