@@ -13,9 +13,18 @@ interface ModalVariantTwoProps {
     onSave: () => void;
     subheader?: ReactNode;
     mode: "create" | "edit" | "view";
+    maxWidth?: string;
 }
 
-const ModalVariantTwo: React.FC<ModalVariantTwoProps> = (props: ModalVariantTwoProps) => {
+const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
+    content,
+    headerTitle,
+    onClose,
+    onSave,
+    mode,
+    maxWidth = "400px",
+    subheader,
+}) => {
     return (
         <Modal
             disableAutoFocus
@@ -30,7 +39,8 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = (props: ModalVariantTwoP
             <Box
                 sx={{
                     width: "100%",
-                    maxWidth: "400px",
+                    maxWidth: maxWidth,
+                    minWidth: "400px",
                     bgcolor: "background.paper",
                     padding: "20px",
                     borderRadius: "12px",
@@ -45,9 +55,9 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = (props: ModalVariantTwoP
                     }}
                 >
                     <Typography variant="h3" fontWeight={500} color="info.dark">
-                        {props.headerTitle}
+                        {headerTitle}
                     </Typography>
-                    <IconButton onClick={props.onClose}>
+                    <IconButton onClick={onClose}>
                         <Close
                             sx={{
                                 fontSize: "20px",
@@ -57,25 +67,20 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = (props: ModalVariantTwoP
                     </IconButton>
                 </Stack>
                 <Divider />
-                <Stack marginBlock="20px">{props.content}</Stack>
+                <Stack marginBlock="20px">{content}</Stack>
 
-                {props.mode !== "view" ? (
+                {mode !== "view" ? (
                     <Stack direction="row" spacing={3} width="100%" justifyContent="center">
                         <PrimaryButton
                             size="small"
                             variant="outlined"
                             width="150px"
-                            onClick={props.onClose}
+                            onClick={onClose}
                         >
                             Cancel
                         </PrimaryButton>
-                        <PrimaryButton
-                            size="small"
-                            width="150px"
-                            color="info"
-                            onClick={props.onSave}
-                        >
-                            {props.mode === "create" ? "Publish" : "Save"}
+                        <PrimaryButton size="small" width="150px" color="info" onClick={onSave}>
+                            {mode === "create" ? "Publish" : "Save"}
                         </PrimaryButton>
                     </Stack>
                 ) : null}

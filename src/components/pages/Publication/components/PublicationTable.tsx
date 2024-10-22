@@ -27,6 +27,10 @@ const PublicationTable = () => {
     // logged in user role
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    const selectedBarangay = useSelector((state: RootState) => state.admin.selectedBarangay);
+
     const {
         data: allPublications = [],
         isError: allPublicationsError,
@@ -116,25 +120,30 @@ const PublicationTable = () => {
                             }}
                         />
                     </IconButton>
-                    <IconButton
-                        aria-label="edit"
-                        onClick={() => handleEditPublicationClick(params.row)}
-                    >
-                        <BorderColor
-                            sx={{
-                                color: "secondary.light",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton>
-                    <IconButton aria-label="archive">
-                        <Archive
-                            sx={{
-                                color: "secondary.main",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton>
+
+                    {!adminMode && !selectedBarangay ? (
+                        <>
+                            <IconButton
+                                aria-label="edit"
+                                onClick={() => handleEditPublicationClick(params.row)}
+                            >
+                                <BorderColor
+                                    sx={{
+                                        color: "secondary.light",
+                                        fontSize: "22px",
+                                    }}
+                                />
+                            </IconButton>
+                            <IconButton aria-label="archive">
+                                <Archive
+                                    sx={{
+                                        color: "secondary.main",
+                                        fontSize: "22px",
+                                    }}
+                                />
+                            </IconButton>
+                        </>
+                    ) : null}
                 </Box>
             ),
         },
@@ -149,13 +158,15 @@ const PublicationTable = () => {
                     isLoading={allPublicationsLoading}
                     tableLabel="LIST OF PUBLICATIONS"
                     actionButton={
-                        <PrimaryButton
-                            size="small"
-                            startIcon={<AddCircle />}
-                            onClick={handleCreatePublicationClick}
-                        >
-                            CREATE PUBLICATION
-                        </PrimaryButton>
+                        !adminMode && !selectedBarangay ? (
+                            <PrimaryButton
+                                size="small"
+                                startIcon={<AddCircle />}
+                                onClick={handleCreatePublicationClick}
+                            >
+                                CREATE PUBLICATION
+                            </PrimaryButton>
+                        ) : null
                     }
                 />
             ) : allPublicationsError ? (

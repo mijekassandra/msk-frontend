@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Box, IconButton, Alert } from "@mui/material";
 import { Visibility, BorderColor, ToggleOff, ToggleOn, AddCircle } from "@mui/icons-material";
-import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
+import Swal from "sweetalert2";
 
 //import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -23,6 +23,10 @@ import {
 const AdminTable = () => {
     // logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    const selectedBarangay = useSelector((state: RootState) => state.admin.selectedBarangay);
 
     const [alert, setAlert] = useState<{
         type: "success" | "error";
@@ -90,28 +94,64 @@ const AdminTable = () => {
         setIsModalOpen(false);
     };
 
+    const getTableLable = () => {
+        const userRole = userDetail?.role;
+
+        if (userRole === "Chairperson") {
+            return `LIST OF USER`;
+        }
+
+        if (
+            (userRole === "Super Admin" || userRole === "Federation") &&
+            !adminMode &&
+            !selectedBarangay
+        ) {
+            return "LIST OF SANGGUNIANG KABATAAN CHAIRPERSON";
+        }
+
+        if (
+            (userRole === "Super Admin" || userRole === "Federation") &&
+            adminMode &&
+            selectedBarangay
+        ) {
+            return `LIST OF USER`;
+        }
+
+        return "";
+    };
+
     const rows = allUsers.map((account) => ({
         ...account,
         id: account.id,
     }));
 
     const filteredRows = React.useMemo(() => {
-        // return data that are only Chairperson
+        // ADMIN VIEW Check if the user is a Super Admin or Federation and adminMode is true with selectedBarangay
+        if (
+            (userDetail?.role === "Super Admin" || userDetail?.role === "Federation") &&
+            adminMode &&
+            selectedBarangay
+        ) {
+            return rows.filter((row) => row.role === "User" && row.barangay === selectedBarangay);
+        }
+
+        // ADMIN TAB: display list of all Chairperson for Super Admin or Federation without adminMode or selectedBarangay
         if (userDetail?.role === "Super Admin" || userDetail?.role === "Federation") {
             return rows.filter((row) => row.role === "Chairperson");
         }
 
-        // return data that are Users on their barangays
-        else if (userDetail?.role === "Chairperson") {
+        // USERDS TAB: display list of all User on their barangay for Chairperson
+        if (userDetail?.role === "Chairperson") {
             return rows.filter(
                 (row) => row.role === "User" && row.barangay === userDetail?.barangay
             );
         }
+
         // Default, return all rows if no condition is met
         return rows;
-    }, [rows, userDetail?.role, userDetail?.barangay]);
+    }, [rows, userDetail?.role, userDetail?.barangay, adminMode, selectedBarangay]);
 
-    // When the user role changes, we want to refetch the users list to make sure it's accurate
+    // When the user role changes, refetch
     useEffect(() => {
         refetch();
         // console.log(`${userDetail?.role}:'s list are: `, filteredRows);
@@ -166,40 +206,45 @@ const AdminTable = () => {
                             }}
                         />
                     </IconButton>
-                    <IconButton
-                        aria-label="edit"
-                        onClick={() => handleEditAccountClick(params.row)}
-                    >
-                        <BorderColor
-                            sx={{
-                                color: "secondary.light",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton>
-                    <IconButton
-                        aria-label="toggle-status"
-                        onClick={() => {
-                            handleToggleAccountStatus(params.row);
-                        }}
-                        disabled={!allUsers.some((user) => user.id === params.row.id)}
-                    >
-                        {params.row.account_status === "active" ? (
-                            <ToggleOn
-                                sx={{
-                                    color: "success.main",
-                                    fontSize: "35px",
+
+                    {!adminMode && !selectedBarangay ? (
+                        <>
+                            <IconButton
+                                aria-label="edit"
+                                onClick={() => handleEditAccountClick(params.row)}
+                            >
+                                <BorderColor
+                                    sx={{
+                                        color: "secondary.light",
+                                        fontSize: "22px",
+                                    }}
+                                />
+                            </IconButton>
+                            <IconButton
+                                aria-label="toggle-status"
+                                onClick={() => {
+                                    handleToggleAccountStatus(params.row);
                                 }}
-                            />
-                        ) : (
-                            <ToggleOff
-                                sx={{
-                                    color: "grey.500",
-                                    fontSize: "35px",
-                                }}
-                            />
-                        )}
-                    </IconButton>
+                                disabled={!allUsers.some((user) => user.id === params.row.id)}
+                            >
+                                {params.row.account_status === "active" ? (
+                                    <ToggleOn
+                                        sx={{
+                                            color: "success.main",
+                                            fontSize: "35px",
+                                        }}
+                                    />
+                                ) : (
+                                    <ToggleOff
+                                        sx={{
+                                            color: "grey.500",
+                                            fontSize: "35px",
+                                        }}
+                                    />
+                                )}
+                            </IconButton>
+                        </>
+                    ) : null}
                 </Box>
             ),
         },
@@ -213,15 +258,17 @@ const AdminTable = () => {
                     getRowId={(row: any, index) => row.id ?? `${row.username}-${index}`}
                     isLoading={allUsersLoading}
                     columns={columns}
-                    tableLabel="LIST OF SANGGUNIANG KABATAAN CHAIRPERSON"
+                    tableLabel={getTableLable()}
                     actionButton={
-                        <PrimaryButton
-                            size="small"
-                            startIcon={<AddCircle />}
-                            onClick={handleAddAccountClick}
-                        >
-                            ADD USER
-                        </PrimaryButton>
+                        !adminMode && !selectedBarangay ? (
+                            <PrimaryButton
+                                size="small"
+                                startIcon={<AddCircle />}
+                                onClick={handleAddAccountClick}
+                            >
+                                ADD USER
+                            </PrimaryButton>
+                        ) : null
                     }
                 />
             ) : allUsersError ? (

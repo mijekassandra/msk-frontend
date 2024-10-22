@@ -31,7 +31,7 @@ const BarangayLogo = () => {
     const handleBarangayClick = (barangayName: string) => {
         dispatch(setAdminMode(true)); // Enable admin mode
         dispatch(setSelectedBarangay(barangayName)); // Set the selected barangay
-        navigate(`/view/${barangayName}/publication`); // Navigate to the barangay-specific view
+        navigate(`/view/${barangayName}/sk-files`); // Navigate to the barangay-specific view
     };
 
     return (

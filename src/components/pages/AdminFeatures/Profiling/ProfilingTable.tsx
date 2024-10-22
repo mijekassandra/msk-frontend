@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import { Box, Typography, FormControlLabel, IconButton } from "@mui/material";
-import {
-  Visibility,
-  BorderColor,
-  Delete,
-  AddCircle,
-} from "@mui/icons-material";
+import { Box, IconButton } from "@mui/material";
+import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -21,155 +16,163 @@ import LoadingDisplay from "../../../displays/LoadingDisplay";
 import { useGetUsersQuery, useEditUserMutation } from "../../Admin/api/userApi";
 
 const ProfilingTable = () => {
-  // logged in user details
-  const userDetail = useSelector((state: RootState) => state.auth.user);
+    // logged in user details
+    const userDetail = useSelector((state: RootState) => state.auth.user);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
-    "create"
-  ); // for modal mode, either create or edit
-  const [currentProfiling, setCurrentProfiling] = useState({});
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    const selectedBarangay = useSelector((state: RootState) => state.admin.selectedBarangay);
 
-  const {
-    data: allYouthProfiling = [],
-    isError: allYouthProfilingError,
-    isSuccess: allYouthProfilingSuccess,
-    isLoading: allYouthProfilingLoading,
-  } = useGetUsersQuery();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit
+    const [currentProfiling, setCurrentProfiling] = useState({});
 
-  const [editUser] = useEditUserMutation();
+    const {
+        data: allYouthProfiling = [],
+        isError: allYouthProfilingError,
+        isSuccess: allYouthProfilingSuccess,
+        isLoading: allYouthProfilingLoading,
+    } = useGetUsersQuery();
 
-  const handleAddProfilingClick = () => {
-    setModalMode("create");
-    setCurrentProfiling({});
-    setIsModalOpen(true);
-  };
+    const [editUser] = useEditUserMutation();
 
-  const handleEditProfilingCLick = (profile: any) => {
-    setModalMode("edit");
-    setCurrentProfiling(profile);
-    setIsModalOpen(true);
-  };
+    const handleAddProfilingClick = () => {
+        setModalMode("create");
+        setCurrentProfiling({});
+        setIsModalOpen(true);
+    };
 
-  const handleViewProfilingClick = (profile: any) => {
-    setModalMode("view");
-    setCurrentProfiling(profile);
-    setIsModalOpen(true);
-  };
+    const handleEditProfilingCLick = (profile: any) => {
+        setModalMode("edit");
+        setCurrentProfiling(profile);
+        setIsModalOpen(true);
+    };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+    const handleViewProfilingClick = (profile: any) => {
+        setModalMode("view");
+        setCurrentProfiling(profile);
+        setIsModalOpen(true);
+    };
 
-  const calculateAge = (dateOfBirth: string) => {
-    const birthDate = new Date(dateOfBirth);
-    const today = new Date();
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      return age - 1;
-    }
-    return age;
-  };
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
-  const filteredRows = allYouthProfiling
-    .filter(
-      (profile) =>
-        profile.barangay === userDetail?.barangay && profile.profile_id !== null
-    ) // Filter profiles by barangay
-    .map((profile) => ({
-      ...profile,
-      age: calculateAge(profile.date_of_birth),
-      profile_id: profile.id,
-    }));
+    const calculateAge = (dateOfBirth: string) => {
+        const birthDate = new Date(dateOfBirth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            return age - 1;
+        }
+        return age;
+    };
 
-  const columns = [
-    { field: "first_name", headerName: "First Name", minWidth: 180, flex: 1 },
-    { field: "last_name", headerName: "Last Name", maxWidth: 180, flex: 1 },
-    { field: "age", headerName: "Age", maxWidth: 80 },
-    { field: "gender", headerName: "Gender", width: 80 },
-    { field: "voter_status", headerName: "Voter Status", maxWidth: 120 },
-    {
-      field: "action",
-      headerName: "Action",
-      maxWidth: 160,
-      renderCell: (params: any) => (
-        <Box>
-          <IconButton
-            aria-label="view"
-            onClick={() => handleViewProfilingClick(params.row)}
-          >
-            <Visibility
-              sx={{
-                color: "primary.dark",
-                fontSize: "22px",
-              }}
-            />
-          </IconButton>
-          <IconButton
-            aria-label="edit"
-            onClick={() => handleEditProfilingCLick(params.row)}
-          >
-            <BorderColor
-              sx={{
-                color: "secondary.light",
-                fontSize: "22px",
-              }}
-            />
-          </IconButton>
-          <IconButton aria-label="folder">
-            <Delete
-              sx={{
-                color: "error.main",
-                fontSize: "22px",
-              }}
-            />
-          </IconButton>
-        </Box>
-      ),
-    },
-  ];
+    const filteredRows = allYouthProfiling
+        .filter((profile) => {
+            // Check if adminMode is true and selectedBarangay is not empty
+            if (adminMode && selectedBarangay) {
+                return profile.barangay === selectedBarangay && profile.profile_id !== null;
+            }
+            // Otherwise, filter by user's barangay
+            return profile.barangay === userDetail?.barangay && profile.profile_id !== null;
+        })
+        .map((profile) => ({
+            ...profile,
+            age: calculateAge(profile.date_of_birth),
+            profile_id: profile.id,
+        }));
 
-  return (
-    <>
-      {allYouthProfilingSuccess ? (
-        <CustomDataGrid
-          rows={filteredRows}
-          columns={columns}
-          getRowId={(row: any) => row.profile_id ?? row.account_id}
-          isLoading={allYouthProfilingLoading}
-          totalCount={allYouthProfiling.length}
-          tableLabel="LIST OF KK Profile Profiling"
-          actionButton={
-            <PrimaryButton
-              size="small"
-              startIcon={<AddCircle />}
-              onClick={handleAddProfilingClick}
-            >
-              Add User
-            </PrimaryButton>
-          }
-        />
-      ) : allYouthProfilingError ? (
-        <ErrorDisplay />
-      ) : null}
+    const columns = [
+        { field: "first_name", headerName: "First Name", minWidth: 180, flex: 1 },
+        { field: "last_name", headerName: "Last Name", maxWidth: 180, flex: 1 },
+        { field: "age", headerName: "Age", maxWidth: 80 },
+        { field: "gender", headerName: "Gender", width: 80 },
+        { field: "voter_status", headerName: "Voter Status", maxWidth: 120 },
+        {
+            field: "action",
+            headerName: "Action",
+            maxWidth: 160,
+            renderCell: (params: any) => (
+                <Box>
+                    <IconButton
+                        aria-label="view"
+                        onClick={() => handleViewProfilingClick(params.row)}
+                    >
+                        <Visibility
+                            sx={{
+                                color: "primary.dark",
+                                fontSize: "22px",
+                            }}
+                        />
+                    </IconButton>
+                    {!adminMode && !selectedBarangay ? (
+                        <>
+                            <IconButton
+                                aria-label="edit"
+                                onClick={() => handleEditProfilingCLick(params.row)}
+                            >
+                                <BorderColor
+                                    sx={{
+                                        color: "secondary.light",
+                                        fontSize: "22px",
+                                    }}
+                                />
+                            </IconButton>
+                            <IconButton aria-label="folder">
+                                <Delete
+                                    sx={{
+                                        color: "error.main",
+                                        fontSize: "22px",
+                                    }}
+                                />
+                            </IconButton>
+                        </>
+                    ) : null}
+                </Box>
+            ),
+        },
+    ];
 
-      {isModalOpen && (
-        <CreateNewProfiling
-          mode={modalMode}
-          initialData={currentProfiling}
-          onClose={handleCloseModal}
-          // addYouthProfiling={addYouthProfiling}
-          editYouthProfiling={editUser}
-        />
-      )}
+    return (
+        <>
+            {allYouthProfilingSuccess ? (
+                <CustomDataGrid
+                    rows={filteredRows}
+                    columns={columns}
+                    getRowId={(row: any) => row.profile_id ?? row.account_id}
+                    isLoading={allYouthProfilingLoading}
+                    tableLabel="LIST OF KK Profile Profiling"
+                    actionButton={
+                        !adminMode && !selectedBarangay ? (
+                            <PrimaryButton
+                                size="small"
+                                startIcon={<AddCircle />}
+                                onClick={handleAddProfilingClick}
+                            >
+                                Add User
+                            </PrimaryButton>
+                        ) : null
+                    }
+                />
+            ) : allYouthProfilingError ? (
+                <ErrorDisplay />
+            ) : null}
 
-      <LoadingDisplay open={allYouthProfilingLoading} />
-    </>
-  );
+            {isModalOpen && (
+                <CreateNewProfiling
+                    mode={modalMode}
+                    initialData={currentProfiling}
+                    onClose={handleCloseModal}
+                    // addYouthProfiling={addYouthProfiling}
+                    editYouthProfiling={editUser}
+                />
+            )}
+
+            <LoadingDisplay open={allYouthProfilingLoading} />
+        </>
+    );
 };
 
 export default ProfilingTable;

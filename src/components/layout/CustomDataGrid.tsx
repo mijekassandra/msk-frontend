@@ -7,7 +7,6 @@ import { TocOutlined } from "@mui/icons-material";
 interface CustomDataGridProps {
     rows: readonly any[];
     columns: GridColDef[];
-    totalCount?: number;
     changePage?: any;
     onClickEvent?: any;
     isNotPaginationModeServer?: true;
@@ -21,7 +20,6 @@ interface CustomDataGridProps {
 const CustomDataGrid: React.FC<CustomDataGridProps> = ({
     rows,
     columns,
-    totalCount,
     changePage,
     onClickEvent,
     isNotPaginationModeServer,
@@ -56,6 +54,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
             <DataGrid
                 rows={rows}
                 getRowId={getRowId}
+                autoHeight
                 // onRowClick={(params) => {
                 //     console.log("Row data:", params.row); // log row data
                 // }}
@@ -71,18 +70,12 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                         paginationModel: { page: 0, pageSize: 5 },
                     },
                 }}
-                pageSizeOptions={[5]}
-                rowCount={totalCount}
+                pageSizeOptions={[5, 10, 15]}
+                // rowCount={rows.length}
                 onPaginationModelChange={(model) => {
-                    const { page, pageSize } = model;
-                    // Call `changePage` only if it is provided
-                    if (changePage) {
-                        changePage(page, pageSize);
-                    }
+                    // If handling pagination on the frontend, no need to update this
                 }}
-                {...(!isNotPaginationModeServer && {
-                    paginationMode: "server",
-                })}
+                paginationMode="client"
                 slots={{
                     toolbar: () => (
                         <Box

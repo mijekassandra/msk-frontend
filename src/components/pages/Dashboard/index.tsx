@@ -321,27 +321,27 @@ const Dashboard = () => {
                                                 <>
                                                     <Route
                                                         path="/view/:barangayName/sk-files"
-                                                        element={<SKFiles readOnly />}
+                                                        element={<SKFiles />}
                                                     />
                                                     <Route
                                                         path="/view/:barangayName/announcement"
-                                                        element={<Announcement readOnly />}
+                                                        element={<Announcement />}
                                                     />
                                                     <Route
                                                         path="/view/:barangayName/publication"
-                                                        element={<Publication readOnly />}
+                                                        element={<Publication />}
                                                     />
                                                     <Route
                                                         path="/view/:barangayName/activities"
-                                                        element={<Activities readOnly />}
+                                                        element={<Activities />}
                                                     />
                                                     <Route
                                                         path="/view/:barangayName/users"
-                                                        element={<Admin readOnly />}
+                                                        element={<Admin />}
                                                     />
                                                     <Route
                                                         path="/view/:barangayName/profiling"
-                                                        element={<Profiling readOnly />}
+                                                        element={<Profiling />}
                                                     />
                                                 </>
                                             )}

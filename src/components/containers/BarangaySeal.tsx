@@ -56,12 +56,6 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({ barangayLogo = DefaultLogo 
         finalLogo = "";
     }
 
-    useEffect(() => {
-        console.log("here", finalLogo);
-        console.log("here", adminMode);
-        console.log("here", selectedBarangay);
-    }, [finalLogo, adminMode, selectedBarangay]);
-
     return (
         <Stack
             sx={{
@@ -82,7 +76,7 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({ barangayLogo = DefaultLogo 
                     alt={`${userDetail?.first_name} ${userDetail?.last_name}`}
                 />
             )}
-            <Typography variant="h3" color="white" textAlign="center">
+            <Typography variant="h4" color="white" textAlign="center">
                 {finalBarangay}
             </Typography>
         </Stack>

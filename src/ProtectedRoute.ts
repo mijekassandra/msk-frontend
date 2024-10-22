@@ -1,22 +1,32 @@
 import React, { ReactElement, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "./store";
 import { jwtDecode } from "jwt-decode";
+import { resetAdminState } from "../slice/adminSlice";
 
 interface ProtectedRouteProps {
   element: ReactElement;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
-  const token = useSelector((state: RootState) => state.auth.token);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
 
   useEffect(() => {
-    if (!token || isTokenExpired(token)) {
-      navigate("/", { replace: true }); // Redirect to login if no token or token expired
+    // Only show the alert if the token exists and is expired
+    if (token) {
+      if (isTokenExpired(token)) {
+        alert("Your session has expired. Please log in again to continue.");
+        dispatch(resetAdminState()); 
+        navigate("/", { replace: true }); 
+      }
+    } else {
+      // If there's no token at all, just redirect silently
+      navigate("/", { replace: true });
     }
-  }, [token, navigate]);
+  }, [token, navigate, dispatch]);
 
   const isTokenExpired = (token: string) => {
     if (!token) return true;
