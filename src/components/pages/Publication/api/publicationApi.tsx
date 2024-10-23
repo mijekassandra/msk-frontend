@@ -25,13 +25,14 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+// Define your API service
 export const publicationApi = createApi({
   reducerPath: "publicationApi",
   baseQuery,
   tagTypes: ["Publication"],
   endpoints: (builder) => ({
     getPublications: builder.query<PublicationProps[], void>({
-      query: () => "/publication",
+      query: () => "/publications",
       providesTags: (result) =>
         result
           ? [
@@ -41,12 +42,12 @@ export const publicationApi = createApi({
           : [{ type: "Publication", id: "PublicationLIST" }],
     }),
     getPublicationByID: builder.query<PublicationProps, number>({
-      query: (id) => `/publication/${id}`, // Use id in the URL
+      query: (id) => `/publication/${id}`,
       providesTags: (result, error, id) => [{ type: "Publication", id }],
     }),
     addPublication: builder.mutation<void, FormData>({
       query: (formData) => {
-        console.log("Publication Details:", formData); // This will now be a valid FormData object
+        console.log("Publication Details:", formData);
 
         return {
           url: "/publication",
@@ -70,7 +71,7 @@ export const publicationApi = createApi({
     }),
     deletePublication: builder.mutation<PublicationProps, number>({
       query: (id) => ({
-        url: `/publication/${id}`, // Use id in the URL
+        url: `/publication/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [{ type: "Publication", id }],

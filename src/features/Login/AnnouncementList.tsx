@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Stack, Button } from "@mui/material";
+import { Stack, Button, Pagination } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store.js";
@@ -12,44 +12,98 @@ import LoadingDisplay from "../../components/displays/LoadingDisplay";
 import ErrorDisplay from "../../components/displays/ErrorDisplay";
 import AnnouncementCard from "../../components/cards/AnnouncementCard.js";
 
+// api
+import { useGetAnnouncementsQuery } from "../../components/pages/Announcement/api/announcementApi.js";
+
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
+const ITEMS_PER_PAGE = 3; // Define how many items per page
 
 const AnnouncementList = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleNavigation = (path: string) => {
-        navigate(path);
-    };
+  // logged in user role
+  const userDetail = useSelector((state: RootState) => state.auth.user);
+  const [currentPage, setCurrentPage] = useState(1);
 
-    return (
-        <Stack gap={2}>
-            <LogoHeader header="SK ANNOUNCEMENTS" />
-            <Stack sx={{ alignItems: "flex-end" }}>
-                <Button
-                    onClick={() => handleNavigation("/dashboard")}
-                    sx={{ paddingInline: "20px" }}
-                    startIcon={<ArrowBackIos />}
-                >
-                    BACK TO DASHBOARD
-                </Button>
-            </Stack>
+  const {
+    data: allAnnouncements = [],
+    isError: allAnnouncementsError,
+    isLoading: allAnnouncementsLoading,
+  } = useGetAnnouncementsQuery();
 
-            <Stack gap={5}>
-                <AnnouncementCard
-                    barangay="SK Gaston"
-                    barangayLogo=""
-                    date="June 11, 2024"
-                    cardImage=""
-                    title="KABATAAN KONTRA DROGA AT TERORISMO"
-                    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra nec justo et pulvinar. Sed egestas accumsan turpis. Morbi mauris ligula, porta eu egestas a, feugiat eu augue. Nunc nibh massa, malesuada et fermentum eget, rutrum a est. Sed ac convallis nisl. Vivamus nec ligula purus. Proin fringilla purus id risus viverra molestie. Fusce vestibulum consectetur vulputate. Donec id ex hendrerit, condimentum ipsum viverra, tincidunt quam. Proin mollis tincidunt massa vel posuere. Sed ultrices lectus a consectetur facilisis."
-                />
-            </Stack>
+  // latest first
+  const sortedAnnouncements = [...allAnnouncements].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 
-            {/* {allPublicationsError && <ErrorDisplay />}
-      <LoadingDisplay open={allPublicationsLoading} /> */}
-        </Stack>
-    );
+  // Paginate publications
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedAnnouncements = sortedAnnouncements.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
+  // Calculate total number of pages
+  const totalPages = Math.ceil(sortedAnnouncements.length / ITEMS_PER_PAGE);
+
+  // Handle MUI Pagination change
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setCurrentPage(value);
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
+  return (
+    <Stack gap={2}>
+      <LogoHeader header="SK ANNOUNCEMENTS" />
+      <Stack sx={{ alignItems: "flex-end" }}>
+        <Button
+          onClick={() => handleNavigation("/dashboard")}
+          sx={{ paddingInline: "20px" }}
+          startIcon={<ArrowBackIos />}
+        >
+          BACK TO DASHBOARD
+        </Button>
+      </Stack>
+
+      <Stack gap={5}>
+        {paginatedAnnouncements.map((announcement) => (
+          <AnnouncementCard
+            key={announcement.id}
+            barangay={announcement.barangay}
+            barangayLogo=""
+            date={formatDate(announcement.created_at)}
+            cardImage={VITE_FILE_ENDPOINT + announcement.attachment}
+            title={announcement.title}
+            content={announcement.content}
+          />
+        ))}
+      </Stack>
+
+      {allAnnouncementsError && <ErrorDisplay />}
+      <LoadingDisplay open={allAnnouncementsLoading} />
+
+      {/* Pagination */}
+      <Stack direction="row" justifyContent="center" sx={{ marginTop: "20px" }}>
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="primary"
+          size="large"
+          variant="outlined"
+          shape="rounded"
+        />
+      </Stack>
+    </Stack>
+  );
 };
 
 export default AnnouncementList;

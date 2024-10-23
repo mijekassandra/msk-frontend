@@ -165,10 +165,10 @@ const ManageProfile = () => {
     }
   }, [userProfile]);
 
-  useEffect(() => {
-    console.log("Updated user detail: ", userProfile);
-    console.log("file: ", VITE_FILE_ENDPOINT + formData.profile_img);
-  }, [userDetail, formData]);
+  // useEffect(() => {
+  //   console.log("Updated user detail: ", userProfile);
+  //   console.log("file: ", VITE_FILE_ENDPOINT + formData.profile_img);
+  // }, [userDetail, formData]);
 
   return (
     <Stack rowGap={3}>

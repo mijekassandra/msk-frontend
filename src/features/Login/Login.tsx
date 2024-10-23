@@ -15,6 +15,8 @@ import {
   Typography,
   InputAdornment,
   IconButton,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import { Person, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -55,7 +57,13 @@ const Login = () => {
       const response = await login({ username, password }).unwrap();
 
       // Dispatch the loginSuccess action with the appropriate payload
-      dispatch(loginSuccess({ token: response.token, data: response.data }));
+      dispatch(
+        loginSuccess({
+          token: response.token,
+          data: response.data,
+          message: response.message,
+        })
+      );
 
       // Invalidate the "User" tag to refetch or clear cached user-related data
       dispatch(userProfile.util.invalidateTags(["UserProfile"]));
