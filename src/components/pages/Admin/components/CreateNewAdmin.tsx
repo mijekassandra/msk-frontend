@@ -44,7 +44,9 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
         email: false,
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement> | any
+    ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
 
@@ -78,9 +80,11 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                 ...formData,
                 barangay: formData.barangay || userDetail?.barangay, // Default to userDetail's barangay if formData.barangay is empty
                 role:
-                    userDetail?.role === "Chairperson"
+                    userDetail?.role === "Super Admin"
+                        ? "Federation"
+                        : userDetail?.role === "Chairperson"
                         ? "User"
-                        : userDetail?.role === "Federation" || userDetail?.role === "Super Admin"
+                        : userDetail?.role === "Federation"
                         ? "Chairperson"
                         : "Default Role",
             };
@@ -123,7 +127,8 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             const typedError = error as {
                 data: { status: string; message: string; error?: any };
             };
-            const errorMessage = typedError?.data?.message || "An unexpected error occurred";
+            const errorMessage =
+                typedError?.data?.message || "An unexpected error occurred";
             console.log("Failed:", errorMessage);
             setErrorDisplay(errorMessage);
 
@@ -169,7 +174,8 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                         disabled={mode === "view"}
                     />
 
-                    {(userDetail?.role === "Super Admin" || userDetail?.role === "Super Admin") && (
+                    {(userDetail?.role === "Super Admin" ||
+                        userDetail?.role === "Super Admin") && (
                         <TextField
                             fullWidth
                             label="Barangay"
@@ -197,7 +203,11 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                     )}
 
                     {errorDisplay && (
-                        <Typography variant="caption" textAlign="right" color="error.main">
+                        <Typography
+                            variant="caption"
+                            textAlign="right"
+                            color="error.main"
+                        >
                             {errorDisplay}
                         </Typography>
                     )}

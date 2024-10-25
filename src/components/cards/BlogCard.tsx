@@ -1,66 +1,135 @@
 import React, { MouseEvent } from "react";
-import { Stack, Card, CardMedia, CardActions, Typography } from "@mui/material";
+import {
+    Card,
+    CardMedia,
+    CardContent,
+    CardActions,
+    CardActionArea,
+    Typography,
+    Button,
+    Stack,
+} from "@mui/material";
+import WatchLaterIcon from "@mui/icons-material/WatchLater";
+import barangays from "../../mockData/Barangay.json";
+import { formatDistanceStrict } from "date-fns";
 
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
 
 interface BlogCardProps {
-  bgColor: string;
-  cardImage: File | null;
-  cardTitle: string;
+    bgColor: string;
+    cardImage: File | null;
+    cardTitle: string;
+    cardContent: string;
+    cardBarangay: string;
+    cardDate: Date;
 
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({
-  bgColor,
-  cardImage,
-  cardTitle,
-  onClick,
+    bgColor,
+    cardImage,
+    cardTitle,
+    cardContent,
+    cardBarangay,
+    cardDate,
+    onClick,
 }) => {
-  return (
-    <Card
-      sx={{
-        borderRadius: "4px",
-        bgcolor: bgColor,
-        padding: "30px 20px",
-        width: "240px",
-        height: "300px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-      }}
-    >
-      <CardMedia component="img" height="160px" image={cardImage} />
-
-      <Stack
-        sx={{
-          width: "100%",
-          paddingBlock: "15px",
-        }}
-      >
-        <Typography
-          variant="h5"
-          sx={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: "2",
-            WebkitBoxOrient: "vertical",
-          }}
+    // Convert the date to a "time ago" format
+    const formattedDate = formatDistanceStrict(new Date(cardDate), new Date(), {
+        addSuffix: true,
+    });
+    return (
+        <Card
+            sx={{
+                borderRadius: "6px",
+                bgcolor: "#f8f8f8",
+                width: "280px",
+                height: "325px",
+                display: "flex",
+                flexDirection: "column",
+                variant: "outlined",
+            }}
         >
-          {cardTitle}
-        </Typography>
-      </Stack>
+            <CardMedia
+                component="img"
+                height="160px"
+                image={cardImage}
+                alt="Publication Image"
+            />
+            <CardActionArea>
+                <CardContent
+                    sx={{
+                        height: "85px",
+                    }}
+                >
+                    <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        fontWeight={600}
+                        sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: "2",
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {cardTitle}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "text.secondary",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 2, // Limit to 2 lines
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {cardContent}
+                    </Typography>
+                </CardContent>
+            </CardActionArea>
 
-      <CardActions>
-        <PrimaryButton size="small" color="info" onClick={onClick}>
-          Read More
-        </PrimaryButton>
-      </CardActions>
-    </Card>
-  );
+            <CardActions>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    width="100%"
+                    padding={0.5}
+                >
+                    <Stack direction="row">
+                        <Button
+                            size="small"
+                            onClick={onClick}
+                            sx={{
+                                fontWeight: "500",
+                            }}
+                        >
+                            Read More
+                        </Button>
+                    </Stack>
+
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={0.5}
+                        sx={{ color: "text.secondary" }}
+                    >
+                        <WatchLaterIcon fontSize="12px" />
+                        <Typography variant="caption">
+                            {formattedDate}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            </CardActions>
+        </Card>
+    );
 };
 
 export default BlogCard;

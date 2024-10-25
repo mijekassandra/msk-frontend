@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stack, Button, Pagination } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store.js";
-import { formatDate } from "../../utils/dateUtil.js";
+import { formatDate } from "../../utils/dateUtil.ts";
+import NoImage from "../../assets/no-image.png";
 
 // import components
 import LogoHeader from "../../components/displays/LogoHeader";
@@ -14,96 +15,143 @@ import AnnouncementCard from "../../components/cards/AnnouncementCard.js";
 
 // api
 import { useGetAnnouncementsQuery } from "../../components/pages/Announcement/api/announcementApi.js";
+import EmptyDisplay from "../../components/displays/EmptyDisplay.js";
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 const ITEMS_PER_PAGE = 3; // Define how many items per page
 
 const AnnouncementList = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  // logged in user role
-  const userDetail = useSelector((state: RootState) => state.auth.user);
-  const [currentPage, setCurrentPage] = useState(1);
+    // logged in user role
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+    const [currentPage, setCurrentPage] = useState(1);
 
-  const {
-    data: allAnnouncements = [],
-    isError: allAnnouncementsError,
-    isLoading: allAnnouncementsLoading,
-  } = useGetAnnouncementsQuery();
+    const {
+        data: allAnnouncements = [],
+        isError: allAnnouncementsError,
+        isLoading: allAnnouncementsLoading,
+        isFetching,
+        refetch,
+    } = useGetAnnouncementsQuery();
 
-  // latest first
-  const sortedAnnouncements = [...allAnnouncements].sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  );
+    // Step 1: Filter announcements for published status
+    const publishedAnnouncements = allAnnouncements.filter(
+        (announcement) => announcement.status === "published"
+    );
 
-  // Paginate publications
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedAnnouncements = sortedAnnouncements.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+    // Step 2: Sort the filtered announcements by date (latest first)
+    const sortedAnnouncements = [...publishedAnnouncements].sort(
+        (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
 
-  // Calculate total number of pages
-  const totalPages = Math.ceil(sortedAnnouncements.length / ITEMS_PER_PAGE);
+    // Step 3: Paginate the filtered and sorted announcements
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedAnnouncements = sortedAnnouncements.slice(
+        startIndex,
+        startIndex + ITEMS_PER_PAGE
+    );
 
-  // Handle MUI Pagination change
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    setCurrentPage(value);
-  };
+    // Calculate total number of pages based on the filtered and sorted announcements
+    const totalPages = Math.ceil(sortedAnnouncements.length / ITEMS_PER_PAGE);
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
+    // Handle MUI Pagination change
+    const handlePageChange = (
+        event: React.ChangeEvent<unknown>,
+        value: number
+    ) => {
+        setCurrentPage(value);
+    };
 
-  return (
-    <Stack gap={2}>
-      <LogoHeader header="SK ANNOUNCEMENTS" />
-      <Stack sx={{ alignItems: "flex-end" }}>
-        <Button
-          onClick={() => handleNavigation("/dashboard")}
-          sx={{ paddingInline: "20px" }}
-          startIcon={<ArrowBackIos />}
-        >
-          BACK TO DASHBOARD
-        </Button>
-      </Stack>
+    const handleNavigation = (path: string) => {
+        if (userDetail?.role === "User") {
+            navigate("/home");
+        } else {
+            navigate(path);
+        }
+    };
 
-      <Stack gap={5}>
-        {paginatedAnnouncements.map((announcement) => (
-          <AnnouncementCard
-            key={announcement.id}
-            barangay={announcement.barangay}
-            barangayLogo=""
-            date={formatDate(announcement.created_at)}
-            cardImage={VITE_FILE_ENDPOINT + announcement.attachment}
-            title={announcement.title}
-            content={announcement.content}
-          />
-        ))}
-      </Stack>
+    useEffect(() => {
+        refetch();
+    }, []);
 
-      {allAnnouncementsError && <ErrorDisplay />}
-      <LoadingDisplay open={allAnnouncementsLoading} />
+    return (
+        <Stack gap={2}>
+            <LogoHeader header="SK ANNOUNCEMENTS" />
+            <Stack sx={{ alignItems: "flex-end" }}>
+                <Button
+                    onClick={() => handleNavigation("/dashboard")}
+                    sx={{ paddingInline: "20px" }}
+                    startIcon={<ArrowBackIos />}
+                >
+                    BACK TO DASHBOARD
+                </Button>
+            </Stack>
 
-      {/* Pagination */}
-      <Stack direction="row" justifyContent="center" sx={{ marginTop: "20px" }}>
-        <Pagination
-          count={totalPages}
-          page={currentPage}
-          onChange={handlePageChange}
-          color="primary"
-          size="large"
-          variant="outlined"
-          shape="rounded"
-        />
-      </Stack>
-    </Stack>
-  );
+            {/* Show EmptyDisplay if there are no published announcements */}
+            {!allAnnouncementsLoading &&
+                !isFetching &&
+                !allAnnouncementsError &&
+                paginatedAnnouncements.length === 0 && (
+                    <EmptyDisplay label="No announcement content found" />
+                )}
+
+            {/* Show paginated announcements if available */}
+            {!allAnnouncementsLoading &&
+                !isFetching &&
+                !allAnnouncementsError &&
+                paginatedAnnouncements.length > 0 && (
+                    <Stack gap={5}>
+                        {paginatedAnnouncements.map((announcement) => (
+                            <AnnouncementCard
+                                key={announcement.id}
+                                barangay={
+                                    announcement.type !== "Federation"
+                                        ? announcement.barangay
+                                        : "Federation"
+                                }
+                                date={formatDate(announcement.created_at)}
+                                cardImage={
+                                    announcement.attachment
+                                        ? VITE_FILE_ENDPOINT +
+                                          announcement.attachment
+                                        : NoImage
+                                }
+                                title={announcement.title}
+                                content={announcement.content}
+                                type={announcement.type}
+                            />
+                        ))}
+                    </Stack>
+                )}
+
+            {allAnnouncementsError && <ErrorDisplay />}
+            {(allAnnouncementsLoading || isFetching) && (
+                <LoadingDisplay open={true} />
+            )}
+
+            {/* Pagination controls */}
+            {sortedAnnouncements.length > 0 && (
+                <Stack
+                    direction="row"
+                    justifyContent="center"
+                    sx={{ marginTop: "20px" }}
+                >
+                    <Pagination
+                        count={totalPages}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                        size="large"
+                        variant="outlined"
+                        shape="rounded"
+                    />
+                </Stack>
+            )}
+        </Stack>
+    );
 };
 
 export default AnnouncementList;

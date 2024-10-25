@@ -4,7 +4,7 @@ import { Stack, Button } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store.js";
-import { formatDate } from "../../utils/dateUtil.js";
+import { formatDate } from "../../utils/dateUtil.ts";
 
 // import components
 import LogoHeader from "../../components/displays/LogoHeader";

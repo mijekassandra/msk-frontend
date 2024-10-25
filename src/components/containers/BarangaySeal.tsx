@@ -12,13 +12,19 @@ interface BarangaySealProps {
     barangayLogo?: string;
 }
 
-const BarangaySeal: React.FC<BarangaySealProps> = ({ barangayLogo = DefaultLogo }) => {
+const { VITE_FILE_ENDPOINT } = import.meta.env;
+
+const BarangaySeal: React.FC<BarangaySealProps> = ({
+    barangayLogo = DefaultLogo,
+}) => {
     // redux logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
     // redux fetch adminMode and selectedBarangay
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
-    const selectedBarangay = useSelector((state: RootState) => state.admin.selectedBarangay);
+    const selectedBarangay = useSelector(
+        (state: RootState) => state.admin.selectedBarangay
+    );
 
     // Set default values
     let finalBarangay = "Sangguniang Kabataan Federation";
@@ -38,7 +44,9 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({ barangayLogo = DefaultLogo 
     // TODO If the user is a Chairperson, append their barangay
     else if (userDetail?.role === "Chairperson") {
         const userBarangay = userDetail.barangay;
-        const matchingBarangay = barangays.Barangays.find((b) => b.barangayName === userBarangay);
+        const matchingBarangay = barangays.Barangays.find(
+            (b) => b.barangayName === userBarangay
+        );
 
         if (matchingBarangay) {
             finalBarangay = `Sangguniang Kabataan Barangay ${matchingBarangay.barangayName}`;
@@ -46,13 +54,19 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({ barangayLogo = DefaultLogo 
         }
     }
     // TODO If Federation or Super Admin, show "Sangguniang Kabataan Federation"
-    else if (userDetail?.role === "Super Admin" || userDetail?.role === "Federation") {
+    else if (
+        userDetail?.role === "Super Admin" ||
+        userDetail?.role === "Federation"
+    ) {
         finalBarangay = "Sangguniang Kabataan Federation";
         finalLogo = DefaultLogo;
     }
     // TODO For other roles (like a regular user)
     else {
-        finalBarangay = `${userDetail?.last_name}, ${userDetail?.first_name}`;
+        finalBarangay =
+            userDetail?.first_name && userDetail?.last_name
+                ? `${userDetail.last_name}, ${userDetail.first_name}`
+                : "User";
         finalLogo = "";
     }
 
@@ -67,16 +81,21 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({ barangayLogo = DefaultLogo 
             }}
             gap={1}
         >
-            {userDetail?.role !== "User" && <img width="140px" src={finalLogo} alt="Logo" />}
+            {userDetail?.role !== "User" && (
+                <img width="120px" src={finalLogo} alt="Logo" />
+            )}
 
             {userDetail?.role === "User" && (
                 <Avatar
-                    sx={{ width: "120px", height: "120px" }}
-                    src={userDetail?.profile_img || undefined}
+                    sx={{ width: "100px", height: "100px" }}
+                    src={
+                        VITE_FILE_ENDPOINT + userDetail?.profile_img ||
+                        undefined
+                    }
                     alt={`${userDetail?.first_name} ${userDetail?.last_name}`}
                 />
             )}
-            <Typography variant="h4" color="white" textAlign="center">
+            <Typography variant="subtitle2" color="white" textAlign="center">
                 {finalBarangay}
             </Typography>
         </Stack>

@@ -1,20 +1,25 @@
 import React, { MouseEvent } from "react";
 import { Stack, Grid, Typography, Rating } from "@mui/material";
+import barangays from "../../mockData/Barangay.json";
+import DefaultLogo from "../../assets/SKFed.png";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
 
 interface PublicationCardProps {
-    barangay: string;
-    barangayLogo: string;
+    barangay: string | null;
     date: string;
-    cardImage: File | null;
+    cardImage: string;
     title: string;
     content: string;
     views: number;
     comments: number;
     rating: number;
     mode?: string;
+    selectedBarangay?: string | null;
+    type?: string | null;
 
     onFeedbackClick?: (event: MouseEvent<HTMLButtonElement>) => void; // Separate handler for feedback
     onCommentsClick?: (event: MouseEvent<HTMLDivElement>) => void; // Separate handler for comments
@@ -22,7 +27,6 @@ interface PublicationCardProps {
 
 const PublicationCard: React.FC<PublicationCardProps> = ({
     barangay,
-    barangayLogo,
     date,
     cardImage,
     title,
@@ -31,9 +35,20 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
     comments,
     rating,
     mode,
+    type,
     onFeedbackClick,
     onCommentsClick,
+    selectedBarangay,
 }) => {
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+
+    // find the image for seal
+    const matchingBarangay = !adminMode
+        ? barangays.Barangays.find((b) => b.barangayName === barangay)
+        : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+
+    console.log("file", matchingBarangay?.logo);
     return (
         <Grid
             container
@@ -49,7 +64,9 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
         >
             <Grid
                 item
-                md={4}
+                lg={5.5}
+                md={12}
+                sm={12}
                 xs={12}
                 sx={{
                     display: "grid",
@@ -65,7 +82,16 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                         gap: "8px",
                     }}
                 >
-                    <img src={barangayLogo} height="40px" />
+                    <img
+                        src={
+                            type === "Federation"
+                                ? DefaultLogo
+                                : matchingBarangay?.logo
+                                ? `/${matchingBarangay.logo}`
+                                : DefaultLogo
+                        }
+                        height="40px"
+                    />
                     <Stack>
                         <Typography variant="subtitle1">{barangay}</Typography>
                         <Typography variant="body1" color={"gray"}>
@@ -84,12 +110,19 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                     <img
                         src={cardImage}
                         height="200px"
-                        width="100%"
-                        style={{ borderRadius: "16px", objectFit: "cover" }}
+                        style={{
+                            borderRadius: "16px",
+                            objectFit: "cover",
+                            width: "100%",
+                        }}
                     />
                     {mode !== "view" ? (
                         <Stack>
-                            <PrimaryButton size="medium" color="info" onClick={onFeedbackClick}>
+                            <PrimaryButton
+                                size="medium"
+                                color="info"
+                                onClick={onFeedbackClick}
+                            >
                                 Provide Feedback
                             </PrimaryButton>
                         </Stack>
@@ -103,13 +136,15 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                     alignContent: "space-between",
                     gap: "32px",
                 }}
-                md={7}
+                lg={5.5}
+                md={12}
+                sm={12}
                 xs={12}
             >
                 <Typography variant="h4" fontWeight={600} textAlign={"center"}>
                     {title}
                 </Typography>
-                <Typography variant="subtitle1" fontFamily="Poppins">
+                <Typography variant="body1" fontFamily="Poppins">
                     {content}
                 </Typography>
                 <Stack
@@ -127,9 +162,9 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                 >
                     {mode !== "view" ? (
                         <>
-                            <Typography variant="subtitle1">{views} views</Typography>
+                            {/* <Typography variant="h5">{views} views</Typography> */}
                             <Typography
-                                variant="subtitle1"
+                                variant="h5"
                                 onClick={onCommentsClick}
                                 sx={{ cursor: "pointer" }}
                             >

@@ -8,6 +8,8 @@ interface PublicationProps {
   content: string;
   attachment: File | null;
   created_at: string;
+  barangay: string;
+  status: string;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;

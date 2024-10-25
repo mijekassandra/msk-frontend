@@ -9,6 +9,7 @@ interface AnnouncementProps {
   status: string;
   created_at: string;
   attachment: File;
+  barangay: string;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;

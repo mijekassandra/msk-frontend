@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Paper, Box, Typography, Stack, IconButton, Drawer } from "@mui/material";
+import {
+    Paper,
+    Box,
+    Typography,
+    Stack,
+    IconButton,
+    Drawer,
+} from "@mui/material";
 
 // import components
 import BarangaySeal from "./containers/BarangaySeal";
@@ -57,20 +64,23 @@ const Sidebar: React.FC<SidebarProps> = ({
                         display: "flex",
                         alignItems: "center",
                         cursor: "pointer",
-                        padding: "3px 5px",
-                        backgroundColor: tabValue === tab.tab ? "white" : "transparent",
-                        borderRadius: "4px",
+                        padding: "1px 5px",
+                        backgroundColor:
+                            tabValue === tab.tab ? "white" : "transparent",
                         transition: "background-color 0.3s",
                         "&:hover": {
                             backgroundColor:
-                                tabValue === tab.tab ? "white" : "rgba(255, 255, 255, 0.5)",
+                                tabValue === tab.tab
+                                    ? "white"
+                                    : "rgba(255, 255, 255, 0.5)",
                         },
                     }}
                     onClick={() => handleChange(tab.tab)}
                 >
                     <IconButton
                         sx={{
-                            color: tabValue === tab.tab ? "primary.main" : "white",
+                            color:
+                                tabValue === tab.tab ? "primary.main" : "white",
                         }}
                     >
                         {tab.icon}
@@ -101,6 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 gap: "12px",
                 alignContent: "flex-start",
                 width: "100%",
+                overflow: "auto",
             }}
         >
             {mobileView?.isShow ? (
@@ -113,7 +124,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 >
                     <Stack
                         spacing={2}
-                        sx={{ width: "280px", background: "#030A59", height: "100%" }}
+                        sx={{
+                            width: "280px",
+                            background: "#030A59",
+                            height: "100%",
+                        }}
                     >
                         <BarangaySeal />
                         {tabList()}

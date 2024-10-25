@@ -41,6 +41,8 @@ interface MiniAppbarProps {
     toggleSidebar: () => void;
 }
 
+const { VITE_FILE_ENDPOINT } = import.meta.env;
+
 const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -49,7 +51,9 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     // authenticiation
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+        null
+    );
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -103,12 +107,19 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                         <Menu />
                     </IconButton>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        {" "}
-                        <Badge badgeContent={5} color="error" overlap="circular">
-                            <Notifications sx={{ color: "primary.main", fontSize: "28px" }} />
+                        <Badge
+                            badgeContent={5}
+                            color="error"
+                            overlap="circular"
+                        >
+                            <Notifications
+                                sx={{ color: "primary.main", fontSize: "28px" }}
+                            />
                         </Badge>
                         <IconButton onClick={handleClick}>
-                            <AccountCircle sx={{ color: "primary.main", fontSize: "28px" }} />
+                            <AccountCircle
+                                sx={{ color: "primary.main", fontSize: "28px" }}
+                            />
                         </IconButton>
                         <Popover
                             id={id}
@@ -125,15 +136,34 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                             }}
                         >
                             <Stack direction="column" sx={{ width: "200px" }}>
-                                <Stack direction="row" spacing={1} sx={{ padding: "10px" }}>
-                                    <Avatar>
-                                        <Person sx={{ fontSize: "30px" }} />
+                                <Stack
+                                    direction="row"
+                                    spacing={1}
+                                    sx={{ padding: "10px" }}
+                                >
+                                    <Avatar
+                                        src={
+                                            userDetail?.profile_img
+                                                ? `${VITE_FILE_ENDPOINT}${userDetail.profile_img}`
+                                                : undefined
+                                        }
+                                        sx={{ width: 40, height: 40 }}
+                                    >
+                                        {!userDetail?.profile_img && (
+                                            <Person sx={{ fontSize: "30px" }} />
+                                        )}
                                     </Avatar>
                                     <Stack>
                                         <Typography variant="h5">
-                                            {`${userDetail?.first_name} ${userDetail?.last_name}`}
+                                            {userDetail?.first_name &&
+                                            userDetail?.last_name
+                                                ? `${userDetail.first_name} ${userDetail.last_name}`
+                                                : "User"}
                                         </Typography>
-                                        <Typography variant="caption" color="gray">
+                                        <Typography
+                                            variant="caption"
+                                            color="gray"
+                                        >
                                             {userDetail?.role}
                                         </Typography>
                                     </Stack>
@@ -152,7 +182,9 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                                 borderRadius: "5px",
                                             },
                                         }}
-                                        onClick={() => handleNavigation("/manage-profile")}
+                                        onClick={() =>
+                                            handleNavigation("/manage-profile")
+                                        }
                                     >
                                         <AccountBox fontSize="small" />
                                         <Typography>Manage Profile</Typography>
@@ -169,7 +201,11 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                                 borderRadius: "5px",
                                             },
                                         }}
-                                        onClick={() => handleNavigation("/account-settings")}
+                                        onClick={() =>
+                                            handleNavigation(
+                                                "/account-settings"
+                                            )
+                                        }
                                     >
                                         <Settings fontSize="small" />
                                         <Typography>Account Setting</Typography>
