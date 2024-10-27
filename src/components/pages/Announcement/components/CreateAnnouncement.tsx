@@ -3,10 +3,9 @@ import {
     Stack,
     TextField,
     Typography,
-    Select,
     MenuItem,
-    InputLabel,
-    FormControl,
+    Alert,
+    Box,
 } from "@mui/material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
@@ -76,6 +75,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
         title: false,
         content: false,
     });
+    const [alert, setAlert] = useState(null);
 
     // Function to handle file selection from CustomUpload2
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,9 +133,17 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
             }
 
             if (mode === "create") {
-                await addAnnouncement(formSubmissionData);
+                const response = await addAnnouncement(formSubmissionData);
 
-                if (!errorDisplay) {
+                console.log("response: ", response);
+
+                if (response.error) {
+                    setAlert(response.error.data.message);
+
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (response.data.status === "success") {
                     Swal.fire({
                         title: "Create Success!",
                         text: "The announcement has been successfully created.",
@@ -148,14 +156,21 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                             confirmButton: "my-swal-button",
                         },
                     });
+                    onClose();
                 }
             } else if (mode === "edit") {
-                await editAnnouncement({
+                const response = await editAnnouncement({
                     id: formData.id,
                     announcement: formSubmissionData,
                 });
 
-                if (!errorDisplay) {
+                if (response.error) {
+                    setAlert(response.error.data.message);
+
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (response.data.status === "success") {
                     Swal.fire({
                         title: "Update Success!",
                         text: "The announcement has been successfully updated.",
@@ -168,6 +183,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                             confirmButton: "my-swal-button",
                         },
                     });
+                    onClose();
                 }
             }
             onClose(); // Close modal after successful save
@@ -296,6 +312,21 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                             fileName={fileName} // Pass the file name
                             mode={mode}
                         />
+
+                        {alert && (
+                            <Box
+                                sx={{
+                                    position: "fixed",
+                                    bottom: 16,
+                                    right: 16,
+                                    zIndex: 1000,
+                                }}
+                            >
+                                <Alert variant="filled" severity="error">
+                                    {alert}
+                                </Alert>
+                            </Box>
+                        )}
                     </Stack>
                 )
             }

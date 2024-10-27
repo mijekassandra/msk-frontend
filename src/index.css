@@ -29,3 +29,69 @@
   font-size: 16px !important; 
   border-radius: 4px !important; 
 }
+
+.print-hidden {
+  display: block;
+}
+
+.print-only {
+  display: block;
+}
+
+@media print {
+  @page {
+    margin-block: 10mm; /* Adjust as needed */
+    margin-inline: 5mm; /* Adjust as needed */
+}
+
+  .print-hidden {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .MuiDataGrid-columnHeader[data-field="action"],
+  .MuiDataGrid-cell[data-field="action"] {
+    display: none !important; /* Hide both header and cell for the Action column */
+    border: none !important;
+  }
+  .MuiDataGrid-footerContainer {
+    display: none !important;
+  }
+  .MuiDataGrid-cell, .MuiDataGrid-columnHeader {
+    min-width: 30px !important; 
+    max-width: 200px !important; 
+
+  }
+  /* Allow column header text to wrap and remove ellipsis */
+  .MuiDataGrid-columnHeader {
+    white-space: normal !important;
+    line-height: 1.2em !important;
+    text-overflow: clip !important; 
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important; 
+}
+
+.MuiDataGrid-columnHeaderTitle {
+    white-space: normal !important; 
+    text-overflow: clip !important; 
+    overflow: visible !important; 
+    display: inline-block !important;
+}
+
+.MuiDataGrid-columnHeader .MuiDataGrid-menuIcon {
+  display: none !important; /* Completely hides the three-dot menu icon */
+}
+
+  .MuiDataGrid-root {
+    font-size: 10px;
+    width: 100% !important;
+    overflow: visible !important; /* Prevents any overflow in print mode */
+    height: auto !important; /* Allows the DataGrid to take full height */
+
+  }
+}

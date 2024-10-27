@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Stack, TextField, MenuItem, Typography } from "@mui/material";
+import {
+    Stack,
+    TextField,
+    MenuItem,
+    Typography,
+    Alert,
+    Box,
+} from "@mui/material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -33,6 +40,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
 
     // states
     const [formData, setFormData] = useState({
+        id: initialData.id || "",
         username: initialData.username || "",
         email: initialData.email || "",
         role: initialData.role || "",
@@ -42,7 +50,9 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
     const [fieldErrors, setFieldErrors] = useState({
         username: false,
         email: false,
+        barangay: false,
     });
+    const [alert, setAlert] = useState(null);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | any
@@ -58,6 +68,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
         const errors = {
             username: !formData.username,
             email: !formData.email,
+            barangay: !formData.barangay,
         };
 
         setFieldErrors(errors);
@@ -90,43 +101,68 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             };
 
             if (mode === "create") {
-                await addAccount(accountData);
+                const response = await addAccount(accountData);
 
-                Swal.fire({
-                    title: "Success!",
-                    text: "The account has been successfully created.",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                    customClass: {
-                        title: "my-swal-title",
-                        htmlContainer: "my-swal-text",
-                        popup: "my-swal-popup",
-                        confirmButton: "my-swal-button",
-                    },
-                });
+                if (response.error) {
+                    setAlert(response.error.data.message);
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (
+                    response.data &&
+                    response.data.status === "success"
+                ) {
+                    // Handle success response
+                    Swal.fire({
+                        title: "Success!",
+                        text: "The account has been successfully created.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            title: "my-swal-title",
+                            htmlContainer: "my-swal-text",
+                            popup: "my-swal-popup",
+                            confirmButton: "my-swal-button",
+                        },
+                    });
+                    onClose();
+                }
             } else if (mode === "edit") {
-                await editAccount({
+                const response = await editAccount({
                     id: String(accountData.id),
                     account: accountData,
                 });
-                Swal.fire({
-                    title: "Success!",
-                    text: "The account has been successfully updated.",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                    customClass: {
-                        title: "my-swal-title",
-                        htmlContainer: "my-swal-text",
-                        popup: "my-swal-popup",
-                        confirmButton: "my-swal-button",
-                    },
-                });
+
+                if (response.error) {
+                    setAlert(response.error.data.message);
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (
+                    response.data &&
+                    response.data.status === "success"
+                ) {
+                    // Handle success response
+                    Swal.fire({
+                        title: "Success!",
+                        text: "The account has been successfully updated.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            title: "my-swal-title",
+                            htmlContainer: "my-swal-text",
+                            popup: "my-swal-popup",
+                            confirmButton: "my-swal-button",
+                        },
+                    });
+                    onClose();
+                }
             }
-            onClose();
         } catch (error) {
             const typedError = error as {
                 data: { status: string; message: string; error?: any };
             };
+
             const errorMessage =
                 typedError?.data?.message || "An unexpected error occurred";
             console.log("Failed:", errorMessage);
@@ -175,7 +211,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                     />
 
                     {(userDetail?.role === "Super Admin" ||
-                        userDetail?.role === "Super Admin") && (
+                        userDetail?.role === "Federation") && (
                         <TextField
                             fullWidth
                             label="Barangay"
@@ -200,6 +236,21 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                             <MenuItem value="Lumbo">Lumbo</MenuItem>
                             <MenuItem value="Umagos">Umagos</MenuItem>
                         </TextField>
+                    )}
+
+                    {alert && (
+                        <Box
+                            sx={{
+                                position: "fixed",
+                                bottom: 16,
+                                right: 16,
+                                zIndex: 1000,
+                            }}
+                        >
+                            <Alert variant="filled" severity="error">
+                                {alert}
+                            </Alert>
+                        </Box>
                     )}
 
                     {errorDisplay && (

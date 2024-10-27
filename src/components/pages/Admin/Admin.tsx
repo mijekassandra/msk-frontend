@@ -12,7 +12,9 @@ const Admin = () => {
 
     // Fetch adminMode and selectedBarangay from the Redux store
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
-    const selectedBarangay = useSelector((state: RootState) => state.admin.selectedBarangay);
+    const selectedBarangay = useSelector(
+        (state: RootState) => state.admin.selectedBarangay
+    );
 
     const getHeaderText = () => {
         const userRole = userDetail?.role;
@@ -21,19 +23,15 @@ const Admin = () => {
             return `USERS INFORMATION`;
         }
 
-        if (
-            (userRole === "Super Admin" || userRole === "Federation") &&
-            !adminMode &&
-            !selectedBarangay
-        ) {
+        if (userRole === "Federation" && !adminMode && !selectedBarangay) {
             return "ADMIN INFORMATION";
         }
 
-        if (
-            (userRole === "Super Admin" || userRole === "Federation") &&
-            adminMode &&
-            selectedBarangay
-        ) {
+        if (userRole === "Super Admin" && !adminMode && !selectedBarangay) {
+            return "ALL ACCOUNTS INFORMATION";
+        }
+
+        if (userRole === "Federation" && adminMode && selectedBarangay) {
             return `USERS INFORMATION`;
         }
 
@@ -42,8 +40,13 @@ const Admin = () => {
 
     return (
         <Stack rowGap={3}>
-            {getHeaderText() && <Typography variant="h2">{getHeaderText()}</Typography>}
-            <DashboardCard padding="0px 0px 0px 0px" content={<AdminTable />}></DashboardCard>
+            {getHeaderText() && (
+                <Typography variant="h2">{getHeaderText()}</Typography>
+            )}
+            <DashboardCard
+                padding="0px 0px 0px 0px"
+                content={<AdminTable />}
+            ></DashboardCard>
         </Stack>
     );
 };

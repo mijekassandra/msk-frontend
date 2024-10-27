@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, FormControlLabel, IconButton } from "@mui/material";
-import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
+import {
+    Visibility,
+    BorderColor,
+    Delete,
+    AddCircle,
+} from "@mui/icons-material";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
+import { formatDateTime } from "../../../../utils/dateTimeUtil";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -16,25 +24,34 @@ import {
     useGetActivityByIDQuery,
     useAddActivityMutation,
     useEditActivityMutation,
-    useDeleteActivityMutation,
 } from "../api/activityApi";
 
 const ActivitiesTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit
+    const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
+        "create"
+    ); // for modal mode, either create or edit
     const [currentActivity, setCurrentActivity] = useState({}); // for edit modal
+
+    // logged in user role
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    const selectedBarangay = useSelector(
+        (state: RootState) => state.admin.selectedBarangay
+    );
 
     const {
         data: allActivities = [],
         isError: allActivitiesError,
         isSuccess: allActivitiesSuccess,
         isLoading: allActivitiesLoading,
-        isFetching: allActivitiesFetching,
+        refetch,
     } = useGetActivtiesQuery();
 
     const [addActivity] = useAddActivityMutation();
     const [editActivity] = useEditActivityMutation();
-    const [deleteActivity] = useDeleteActivityMutation();
 
     const handleAddActivityClick = () => {
         setModalMode("create");
@@ -58,56 +75,73 @@ const ActivitiesTable = () => {
         setIsModalOpen(false);
     };
 
-    const handleDeleteActivity = async (activity: any) => {
-        // confirmation dialog
-        const result = await Swal.fire({
-            title: "Delete Activity?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            confirmButtonText: "Delete!",
-            customClass: {
-                title: "my-swal-title",
-                htmlContainer: "my-swal-text",
-                popup: "my-swal-popup",
-            },
-        });
+    // Force refetch if needed
+    useEffect(() => {
+        refetch();
+    }, []);
 
-        // final confirmation
-        if (result.isConfirmed) {
-            try {
-                await deleteActivity(activity.id);
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "The activity has been deleted.",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                    customClass: {
-                        title: "my-swal-title",
-                        htmlContainer: "my-swal-text",
-                        popup: "my-swal-popup",
-                        confirmButton: "my-swal-button",
-                    },
-                });
-            } catch (error) {
-                console.log("Error: ", error);
-            }
+    // const handleDeleteActivity = async (activity: any) => {
+    //     // confirmation dialog
+    //     const result = await Swal.fire({
+    //         title: "Delete Activity?",
+    //         text: "You won't be able to revert this!",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#d33",
+    //         confirmButtonText: "Delete!",
+    //         customClass: {
+    //             title: "my-swal-title",
+    //             htmlContainer: "my-swal-text",
+    //             popup: "my-swal-popup",
+    //         },
+    //     });
+
+    //     // final confirmation
+    //     if (result.isConfirmed) {
+    //         try {
+    //             await deleteActivity(activity.id);
+    //             Swal.fire({
+    //                 title: "Deleted!",
+    //                 text: "The activity has been deleted.",
+    //                 icon: "success",
+    //                 confirmButtonText: "OK",
+    //                 customClass: {
+    //                     title: "my-swal-title",
+    //                     htmlContainer: "my-swal-text",
+    //                     popup: "my-swal-popup",
+    //                     confirmButton: "my-swal-button",
+    //                 },
+    //             });
+    //         } catch (error) {
+    //             console.log("Error: ", error);
+    //         }
+    //     }
+    // };
+
+    //   Filter activities based on user role (Super Admin, Federation)
+    const filteredRows = React.useMemo(() => {
+        if (adminMode && selectedBarangay) {
+            return allActivities.filter(
+                (activity) =>
+                    activity.barangay === selectedBarangay &&
+                    activity.type !== "Federation"
+            );
+        } else if (userDetail.role === "Chairperson") {
+            return allActivities.filter(
+                (activity) => activity.barangay === userDetail.barangay
+            );
         }
-    };
 
-    const getNextId = (activity: any) => {
-        const lastId = activity.length > 0 ? Number(activity[activity.length - 1].id) : 0;
-        return lastId + 1;
-    };
-
-    const rows = allActivities.map((activity) => ({
-        ...activity,
-        activity_id: activity.id,
-    }));
+        return allActivities;
+    }, [allActivities, userDetail?.role]);
 
     const columns = [
-        { field: "activity_title", headerName: "Title", minWidth: 300, flex: 1 },
+        {
+            field: "activity_title",
+            headerName: "Title",
+            minWidth: 300,
+            flex: 1,
+        },
         { field: "activity_type", headerName: "Type", maxWidth: 200, flex: 1 },
         { field: "date", headerName: "Date Publish", maxWidth: 160 },
         {
@@ -138,7 +172,7 @@ const ActivitiesTable = () => {
                             }}
                         />
                     </IconButton>
-                    <IconButton
+                    {/* <IconButton
                         aria-label="folder"
                         onClick={() => handleDeleteActivity(params.row)}
                     >
@@ -148,7 +182,7 @@ const ActivitiesTable = () => {
                                 fontSize: "22px",
                             }}
                         />
-                    </IconButton>
+                    </IconButton> */}
                 </Box>
             ),
         },
@@ -158,20 +192,23 @@ const ActivitiesTable = () => {
         <>
             {allActivitiesSuccess ? (
                 <CustomDataGrid
-                    rows={rows}
+                    rows={filteredRows}
                     columns={columns}
                     getRowId={(row: any) => row.id}
                     isLoading={allActivitiesLoading}
-                    totalCount={allActivities.length}
                     tableLabel="LIST OF ACTIVITIES"
                     actionButton={
-                        <PrimaryButton
-                            size="small"
-                            startIcon={<AddCircle />}
-                            onClick={handleAddActivityClick}
-                        >
-                            CREATE ACTIVITIES
-                        </PrimaryButton>
+                        !adminMode &&
+                        !selectedBarangay &&
+                        userDetail?.role !== "Super Admin" ? (
+                            <PrimaryButton
+                                size="small"
+                                startIcon={<AddCircle />}
+                                onClick={handleAddActivityClick}
+                            >
+                                CREATE ACTIVITIES
+                            </PrimaryButton>
+                        ) : null
                     }
                 />
             ) : allActivitiesError ? (
@@ -185,7 +222,6 @@ const ActivitiesTable = () => {
                     onClose={handleCloseModal}
                     addActivity={addActivity}
                     editActivity={editActivity}
-                    totalCount={getNextId(allActivities)}
                 />
             )}
 

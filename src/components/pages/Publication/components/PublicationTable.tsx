@@ -83,7 +83,13 @@ const PublicationTable = () => {
     const filteredRows = React.useMemo(() => {
         if (adminMode && selectedBarangay) {
             return allPublications.filter(
-                (publication) => publication.barangay === selectedBarangay
+                (publication) =>
+                    publication.barangay === selectedBarangay &&
+                    publication.type !== "Federation"
+            );
+        } else if (userDetail.role === "Chairperson") {
+            return allPublications.filter(
+                (publication) => publication.barangay === userDetail.barangay
             );
         }
 
@@ -109,7 +115,9 @@ const PublicationTable = () => {
         {
             field: "action",
             headerName: "Action",
-            maxWidth: 160,
+            width: 30,
+            headerClassName: "print-hidden",
+            cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
                     <IconButton
@@ -141,14 +149,14 @@ const PublicationTable = () => {
                                     }}
                                 />
                             </IconButton>
-                            <IconButton aria-label="archive">
+                            {/* <IconButton aria-label="archive">
                                 <Archive
                                     sx={{
                                         color: "secondary.main",
                                         fontSize: "22px",
                                     }}
                                 />
-                            </IconButton>
+                            </IconButton> */}
                         </>
                     ) : null}
                 </Box>
@@ -177,6 +185,12 @@ const PublicationTable = () => {
                             </PrimaryButton>
                         ) : null
                     }
+                    barangay={
+                        !adminMode && !selectedBarangay
+                            ? userDetail.barangay
+                            : selectedBarangay
+                    }
+                    dataType="LIST OF PUBLICATION"
                 />
             ) : allPublicationsError ? (
                 <ErrorDisplay />

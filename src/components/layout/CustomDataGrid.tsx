@@ -1,8 +1,19 @@
 import React from "react";
-import { DataGrid, GridColDef, GridToolbarQuickFilter, GridRowId } from "@mui/x-data-grid";
-import { Typography, Stack, Box } from "@mui/material";
-
+import {
+    DataGrid,
+    GridColDef,
+    GridToolbarQuickFilter,
+    GridRowId,
+    GridToolbarContainer,
+    GridToolbarExport,
+    GridToolbarFilterButton,
+} from "@mui/x-data-grid";
+import { Typography, Stack, Box, Divider } from "@mui/material";
 import { TocOutlined } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import barangays from "../../mockData/Barangay.json";
+import DefaultLogo from "../../assets/SKFed.png";
 
 interface CustomDataGridProps {
     rows: readonly any[];
@@ -15,6 +26,8 @@ interface CustomDataGridProps {
     isLoading?: boolean;
     isFetching?: boolean;
     getRowId?: (row: any) => GridRowId;
+    barangay?: string | null;
+    dataType?: string;
 }
 
 const CustomDataGrid: React.FC<CustomDataGridProps> = ({
@@ -27,7 +40,20 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
     actionButton,
     isLoading,
     getRowId,
+    barangay,
+    dataType,
 }) => {
+    // logged in user details
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    const selectedBarangay = useSelector(
+        (state: RootState) => state.admin.selectedBarangay
+    );
+
+    const matchingBarangay = barangays.Barangays.find(
+        (b) => b.barangayName === barangay
+    );
+
     return (
         <Stack>
             <Stack
@@ -46,7 +72,9 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
 
                 {actionButton && (
                     <Box className="action-button-container">
-                        {typeof actionButton === "function" ? actionButton() : actionButton}
+                        {typeof actionButton === "function"
+                            ? actionButton()
+                            : actionButton}
                     </Box>
                 )}
             </Stack>
@@ -54,7 +82,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
             <DataGrid
                 rows={rows}
                 getRowId={getRowId}
-                autoHeight
+                autoHeight={true}
                 // onRowClick={(params) => {
                 //     console.log("Row data:", params.row); // log row data
                 // }}
@@ -70,7 +98,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                         paginationModel: { page: 0, pageSize: 5 },
                     },
                 }}
-                pageSizeOptions={[5, 10, 15]}
+                pageSizeOptions={[5, 10, 15, 20]}
                 // rowCount={rows.length}
                 onPaginationModelChange={(model) => {
                     // If handling pagination on the frontend, no need to update this
@@ -78,20 +106,122 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 paginationMode="client"
                 slots={{
                     toolbar: () => (
-                        <Box
+                        <GridToolbarContainer
                             sx={{
                                 display: "flex",
-                                justifyContent: "flex-end",
+                                justifyContent: "space-between",
                                 margin: "10px",
                             }}
                         >
-                            <GridToolbarQuickFilter sx={{ width: "250px" }} />
-                        </Box>
+                            <Box
+                                className="print-hidden"
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    width: "100%",
+                                }}
+                            >
+                                <Box>
+                                    <GridToolbarExport />
+                                    <GridToolbarFilterButton />
+                                </Box>
+                                <GridToolbarQuickFilter
+                                    sx={{ width: "250px" }}
+                                />
+                            </Box>
+                            <Box
+                                className="print-only"
+                                sx={{
+                                    display: "none", // Hidden by default on screen
+                                    textAlign: "center",
+                                    width: "100%",
+                                    pt: 2,
+                                    pb: 1,
+                                    "@media print": {
+                                        display: "block", // Shown only in print view
+                                    },
+                                }}
+                            >
+                                {/* Logo and Header Section */}
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        mb: 2,
+                                        px: 5, // Adjust padding for alignment
+                                    }}
+                                >
+                                    {/* Left Logo */}
+                                    <img
+                                        src="\src\assets\Sangguniang_Kabataan_logo.jpg"
+                                        alt="Left Logo"
+                                        style={{
+                                            width: "80px",
+                                            height: "80px",
+                                        }}
+                                    />
+
+                                    {/* Centered Header Text */}
+                                    <Box>
+                                        <Typography
+                                            variant="h4"
+                                            fontWeight="bold"
+                                        >
+                                            Republic of the Philippines
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            Province of Misamis Oriental
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            Municipality of Lagonglong
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            {(userDetail.role ===
+                                                "Super Admin" ||
+                                                "Federation") &&
+                                            !adminMode &&
+                                            selectedBarangay
+                                                ? "All Barangays"
+                                                : `Barangay ${barangay}`}
+                                        </Typography>
+                                        <Typography variant="h4" sx={{ mt: 1 }}>
+                                            OFFICE OF THE SANGGUNIANG KABATAAN
+                                        </Typography>
+                                    </Box>
+
+                                    {/* Right Logo */}
+                                    <img
+                                        src={
+                                            userDetail.role === "Super Admin"
+                                                ? DefaultLogo
+                                                : `/${matchingBarangay.logo}`
+                                        }
+                                        alt="Right Logo"
+                                        style={{
+                                            width: "80px",
+                                            height: "80px",
+                                        }}
+                                    />
+                                </Box>
+
+                                {/* Report Title Section */}
+                                <Divider />
+                                <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+                                    {dataType}
+                                </Typography>
+
+                                {/* <Typography variant="body2" sx={{ mb: 2 }}>
+                                    Total of Female Katipunan ng Kabataan
+                                </Typography> */}
+                            </Box>
+                        </GridToolbarContainer>
                     ),
                 }}
                 slotProps={{
                     toolbar: {
-                        showQuickFilter: true,
+                        showQuickFilter: false,
+                        export: false,
                     },
                 }}
                 sx={{

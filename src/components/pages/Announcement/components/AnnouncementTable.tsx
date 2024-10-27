@@ -123,7 +123,13 @@ const AnnouncementTable = () => {
     const filteredRows = React.useMemo(() => {
         if (adminMode && selectedBarangay) {
             return allAnnouncements.filter(
-                (announcement) => announcement.barangay === selectedBarangay
+                (announcement) =>
+                    announcement.barangay === selectedBarangay &&
+                    announcement.type !== "Federation"
+            );
+        } else if (userDetail.role === "Chairperson") {
+            return allAnnouncements.filter(
+                (announcement) => announcement.barangay === userDetail.barangay
             );
         }
         return allAnnouncements;
@@ -139,9 +145,16 @@ const AnnouncementTable = () => {
             valueFormatter: (params: any) => formatDateTime(params),
         },
         {
+            field: "updated_at",
+            headerName: "Date Updated",
+            valueFormatter: (params: any) => formatDateTime(params),
+        },
+        {
             field: "action",
             headerName: "Action",
-            maxWidth: 160,
+            width: 30,
+            headerClassName: "print-hidden",
+            cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
                     <IconButton
@@ -215,6 +228,12 @@ const AnnouncementTable = () => {
                             </PrimaryButton>
                         ) : null
                     }
+                    barangay={
+                        !adminMode && !selectedBarangay
+                            ? userDetail.barangay
+                            : selectedBarangay
+                    }
+                    dataType="LIST OF ANNOUNCEMENT"
                 />
             ) : allAnnouncementsError ? (
                 <ErrorDisplay />

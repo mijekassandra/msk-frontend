@@ -127,7 +127,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                         sx={{
                             width: "280px",
                             background: "#030A59",
-                            height: "100%",
+                            height: "100vh",
+                            overflow: "auto",
                         }}
                     >
                         <BarangaySeal />

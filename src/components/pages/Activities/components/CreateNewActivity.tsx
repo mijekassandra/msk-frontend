@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Stack, TextField } from "@mui/material";
+import { Stack, TextField, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import "../../../../index.css";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
+import { formatDate } from "../../../../utils/dateUtil";
+import NoImage from "../../../../assets/no-image.png";
 
 //import components
 import ModalVariantTwo from "../../../modals/ModalVariantTwo";
 import CustomUpload2 from "../../../layout/CustomUpload2";
+import ActivitiesCard from "../../../cards/ActivitiesCard";
+
+// file endpoint
+const { VITE_FILE_ENDPOINT } = import.meta.env;
 
 interface CreateNewActivityProps {
     mode: "create" | "edit" | "view";
     initialData?: {
-        id?: number | string;
-        activity_title?: string;
-        activity_content?: string;
-        activity_type?: "Federation" | "Chairperson";
-        date?: string;
+        id?: number;
+        title?: string;
+        content?: string;
+        type?: "Federation" | "Chairperson";
+        attachment?: File | null | string;
+        created_at?: string;
+        barangay?: string;
+        status?: "draft" | "archived" | "published";
     };
     onClose: () => void;
     addActivity: any;
     editActivity: any;
-    totalCount: number;
 }
 
 const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
@@ -28,99 +38,160 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
     onClose,
     addActivity,
     editActivity,
-    totalCount,
 }) => {
+    // logged in user details
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    const selectedBarangay = useSelector(
+        (state: RootState) => state.admin.selectedBarangay
+    );
+
     const [formData, setFormData] = useState({
         id: initialData.id || "",
-        activity_title: initialData.activity_title || "",
-        activity_content: initialData.activity_content || "",
-        activity_type: initialData.activity_type || "",
-        date: initialData.date || "",
+        title: initialData.title || "",
+        content: initialData.content || "",
+        attachment: initialData.attachment || null,
+        created_at: initialData.created_at || null,
+        barangay: initialData.barangay || null,
+        type: initialData.type || null,
+        status: initialData.status || "draft",
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: name === "id" ? Number(value) : value,
-        }));
+    const [fileName, setFileName] = useState<string | null>(
+        initialData.attachment
+            ? initialData.attachment.split(/[/\\]/).pop()
+            : null // Extract file name from path
+    );
+    const [errorDisplay, setErrorDisplay] = useState("");
+    const [fieldErrors, setFieldErrors] = useState({
+        title: false,
+        content: false,
+    });
+    const [alert, setAlert] = useState(null);
+
+    // Function to handle file selection from CustomUpload2
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files && event.target.files[0];
+        if (file) {
+            setFileName(file.name); // Update the file name in state
+            setFormData((prev) => ({
+                ...prev,
+                attachment: file,
+                barangay: userDetail?.barangay,
+            })); // Update formData with the file
+        }
     };
 
-    useEffect(() => {
-        if (mode === "edit" && initialData) {
-            setFormData({
-                id: initialData.id || "",
-                activity_title: initialData.activity_title || "",
-                activity_content: initialData.activity_content || "",
-                activity_type: initialData.activity_type || "",
-                date: initialData.date || "",
-            });
-        }
-    }, [mode, initialData]);
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement> | any
+    ) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
 
-    const getCurrentDateTime = () => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-        const seconds = String(now.getSeconds()).padStart(2, "0");
+        // Clear field errors on input change
+        setFieldErrors((prev) => ({ ...prev, [name]: false }));
+    };
 
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const validateForm = () => {
+        const errors = {
+            title: !formData.title,
+            content: !formData.content,
+        };
+
+        setFieldErrors(errors);
+
+        // Check if any errors exist
+        return !Object.values(errors).some((error) => error === true);
     };
 
     const handleSubmitActivity = async () => {
         try {
-            const currentDateTime = getCurrentDateTime();
+            const formSubmissionData = new FormData();
+            formSubmissionData.append("title", formData.title);
+            formSubmissionData.append("content", formData.content);
+            formSubmissionData.append("status", formData.status);
 
-            const activityData = {
-                ...formData,
-                id: mode === "create" ? String(totalCount) : Number(initialData.id), // Ensure `id` is a number
-                user_id: 0, // 0 sa ky wa pay loign
-                activity_type: "", //empty kay waz pa login
-                date: mode === "create" ? currentDateTime : formData.date,
-            };
+            // Attach the new file if uploaded; otherwise, attach the existing file
+            if (formData.attachment instanceof File) {
+                formSubmissionData.append("attachment", formData.attachment);
+            }
 
             if (mode === "create") {
-                await addActivity(activityData);
+                const response = await addActivity(formSubmissionData);
 
-                Swal.fire({
-                    title: "Success!",
-                    text: "The activity has been successfully created.",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                    customClass: {
-                        title: "my-swal-title",
-                        htmlContainer: "my-swal-text",
-                        popup: "my-swal-popup",
-                        confirmButton: "my-swal-button",
-                    },
-                });
+                if (response.error) {
+                    setAlert(response.error.data.message);
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (response.data.status === "success") {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "The activity has been successfully created.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            title: "my-swal-title",
+                            htmlContainer: "my-swal-text",
+                            popup: "my-swal-popup",
+                            confirmButton: "my-swal-button",
+                        },
+                    });
+                    onClose();
+                }
             } else if (mode === "edit") {
-                await editActivity({
-                    id: String(activityData.id),
-                    activity: activityData,
+                const response = await editActivity({
+                    id: formData.id,
+                    activity: formSubmissionData,
                 });
 
-                Swal.fire({
-                    title: "Success!",
-                    text: "The activity has been successfully updated.",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                    customClass: {
-                        title: "my-swal-title",
-                        htmlContainer: "my-swal-text",
-                        popup: "my-swal-popup",
-                        confirmButton: "my-swal-button",
-                    },
-                });
+                if (response.error) {
+                    setAlert(response.error.data.message);
+
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (response.data.status === "success") {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "The activity has been successfully updated.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            title: "my-swal-title",
+                            htmlContainer: "my-swal-text",
+                            popup: "my-swal-popup",
+                            confirmButton: "my-swal-button",
+                        },
+                    });
+                    onClose();
+                }
             }
-            onClose(); // Close modal after successful save
         } catch (error) {
-            console.error("Error saving activity:", error);
+            const typedError = error as {
+                data: { status: string; message: string; error?: any };
+            };
+            const errorMessage =
+                typedError?.data?.message || "An unexpected error occurred";
+            setErrorDisplay(errorMessage);
+
+            setTimeout(() => {
+                setErrorDisplay("");
+            }, 5000);
         }
     };
+
+    useEffect(() => {
+        if (mode === "create") {
+            setFormData((prev) => ({
+                ...prev,
+                type:
+                    userDetail.role === "Federation"
+                        ? "Federation"
+                        : "Chairperson",
+            }));
+        }
+    }, [mode, userDetail.role]);
 
     return (
         <ModalVariantTwo
@@ -134,31 +205,69 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                     : "View Activity"
             }
             mode={mode}
+            maxWidth={mode === "view" ? "800px" : ""}
             content={
-                <Stack spacing={2}>
-                    <TextField
-                        id="outlined-title"
-                        name="activity_title"
-                        label="Title"
-                        variant="outlined"
-                        value={formData.activity_title}
-                        onChange={handleInputChange}
-                        disabled={mode === "view"}
-                    />
-                    <TextField
-                        id="outlined-description"
-                        name="activity_content"
-                        label="Description"
-                        variant="outlined"
-                        multiline
-                        minRows={5}
-                        maxRows={10}
-                        value={formData.activity_content}
-                        onChange={handleInputChange}
-                        disabled={mode === "view"}
-                    />
-                    <CustomUpload2 label="Attach Files" />
-                </Stack>
+                mode === "view" ? (
+                    <>
+                        <ActivitiesCard
+                            barangay={
+                                formData.type !== "Federation"
+                                    ? formData.barangay
+                                    : "Federation"
+                            }
+                            cardImage={
+                                formData.attachment
+                                    ? VITE_FILE_ENDPOINT + formData.attachment
+                                    : NoImage
+                            }
+                            type={formData.type}
+                            date={formatDate(formData.created_at)}
+                            title={formData.title}
+                            mode={mode}
+                            selectedBarangay={selectedBarangay}
+                        ></ActivitiesCard>
+                    </>
+                ) : (
+                    <Stack spacing={2}>
+                        <TextField
+                            id="outlined-title"
+                            name="activity_title"
+                            label="Title"
+                            variant="outlined"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                            // disabled={mode === "view"}
+                        />
+                        <TextField
+                            id="outlined-description"
+                            name="activity_content"
+                            label="Description"
+                            variant="outlined"
+                            multiline
+                            minRows={5}
+                            maxRows={10}
+                            value={formData.content}
+                            onChange={handleInputChange}
+                            // disabled={mode === "view"}
+                        />
+                        {errorDisplay && (
+                            <Typography
+                                variant="caption"
+                                textAlign="right"
+                                color="error.main"
+                            >
+                                {errorDisplay}
+                            </Typography>
+                        )}
+                        <CustomUpload2
+                            label="Attach Files"
+                            onChange={handleFileChange}
+                            accept="image/*,application/pdf"
+                            fileName={fileName} // Pass the file name
+                            mode={mode}
+                        />{" "}
+                    </Stack>
+                )
             }
         ></ModalVariantTwo>
     );

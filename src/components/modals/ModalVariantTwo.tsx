@@ -1,5 +1,12 @@
 import React, { ReactNode, MouseEvent } from "react";
-import { Modal, Box, Typography, Divider, Stack, IconButton } from "@mui/material";
+import {
+    Modal,
+    Box,
+    Typography,
+    Divider,
+    Stack,
+    IconButton,
+} from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 // import components
@@ -22,7 +29,7 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
     onClose,
     onSave,
     mode,
-    maxWidth = "400px",
+    maxWidth = "600px",
     subheader,
 }) => {
     return (
@@ -40,7 +47,7 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
                 sx={{
                     width: "100%",
                     maxWidth: maxWidth,
-                    minWidth: "400px",
+                    minWidth: "550px",
                     bgcolor: "background.paper",
                     padding: "20px",
                     borderRadius: "12px",
@@ -70,7 +77,12 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
                 <Stack marginBlock="20px">{content}</Stack>
 
                 {mode !== "view" ? (
-                    <Stack direction="row" spacing={3} width="100%" justifyContent="center">
+                    <Stack
+                        direction="row"
+                        spacing={3}
+                        width="100%"
+                        justifyContent="center"
+                    >
                         <PrimaryButton
                             size="small"
                             variant="outlined"
@@ -79,7 +91,12 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
                         >
                             Cancel
                         </PrimaryButton>
-                        <PrimaryButton size="small" width="150px" color="info" onClick={onSave}>
+                        <PrimaryButton
+                            size="small"
+                            width="150px"
+                            color="info"
+                            onClick={onSave}
+                        >
                             {mode === "create" ? "Publish" : "Save"}
                         </PrimaryButton>
                     </Stack>

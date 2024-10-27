@@ -70,8 +70,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
             </Grid>
             <Grid
                 item
-                lg={5.5}
-                md={12}
+                md={5}
                 sm={12}
                 xs={12}
                 sx={{
@@ -99,8 +98,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
                     alignContent: "flex-start",
                     gap: "32px",
                 }}
-                lg={5.5}
-                md={12}
+                md={6.3}
                 sm={12}
                 xs={12}
             >

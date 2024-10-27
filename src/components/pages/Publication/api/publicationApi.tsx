@@ -2,89 +2,83 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "./../../../../store";
 
 interface PublicationProps {
-  id: number;
-  title: string;
-  type: string;
-  content: string;
-  attachment: File | null;
-  created_at: string;
-  barangay: string;
-  status: string;
+    id: number;
+    title: string;
+    type: string;
+    content: string;
+    attachment: File | null;
+    created_at: string;
+    barangay: string;
+    status: string;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: VITE_APP_ENDPOINT,
-  prepareHeaders: (headers, { getState }) => {
-    const state = getState() as RootState;
-    const token = state.auth.token;
+    baseUrl: VITE_APP_ENDPOINT,
+    prepareHeaders: (headers, { getState }) => {
+        const state = getState() as RootState;
+        const token = state.auth.token;
 
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-    return headers;
-  },
+        if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
+        }
+        return headers;
+    },
 });
 
 // Define your API service
 export const publicationApi = createApi({
-  reducerPath: "publicationApi",
-  baseQuery,
-  tagTypes: ["Publication"],
-  endpoints: (builder) => ({
-    getPublications: builder.query<PublicationProps[], void>({
-      query: () => "/publications",
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: "Publication", id } as const)),
-              { type: "Publication", id: "PublicationLIST" },
-            ]
-          : [{ type: "Publication", id: "PublicationLIST" }],
-    }),
-    getPublicationByID: builder.query<PublicationProps, number>({
-      query: (id) => `/publication/${id}`,
-      providesTags: (result, error, id) => [{ type: "Publication", id }],
-    }),
-    addPublication: builder.mutation<void, FormData>({
-      query: (formData) => {
-        console.log("Publication Details:", formData);
+    reducerPath: "publicationApi",
+    baseQuery,
+    tagTypes: ["Publication"],
+    endpoints: (builder) => ({
+        getPublications: builder.query<PublicationProps[], void>({
+            query: () => "/publications",
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.map(
+                              ({ id }) => ({ type: "Publication", id } as const)
+                          ),
+                          { type: "Publication", id: "PublicationLIST" },
+                      ]
+                    : [{ type: "Publication", id: "PublicationLIST" }],
+        }),
+        getPublicationByID: builder.query<PublicationProps, number>({
+            query: (id) => `/publication/${id}`,
+            providesTags: (result, error, id) => [{ type: "Publication", id }],
+        }),
+        addPublication: builder.mutation<void, FormData>({
+            query: (formData) => {
+                console.log("Publication Details:", formData);
 
-        return {
-          url: "/publication",
-          method: "POST",
-          body: formData,
-        };
-      },
-      invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
-    }),
+                return {
+                    url: "/publication",
+                    method: "POST",
+                    body: formData,
+                };
+            },
+            invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
+        }),
 
-    editPublication: builder.mutation<
-      void,
-      { id: number; publication: object }
-    >({
-      query: ({ id, publication }) => ({
-        url: `/publication/${id}`,
-        method: "PUT",
-        body: publication,
-      }),
-      invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
+        editPublication: builder.mutation<
+            void,
+            { id: number; publication: object }
+        >({
+            query: ({ id, publication }) => ({
+                url: `/publication/${id}`,
+                method: "PUT",
+                body: publication,
+            }),
+            invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
+        }),
     }),
-    deletePublication: builder.mutation<PublicationProps, number>({
-      query: (id) => ({
-        url: `/publication/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: (result, error, id) => [{ type: "Publication", id }],
-    }),
-  }),
 });
 
 export const {
-  useGetPublicationsQuery,
-  useGetPublicationByIDQuery,
-  useAddPublicationMutation,
-  useEditPublicationMutation,
-  useDeletePublicationMutation,
+    useGetPublicationsQuery,
+    useGetPublicationByIDQuery,
+    useAddPublicationMutation,
+    useEditPublicationMutation,
 } = publicationApi;

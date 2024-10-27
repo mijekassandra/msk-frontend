@@ -48,7 +48,6 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
         ? barangays.Barangays.find((b) => b.barangayName === barangay)
         : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
 
-    console.log("file", matchingBarangay?.logo);
     return (
         <Grid
             container
@@ -64,8 +63,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
         >
             <Grid
                 item
-                lg={5.5}
-                md={12}
+                md={5}
                 sm={12}
                 xs={12}
                 sx={{
@@ -99,7 +97,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                         </Typography>
                     </Stack>
                 </Grid>
-                <Stack
+                <Grid
                     sx={{
                         display: "flex",
                         flexDirection: "column",
@@ -127,7 +125,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                             </PrimaryButton>
                         </Stack>
                     ) : null}
-                </Stack>
+                </Grid>
             </Grid>
             <Grid
                 item
@@ -136,8 +134,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                     alignContent: "space-between",
                     gap: "32px",
                 }}
-                lg={5.5}
-                md={12}
+                md={6.3}
                 sm={12}
                 xs={12}
             >

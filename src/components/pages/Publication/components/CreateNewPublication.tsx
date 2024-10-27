@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Stack, TextField, Typography, MenuItem } from "@mui/material";
+import {
+    Stack,
+    TextField,
+    Typography,
+    MenuItem,
+    Box,
+    Alert,
+} from "@mui/material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -66,6 +73,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
         title: false,
         content: false,
     });
+    const [alert, setAlert] = useState(null);
 
     // Function to handle file selection from CustomUpload2
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,14 +130,17 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                 formSubmissionData.append("attachment", formData.attachment);
             }
 
-            // console.log("FormSubmissionData before submit:", [
-            //     ...formSubmissionData.entries(),
-            // ]);
-
             if (mode === "create") {
-                await addPublication(formSubmissionData);
+                const response = await addPublication(formSubmissionData);
 
-                if (!errorDisplay) {
+                // console.log("response here: ", response);
+                if (response.error) {
+                    setAlert(response.error.data.message);
+
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (response.data.status === "success") {
                     Swal.fire({
                         title: "Create Success!",
                         text: "The publication has been successfully created.",
@@ -142,14 +153,21 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             confirmButton: "my-swal-button",
                         },
                     });
+                    onClose();
                 }
             } else if (mode === "edit") {
-                await editPublication({
+                const response = await editPublication({
                     id: formData.id,
                     publication: formSubmissionData,
                 });
 
-                if (!errorDisplay) {
+                if (response.error) {
+                    setAlert(response.error.data.message);
+
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (response.data.status === "success") {
                     Swal.fire({
                         title: "Update Success!",
                         text: "The publication has been successfully updated.",
@@ -162,6 +180,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             confirmButton: "my-swal-button",
                         },
                     });
+                    onClose();
                 }
             }
             onClose(); // Close modal after successful save
@@ -191,7 +210,6 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
         }
     }, [mode, userDetail.role]);
 
-    console.log("Federation: ", formData.type);
     return (
         <ModalVariantTwo
             onClose={onClose}
@@ -249,7 +267,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             variant="outlined"
                             multiline
                             minRows={5}
-                            maxRows={12}
+                            maxRows={8}
                             value={formData.content}
                             error={fieldErrors.content}
                             onChange={handleInputChange}
@@ -287,6 +305,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                                 {errorDisplay}
                             </Typography>
                         )}
+
                         <CustomUpload2
                             label="Attach Files"
                             onChange={handleFileChange}
@@ -294,6 +313,21 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             fileName={fileName} // Pass the file name
                             mode={mode}
                         />
+
+                        {alert && (
+                            <Box
+                                sx={{
+                                    position: "fixed",
+                                    bottom: 16,
+                                    right: 16,
+                                    zIndex: 1000,
+                                }}
+                            >
+                                <Alert variant="filled" severity="error">
+                                    {alert}
+                                </Alert>
+                            </Box>
+                        )}
                     </Stack>
                 )
             }

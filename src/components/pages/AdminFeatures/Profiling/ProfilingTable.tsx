@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { Box, IconButton } from "@mui/material";
-import { Visibility, BorderColor, Delete, AddCircle } from "@mui/icons-material";
+import { Box, IconButton, Typography } from "@mui/material";
+import {
+    Visibility,
+    BorderColor,
+    Delete,
+    AddCircle,
+} from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -21,10 +26,14 @@ const ProfilingTable = () => {
 
     // Fetch adminMode and selectedBarangay from the Redux store
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
-    const selectedBarangay = useSelector((state: RootState) => state.admin.selectedBarangay);
+    const selectedBarangay = useSelector(
+        (state: RootState) => state.admin.selectedBarangay
+    );
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create"); // for modal mode, either create or edit
+    const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
+        "create"
+    ); // for modal mode, either create or edit
     const [currentProfiling, setCurrentProfiling] = useState({});
 
     const {
@@ -63,7 +72,10 @@ const ProfilingTable = () => {
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        if (
+            monthDiff < 0 ||
+            (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
             return age - 1;
         }
         return age;
@@ -73,10 +85,16 @@ const ProfilingTable = () => {
         .filter((profile) => {
             // Check if adminMode is true and selectedBarangay is not empty
             if (adminMode && selectedBarangay) {
-                return profile.barangay === selectedBarangay && profile.profile_id !== null;
+                return (
+                    profile.barangay === selectedBarangay &&
+                    profile.profile_id !== null
+                );
             }
             // Otherwise, filter by user's barangay
-            return profile.barangay === userDetail?.barangay && profile.profile_id !== null;
+            return (
+                profile.barangay === userDetail?.barangay &&
+                profile.profile_id !== null
+            );
         })
         .map((profile) => ({
             ...profile,
@@ -85,15 +103,33 @@ const ProfilingTable = () => {
         }));
 
     const columns = [
-        { field: "first_name", headerName: "First Name", minWidth: 180, flex: 1 },
-        { field: "last_name", headerName: "Last Name", maxWidth: 180, flex: 1 },
-        { field: "age", headerName: "Age", maxWidth: 80 },
-        { field: "gender", headerName: "Gender", width: 80 },
-        { field: "voter_status", headerName: "Voter Status", maxWidth: 120 },
+        {
+            field: "first_name",
+            headerName: "First Name",
+            minWidth: 100,
+            flex: 1,
+        },
+        { field: "last_name", headerName: "Last Name", width: 100, flex: 1 },
+        { field: "age", headerName: "Age", width: 30, flex: 0.5 },
+        { field: "gender", headerName: "Gender", width: 30, flex: 0.5 },
+        {
+            field: "voter_status",
+            headerName: "Voter Status",
+            width: 30,
+            flex: 0.5,
+        },
+        {
+            field: "educational_attainment",
+            headerName: "HEA",
+            width: 100,
+            flex: 1,
+        },
         {
             field: "action",
             headerName: "Action",
-            maxWidth: 160,
+            width: 30,
+            headerClassName: "print-hidden",
+            cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
                     <IconButton
@@ -111,7 +147,9 @@ const ProfilingTable = () => {
                         <>
                             <IconButton
                                 aria-label="edit"
-                                onClick={() => handleEditProfilingCLick(params.row)}
+                                onClick={() =>
+                                    handleEditProfilingCLick(params.row)
+                                }
                             >
                                 <BorderColor
                                     sx={{
@@ -155,6 +193,12 @@ const ProfilingTable = () => {
                             </PrimaryButton>
                         ) : null
                     }
+                    barangay={
+                        !adminMode && !selectedBarangay
+                            ? userDetail.barangay
+                            : selectedBarangay
+                    }
+                    dataType="LIST OF KK PROFILING"
                 />
             ) : allYouthProfilingError ? (
                 <ErrorDisplay />

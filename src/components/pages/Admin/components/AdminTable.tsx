@@ -62,8 +62,6 @@ const AdminTable = () => {
         setModalMode("create");
         setCurrentAccount({});
         setIsModalOpen(true);
-
-        console.log("allUsers, ", allUsers);
     };
 
     const handleEditAccountClick = (account: any) => {
@@ -113,11 +111,7 @@ const AdminTable = () => {
             return `LIST OF USER`;
         }
 
-        if (
-            (userRole === "Super Admin" || userRole === "Federation") &&
-            !adminMode &&
-            !selectedBarangay
-        ) {
+        if (userRole === "Federation" && !adminMode && !selectedBarangay) {
             return "LIST OF SANGGUNIANG KABATAAN CHAIRPERSON";
         }
 
@@ -129,7 +123,7 @@ const AdminTable = () => {
             return `LIST OF USER`;
         }
 
-        return "";
+        return "LIST OF ALL USER";
     };
 
     const rows = allUsers.map((account) => ({
@@ -215,7 +209,9 @@ const AdminTable = () => {
         {
             field: "action",
             headerName: "Action",
-            maxWidth: 160,
+            width: 30,
+            headerClassName: "print-hidden",
+            cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
                     <IconButton
@@ -232,7 +228,7 @@ const AdminTable = () => {
 
                     {!adminMode && !selectedBarangay ? (
                         <>
-                            <IconButton
+                            {/* <IconButton
                                 aria-label="edit"
                                 onClick={() =>
                                     handleEditAccountClick(params.row)
@@ -244,7 +240,7 @@ const AdminTable = () => {
                                         fontSize: "22px",
                                     }}
                                 />
-                            </IconButton>
+                            </IconButton> */}
                             <IconButton
                                 aria-label="toggle-status"
                                 onClick={() => {
@@ -284,7 +280,7 @@ const AdminTable = () => {
             {allUsersSuccess ? (
                 <CustomDataGrid
                     rows={filteredRows}
-                    getRowId={(row: any, index) =>
+                    getRowId={(row: any, index: number) =>
                         row.id ?? `${row.username}-${index}`
                     }
                     isLoading={allUsersLoading}
@@ -301,6 +297,12 @@ const AdminTable = () => {
                             </PrimaryButton>
                         ) : null
                     }
+                    barangay={
+                        !adminMode && !selectedBarangay
+                            ? userDetail.barangay
+                            : selectedBarangay
+                    }
+                    dataType="LIST OF USERS"
                 />
             ) : allUsersError ? (
                 <ErrorDisplay />
