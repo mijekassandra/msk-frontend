@@ -188,7 +188,8 @@ const ManageProfile = () => {
                                         alt="Profile Avatar"
                                         src={
                                             avatarPreview ||
-                                            `${VITE_FILE_ENDPOINT}/${formData.profile_img}`
+                                            `${VITE_FILE_ENDPOINT}/${formData.profile_img}` ||
+                                            `${VITE_FILE_ENDPOINT}${formData.profile_img}`
                                         }
                                         // src={
                                         //     VITE_FILE_ENDPOINT +
