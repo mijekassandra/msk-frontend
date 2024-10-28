@@ -50,9 +50,17 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
         (state: RootState) => state.admin.selectedBarangay
     );
 
-    const matchingBarangay = barangays.Barangays.find(
-        (b) => b.barangayName === barangay
-    );
+    let matchingBarangay: any;
+
+    if (adminMode && selectedBarangay) {
+        matchingBarangay = barangays.Barangays.find(
+            (b) => b.barangayName === selectedBarangay
+        );
+    } else {
+        matchingBarangay = barangays.Barangays.find(
+            (b) => b.barangayName === barangay
+        );
+    }
 
     return (
         <Stack>
@@ -149,7 +157,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                         justifyContent: "space-between",
                                         alignItems: "center",
                                         mb: 2,
-                                        px: 5, // Adjust padding for alignment
+                                        px: 5,
                                     }}
                                 >
                                     {/* Left Logo */}
@@ -177,11 +185,11 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                             Municipality of Lagonglong
                                         </Typography>
                                         <Typography variant="body1">
-                                            {(userDetail.role ===
+                                            {userDetail.role ===
                                                 "Super Admin" ||
-                                                "Federation") &&
-                                            !adminMode &&
-                                            selectedBarangay
+                                            (userDetail.role === "Federation" &&
+                                                !adminMode &&
+                                                !selectedBarangay)
                                                 ? "All Barangays"
                                                 : `Barangay ${barangay}`}
                                         </Typography>
@@ -193,9 +201,12 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                     {/* Right Logo */}
                                     <img
                                         src={
-                                            userDetail.role === "Super Admin"
+                                            userDetail.role === "Super Admin" ||
+                                            (userDetail.role === "Federation" &&
+                                                !adminMode &&
+                                                !selectedBarangay)
                                                 ? DefaultLogo
-                                                : `/${matchingBarangay.logo}`
+                                                : `/${matchingBarangay?.logo}`
                                         }
                                         alt="Right Logo"
                                         style={{

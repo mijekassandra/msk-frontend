@@ -10,7 +10,6 @@ import {
     Stack,
 } from "@mui/material";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
-import barangays from "../../mockData/Barangay.json";
 import { formatDistanceStrict } from "date-fns";
 
 // import components
@@ -18,11 +17,11 @@ import PrimaryButton from "../buttons/PrimaryButton";
 
 interface BlogCardProps {
     bgColor: string;
-    cardImage: File | null;
+    cardImage?: File | string | null;
     cardTitle: string;
     cardContent: string;
     cardBarangay: string;
-    cardDate: Date;
+    cardDate: Date | string;
 
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
@@ -121,7 +120,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
                         spacing={0.5}
                         sx={{ color: "text.secondary" }}
                     >
-                        <WatchLaterIcon fontSize="12px" />
+                        <WatchLaterIcon sx={{ fontSize: "12px" }} />
                         <Typography variant="caption">
                             {formattedDate}
                         </Typography>

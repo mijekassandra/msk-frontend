@@ -40,8 +40,8 @@
 
 @media print {
   @page {
-    margin-block: 10mm; /* Adjust as needed */
-    margin-inline: 5mm; /* Adjust as needed */
+    margin-block: 5mm; 
+    margin-inline: 5mm;
 }
 
   .print-hidden {

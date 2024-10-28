@@ -54,11 +54,11 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
         }
     }
     // TODO If Federation or Super Admin, show "Sangguniang Kabataan Federation"
-    else if (
-        userDetail?.role === "Super Admin" ||
-        userDetail?.role === "Federation"
-    ) {
+    else if (userDetail?.role === "Federation") {
         finalBarangay = "Sangguniang Kabataan Federation";
+        finalLogo = DefaultLogo;
+    } else if (userDetail?.role === "Super Admin") {
+        finalBarangay = "Sangguniang Kabataan SuperAdmin";
         finalLogo = DefaultLogo;
     }
     // TODO For other roles (like a regular user)

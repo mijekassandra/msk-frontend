@@ -109,13 +109,13 @@ const ProfilingTable = () => {
             minWidth: 100,
             flex: 1,
         },
-        { field: "last_name", headerName: "Last Name", width: 100, flex: 1 },
-        { field: "age", headerName: "Age", width: 30, flex: 0.5 },
-        { field: "gender", headerName: "Gender", width: 30, flex: 0.5 },
+        { field: "last_name", headerName: "Last Name", maxWidth: 150, flex: 1 },
+        { field: "age", headerName: "Age", maxWidth: 75, flex: 0.5 },
+        { field: "gender", headerName: "Gender", maxWidth: 100, flex: 0.5 },
         {
             field: "voter_status",
             headerName: "Voter Status",
-            width: 30,
+            maxWidth: 110,
             flex: 0.5,
         },
         {
