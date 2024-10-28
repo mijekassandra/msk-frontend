@@ -252,11 +252,17 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                     },
                     "& .MuiDataGrid-cell": {
                         fontWeight: "200",
+                        whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        display: "flex",
+                        alignItems: "center",
+                        minHeight: "60px",
                     },
                     "& .MuiDataGrid-row": {
                         cursor: onClickEvent ? "pointer" : "",
                     },
                 }}
+                getRowHeight={() => "auto"} // Set minimum row height
             />
         </Stack>
     );

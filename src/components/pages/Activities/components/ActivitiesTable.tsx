@@ -143,7 +143,7 @@ const ActivitiesTable = () => {
             flex: 1,
         },
         { field: "type", headerName: "Type", maxWidth: 120, flex: 1 },
-        { field: "status", headerName: "Status", maxWidth: 120, flex: 1 },
+        { field: "status", headerName: "Status", maxWidth: 110, flex: 1 },
         {
             field: "created_at",
             headerName: "Date Publish",
@@ -222,6 +222,12 @@ const ActivitiesTable = () => {
                             </PrimaryButton>
                         ) : null
                     }
+                    barangay={
+                        !adminMode && !selectedBarangay
+                            ? userDetail.barangay
+                            : selectedBarangay
+                    }
+                    dataType="LIST OF ACTIVITIES"
                 />
             ) : allActivitiesError ? (
                 <ErrorDisplay />
