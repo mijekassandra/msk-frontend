@@ -15,8 +15,6 @@ import {
     Typography,
     InputAdornment,
     IconButton,
-    Alert,
-    Snackbar,
 } from "@mui/material";
 import { Person, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -98,9 +96,9 @@ const Login = () => {
         }
     };
 
-    useEffect(() => {
-        console.log("Updated user detail: ", userDetail);
-    }, [userDetail]);
+    // useEffect(() => {
+    //     console.log("Updated user detail: ", userDetail);
+    // }, [userDetail]);
 
     return (
         <BodyContainer

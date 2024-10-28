@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Stack, TextField, Typography } from "@mui/material";
+import {
+    Stack,
+    TextField,
+    Typography,
+    InputAdornment,
+    MenuItem,
+    Alert,
+    Box,
+} from "@mui/material";
+import { LocationOn, Event } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import "../../../../index.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { formatDate } from "../../../../utils/dateUtil";
 import NoImage from "../../../../assets/no-image.png";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 //import components
 import ModalVariantTwo from "../../../modals/ModalVariantTwo";
@@ -24,7 +37,9 @@ interface CreateNewActivityProps {
         type?: "Federation" | "Chairperson";
         attachment?: File | null | string;
         created_at?: string;
-        barangay?: string;
+        barangay?: string | null;
+        location?: string | null;
+        date_of_activity?: string | null;
         status?: "draft" | "archived" | "published";
     };
     onClose: () => void;
@@ -54,6 +69,10 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
         created_at: initialData.created_at || null,
         barangay: initialData.barangay || null,
         type: initialData.type || null,
+        location: initialData.location || "",
+        date_of_activity: initialData.date_of_activity
+            ? dayjs(initialData.date_of_activity).format("YYYY-MM-DD")
+            : "",
         status: initialData.status || "draft",
     });
 
@@ -73,13 +92,23 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files && event.target.files[0];
         if (file) {
-            setFileName(file.name); // Update the file name in state
+            setFileName(file.name);
             setFormData((prev) => ({
                 ...prev,
                 attachment: file,
                 barangay: userDetail?.barangay,
-            })); // Update formData with the file
+            }));
         }
+    };
+
+    // specific for Date Change
+    const handleDateChange = (newDate: any) => {
+        setFormData({
+            ...formData,
+            date_of_activity: newDate
+                ? dayjs(newDate).format("YYYY-MM-DD")
+                : "",
+        });
     };
 
     const handleInputChange = (
@@ -96,6 +125,8 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
         const errors = {
             title: !formData.title,
             content: !formData.content,
+            location: !formData.location,
+            date_of_activity: !formData.date_of_activity,
         };
 
         setFieldErrors(errors);
@@ -105,10 +136,22 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
     };
 
     const handleSubmitActivity = async () => {
+        const isValid = validateForm();
+
+        if (!isValid) {
+            setErrorDisplay("Please fill in all required fields");
+            return;
+        }
+
         try {
             const formSubmissionData = new FormData();
             formSubmissionData.append("title", formData.title);
             formSubmissionData.append("content", formData.content);
+            formSubmissionData.append("location", formData.location);
+            formSubmissionData.append(
+                "date_of_activity",
+                formData.date_of_activity
+            );
             formSubmissionData.append("status", formData.status);
 
             // Attach the new file if uploaded; otherwise, attach the existing file
@@ -225,13 +268,17 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                             title={formData.title}
                             mode={mode}
                             selectedBarangay={selectedBarangay}
+                            location={formData.location}
+                            date_of_activity={formatDate(
+                                formData.date_of_activity
+                            )}
                         ></ActivitiesCard>
                     </>
                 ) : (
                     <Stack spacing={2}>
                         <TextField
                             id="outlined-title"
-                            name="activity_title"
+                            name="title"
                             label="Title"
                             variant="outlined"
                             value={formData.title}
@@ -240,7 +287,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                         />
                         <TextField
                             id="outlined-description"
-                            name="activity_content"
+                            name="content"
                             label="Description"
                             variant="outlined"
                             multiline
@@ -250,6 +297,75 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                             onChange={handleInputChange}
                             // disabled={mode === "view"}
                         />
+                        <Stack direction="row" gap={1}>
+                            <TextField
+                                id="outlined-location"
+                                name="location"
+                                label="Location"
+                                variant="outlined"
+                                value={formData.location}
+                                onChange={handleInputChange}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LocationOn />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                sx={{
+                                    width: {
+                                        xs: "100%",
+                                        sm: "50%",
+                                    },
+                                }}
+                            />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    slotProps={{
+                                        textField: {
+                                            size: "medium",
+                                        },
+                                    }}
+                                    value={
+                                        formData.date_of_activity
+                                            ? dayjs(formData.date_of_activity)
+                                            : null
+                                    }
+                                    onChange={(newDate) =>
+                                        handleDateChange(newDate)
+                                    }
+                                    sx={{
+                                        width: {
+                                            xs: "100%",
+                                            sm: "50%",
+                                        },
+                                    }}
+                                />
+                            </LocalizationProvider>
+                        </Stack>
+
+                        <TextField
+                            fullWidth
+                            select
+                            variant="outlined"
+                            name="status"
+                            value={formData.status}
+                            onChange={handleInputChange}
+                            label="Select Status"
+                            InputLabelProps={{
+                                shrink: false,
+                                style: {
+                                    display: formData.status ? "none" : "block",
+                                },
+                            }}
+                        >
+                            <MenuItem value="" disabled>
+                                Select Status
+                            </MenuItem>
+                            <MenuItem value="draft">Draft</MenuItem>
+                            <MenuItem value="archived">Archived</MenuItem>
+                            <MenuItem value="published">Published</MenuItem>
+                        </TextField>
                         {errorDisplay && (
                             <Typography
                                 variant="caption"
@@ -263,9 +379,23 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                             label="Attach Files"
                             onChange={handleFileChange}
                             accept="image/*,application/pdf"
-                            fileName={fileName} // Pass the file name
+                            fileName={fileName}
                             mode={mode}
-                        />{" "}
+                        />
+                        {alert && (
+                            <Box
+                                sx={{
+                                    position: "fixed",
+                                    bottom: 16,
+                                    right: 16,
+                                    zIndex: 1000,
+                                }}
+                            >
+                                <Alert variant="filled" severity="error">
+                                    {alert}
+                                </Alert>
+                            </Box>
+                        )}
                     </Stack>
                 )
             }

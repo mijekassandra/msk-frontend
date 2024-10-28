@@ -107,7 +107,7 @@ const UserHome = () => {
                         flexWrap="wrap"
                         justifyContent="start"
                     >
-                        {allPublications.map((publication) => (
+                        {paginatedPublications.map((publication) => (
                             <BlogCard
                                 key={publication.id}
                                 bgColor="#e6e8fe"

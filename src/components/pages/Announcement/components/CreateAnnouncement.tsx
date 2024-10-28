@@ -11,7 +11,6 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { formatDate } from "../../../../utils/dateUtil.ts";
-import barangays from "../../../../mockData/Barangay.json";
 import NoImage from "../../../../assets/no-image.png";
 
 // Import components
@@ -134,8 +133,6 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
 
             if (mode === "create") {
                 const response = await addAnnouncement(formSubmissionData);
-
-                console.log("response: ", response);
 
                 if (response.error) {
                     setAlert(response.error.data.message);

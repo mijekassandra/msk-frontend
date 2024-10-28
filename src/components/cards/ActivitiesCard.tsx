@@ -12,12 +12,14 @@ import TertiaryButton from "../buttons/TertiaryButton";
 interface ActivitiesCardProps {
     barangay: string | null;
     date: string;
-    cardImage: string;
+    cardImage?: string;
     title: string;
     location?: string;
     mode?: string;
     selectedBarangay?: string | null;
     type?: string | null;
+    date_of_activity: string;
+    content?: string;
 
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
@@ -28,10 +30,12 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
     cardImage,
     title,
     location,
-    onClick,
+    date_of_activity,
     mode,
     type,
     selectedBarangay,
+    content,
+    onClick,
 }) => {
     // Fetch adminMode and selectedBarangay from the Redux store
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
@@ -112,13 +116,18 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                 sm={12}
                 xs={12}
             >
-                <Typography variant="h3" fontWeight={600} textAlign={"center"}>
+                <Typography
+                    variant="h3"
+                    fontWeight={600}
+                    textAlign={"center"}
+                    textTransform="uppercase"
+                >
                     {title}
                 </Typography>
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <CalendarMonth />
                     <Typography variant="subtitle1" fontFamily="Poppins">
-                        {date}
+                        {date_of_activity}
                     </Typography>
                 </Stack>
                 <Stack direction="row" alignItems="center" spacing={1}>

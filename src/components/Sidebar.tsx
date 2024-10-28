@@ -50,10 +50,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         }
     };
 
-    useEffect(() => {
-        setTabValue(initialValue);
-        console.log(tabValue);
-    }, [initialValue]);
+    // useEffect(() => {
+    //     setTabValue(initialValue);
+    //     console.log(tabValue);
+    // }, [initialValue]);
 
     const tabList = () => (
         <Stack spacing={0}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, FormControlLabel, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import {
     Visibility,
     BorderColor,
@@ -137,17 +137,29 @@ const ActivitiesTable = () => {
 
     const columns = [
         {
-            field: "activity_title",
+            field: "title",
             headerName: "Title",
             minWidth: 300,
             flex: 1,
         },
-        { field: "activity_type", headerName: "Type", maxWidth: 200, flex: 1 },
-        { field: "date", headerName: "Date Publish", maxWidth: 160 },
+        { field: "type", headerName: "Type", maxWidth: 120, flex: 1 },
+        { field: "status", headerName: "Status", maxWidth: 120, flex: 1 },
+        {
+            field: "created_at",
+            headerName: "Date Publish",
+            maxWidth: 160,
+            valueFormatter: (params: any) => formatDateTime(params),
+        },
+        {
+            field: "updated_at",
+            headerName: "Date Updated",
+            maxWidth: 160,
+            valueFormatter: (params: any) => formatDateTime(params),
+        },
         {
             field: "action",
             headerName: "Action",
-            maxWidth: 160,
+            maxWidth: 140,
             renderCell: (params: any) => (
                 <Box>
                     <IconButton

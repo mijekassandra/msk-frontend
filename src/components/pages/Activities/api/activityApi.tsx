@@ -10,6 +10,8 @@ interface ActivityApiProps {
     created_at: string;
     barangay: string;
     status: string;
+    location: string;
+    date_of_activity: string;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;

@@ -190,26 +190,26 @@ const AdminTable = () => {
         { field: "email", headerName: "Email", minWidth: 200, flex: 1 },
         {
             field: "account_status",
-            headerName: "Account Status",
-            minWidth: 200,
+            headerName: "Status",
+            maxWidth: 100,
             flex: 1,
         },
         {
             field: "role",
             headerName: "Role",
-            minWidth: 200,
+            maxWidth: 140,
             flex: 1,
         },
         {
             field: "barangay",
             headerName: "Barangay",
-            minWidth: 200,
+            maxWidth: 140,
             flex: 1,
         },
         {
             field: "action",
             headerName: "Action",
-            width: 30,
+            maxWidth: 130,
             headerClassName: "print-hidden",
             cellClassName: "print-hidden",
             renderCell: (params: any) => (

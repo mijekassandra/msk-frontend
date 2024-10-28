@@ -26,9 +26,6 @@ const ITEMS_PER_PAGE = 3; // Define how many items per page
 const PublicationList = () => {
     const navigate = useNavigate();
 
-    // logged in user role
-    const userDetail = useSelector((state: RootState) => state.auth.user);
-
     // State to handle active modal
     const [activeModal, setActiveModal] = useState<null | {
         name: string;

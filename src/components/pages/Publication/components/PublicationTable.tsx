@@ -98,24 +98,27 @@ const PublicationTable = () => {
 
     const columns = [
         { field: "title", headerName: "Title", minWidth: 300, flex: 1 },
-        { field: "type", headerName: "Type", maxWidth: 160 },
-        { field: "status", headerName: "Status", maxWidth: 160 },
+        { field: "type", headerName: "Type", maxWidth: 130, flex: 1 },
+        { field: "status", headerName: "Status", maxWidth: 120, flex: 1 },
         {
             field: "created_at",
             headerName: "Date Publish",
-            maxWidth: 160,
+            maxWidth: 150,
+            flex: 1,
             valueFormatter: (params: any) => formatDateTime(params),
         },
         {
             field: "updated_at",
             headerName: "Date Updated",
-            maxWidth: 160,
+            maxWidth: 150,
+            flex: 1,
             valueFormatter: (params: any) => formatDateTime(params),
         },
         {
             field: "action",
             headerName: "Action",
-            width: 30,
+            maxWidth: 150,
+            flex: 1,
             headerClassName: "print-hidden",
             cellClassName: "print-hidden",
             renderCell: (params: any) => (

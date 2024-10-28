@@ -11,8 +11,12 @@ interface CustomUpload2Props {
     mode: string;
 }
 
-const CustomUpload2: React.FC<CustomUpload2Props> = (props: CustomUpload2Props) => {
-    const [displayFileName, setDisplayFileName] = useState<string | null>(props.fileName || null); // Use prop fileName
+const CustomUpload2: React.FC<CustomUpload2Props> = (
+    props: CustomUpload2Props
+) => {
+    const [displayFileName, setDisplayFileName] = useState<string | null>(
+        props.fileName || null
+    ); // Use prop fileName
     const inputFileRef = useRef<HTMLInputElement | null>(null);
 
     // Handle file input change
@@ -58,6 +62,9 @@ const CustomUpload2: React.FC<CustomUpload2Props> = (props: CustomUpload2Props) 
                     "& .MuiButton-endIcon": {
                         color: "#8a8a8a",
                     },
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
                     "&:hover": {
                         background: "#e2e2e2",
                         color: "#8a8a8a",

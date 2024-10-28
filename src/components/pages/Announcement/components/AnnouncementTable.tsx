@@ -136,23 +136,28 @@ const AnnouncementTable = () => {
     }, [allAnnouncements, userDetail?.role]);
 
     const columns = [
-        { field: "title", headerName: "Title" },
-        { field: "type", headerName: "Type" },
-        { field: "status", headerName: "Status" },
+        { field: "title", headerName: "Title", minWidth: 300, flex: 1 },
+        { field: "type", headerName: "Type", maxWidth: 120, flex: 1 },
+        { field: "status", headerName: "Status", maxWidth: 100, flex: 1 },
         {
             field: "created_at",
             headerName: "Date Publish",
+            maxWidth: 150,
+            flex: 1,
             valueFormatter: (params: any) => formatDateTime(params),
         },
         {
             field: "updated_at",
             headerName: "Date Updated",
+            maxWidth: 150,
+            flex: 1,
             valueFormatter: (params: any) => formatDateTime(params),
         },
         {
             field: "action",
             headerName: "Action",
-            width: 30,
+            maxWidth: 150,
+            flex: 1,
             headerClassName: "print-hidden",
             cellClassName: "print-hidden",
             renderCell: (params: any) => (

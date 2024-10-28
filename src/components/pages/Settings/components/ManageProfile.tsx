@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     Stack,
     Typography,
@@ -8,12 +8,13 @@ import {
     Avatar,
     Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 
 // import components
@@ -31,7 +32,10 @@ import {
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
 const ManageProfile = () => {
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // logged in user details
+    const userDetail = useSelector((state: RootState) => state.auth.user);
 
     // get and update profile
     const { data: userProfile, isLoading: userProfileLoading } =
@@ -51,7 +55,7 @@ const ManageProfile = () => {
         address: "",
         contact_number: "",
         email: "",
-        date_of_birth: null,
+        date_of_birth: "",
         civil_status: "",
         religion: "",
         voter_status: "",
@@ -62,7 +66,7 @@ const ManageProfile = () => {
     });
 
     // Handle unified input change for other textfield
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: any) => {
         const { name, value } = event.target;
         setFormData({
             ...formData,
@@ -71,15 +75,15 @@ const ManageProfile = () => {
     };
 
     // specific for Date Change
-    const handleDateChange = (newDate) => {
+    const handleDateChange = (newDate: any) => {
         setFormData({
             ...formData,
-            date_of_birth: newDate ? dayjs(newDate).format("YYYY-MM-DD") : null,
+            date_of_birth: newDate ? dayjs(newDate).format("YYYY-MM-DD") : "",
         });
     };
 
     // Handle avatar image change
-    const handleAvatarChange = (event) => {
+    const handleAvatarChange = (event: any) => {
         const file = event.target.files[0];
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
@@ -145,6 +149,14 @@ const ManageProfile = () => {
         handleProfileUpdate(formData);
     };
 
+    const handleBackToDashboard = () => {
+        if (userDetail.role === "User") {
+            navigate("/home");
+        } else {
+            navigate("/dashboard");
+        }
+    };
+
     // refetch when updated the profile
     useEffect(() => {
         if (userProfile) {
@@ -169,8 +181,6 @@ const ManageProfile = () => {
         }
     }, [userProfile]);
 
-    // console.log("profile img", `${VITE_FILE_ENDPOINT}+${profileImage}`);
-
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">Manage Profile</Typography>
@@ -188,13 +198,8 @@ const ManageProfile = () => {
                                         alt="Profile Avatar"
                                         src={
                                             avatarPreview ||
-                                            `${VITE_FILE_ENDPOINT}/${formData.profile_img}` ||
                                             `${VITE_FILE_ENDPOINT}${formData.profile_img}`
                                         }
-                                        // src={
-                                        //     VITE_FILE_ENDPOINT +
-                                        //     formData.profile_img
-                                        // }
                                         sx={{ width: 80, height: 80 }}
                                     />
                                     <Stack spacing={1}>
@@ -289,9 +294,9 @@ const ManageProfile = () => {
                                             slotProps={{
                                                 textField: {
                                                     size: "small",
-                                                    inputProps: {
-                                                        "aria-hidden": false,
-                                                    },
+                                                    // inputProps: {
+                                                    //     "aria-hidden": false,
+                                                    // },
                                                 },
                                             }}
                                             value={
@@ -587,6 +592,8 @@ const ManageProfile = () => {
                         </Grid>
                         <Stack>
                             <TwoChoice
+                                leftText="Cancel"
+                                leftOnClick={handleBackToDashboard}
                                 rightText="Update"
                                 size="medium"
                                 rightOnClick={handleSubmit}
