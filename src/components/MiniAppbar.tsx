@@ -155,7 +155,7 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                     </Avatar>
                                     <Stack>
                                         <Typography variant="h5">
-                                            {userDetail?.first_name &&
+                                            {userDetail?.first_name ||
                                             userDetail?.last_name
                                                 ? `${userDetail.first_name} ${userDetail.last_name}`
                                                 : "User"}

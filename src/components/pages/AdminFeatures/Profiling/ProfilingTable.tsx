@@ -5,10 +5,12 @@ import {
     BorderColor,
     Delete,
     AddCircle,
+    Download,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
+import generatePDF from "../../../../utils/generatePDF";
 
 // import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -16,7 +18,6 @@ import PrimaryButton from "../../../buttons/PrimaryButton";
 import CreateNewProfiling from "./CreateNewProfiling";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
-
 // import apiSlices
 import { useGetUsersQuery, useEditUserMutation } from "../../Admin/api/userApi";
 
@@ -104,11 +105,11 @@ const ProfilingTable = () => {
         {
             field: "first_name",
             headerName: "First Name",
-            minWidth: 100,
+            minWidth: 130,
             flex: 1,
         },
-        { field: "last_name", headerName: "Last Name", maxWidth: 150, flex: 1 },
-        { field: "age", headerName: "Age", maxWidth: 75, flex: 0.5 },
+        { field: "last_name", headerName: "Last Name", minWidth: 130, flex: 1 },
+        { field: "age", headerName: "Age", maxWidth: 80, flex: 0.5 },
         { field: "gender", headerName: "Gender", maxWidth: 100, flex: 0.5 },
         {
             field: "voter_status",
@@ -119,25 +120,40 @@ const ProfilingTable = () => {
         {
             field: "educational_attainment",
             headerName: "HEA",
-            width: 100,
+            maxWidth: 120,
             flex: 1,
         },
         {
             field: "action",
             headerName: "Action",
-            width: 30,
+            maxWidth: 150,
+            flex: 1,
             headerClassName: "print-hidden",
             cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
-                    <IconButton
+                    {/* <IconButton
                         aria-label="view"
                         onClick={() => handleViewProfilingClick(params.row)}
+                    >
+                        <Download
+                            sx={{
+                                color: "primary.dark",
+                                fontSize: "20px",
+                            }}
+                        />
+                    </IconButton> */}
+                    <IconButton
+                        aria-label="view"
+                        onClick={() => generatePDF(params.row)}
                     >
                         <Visibility
                             sx={{
                                 color: "primary.dark",
-                                fontSize: "22px",
+                                fontSize: {
+                                    lg: "20px",
+                                    xs: "16px",
+                                },
                             }}
                         />
                     </IconButton>
@@ -152,7 +168,10 @@ const ProfilingTable = () => {
                                 <BorderColor
                                     sx={{
                                         color: "secondary.light",
-                                        fontSize: "22px",
+                                        fontSize: {
+                                            lg: "20px",
+                                            xs: "16px",
+                                        },
                                     }}
                                 />
                             </IconButton>
@@ -160,7 +179,10 @@ const ProfilingTable = () => {
                                 <Delete
                                     sx={{
                                         color: "error.main",
-                                        fontSize: "22px",
+                                        fontSize: {
+                                            lg: "20px",
+                                            xs: "16px",
+                                        },
                                     }}
                                 />
                             </IconButton>

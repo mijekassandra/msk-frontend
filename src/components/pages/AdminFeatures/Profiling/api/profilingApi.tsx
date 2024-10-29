@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface YouthProfilingProps {
+export interface YouthProfilingProps {
     id: number;
     first_name: string;
     last_name: string;
@@ -13,7 +13,7 @@ interface YouthProfilingProps {
     email: string;
     vote_status: string;
     address: string;
-    educationa_attainment: string;
+    educational_attainment: string;
     skill: string;
     interest: string;
     date: string;
@@ -32,30 +32,44 @@ export const youthProfilingApi = createApi({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.map(({ id }) => ({ type: "YouthProfiling", id } as const)),
+                          ...result.map(
+                              ({ id }) =>
+                                  ({ type: "YouthProfiling", id } as const)
+                          ),
                           { type: "YouthProfiling", id: "YouthProfilingLIST" },
                       ]
                     : [{ type: "YouthProfiling", id: "YouthProfilingLIST" }],
         }),
         getYouthProfilingByID: builder.query<YouthProfilingProps, number>({
             query: (id) => `youth_profilings/${id}`,
-            providesTags: (result, error, id) => [{ type: "YouthProfiling", id }],
+            providesTags: (result, error, id) => [
+                { type: "YouthProfiling", id },
+            ],
         }),
-        addYouthProfiling: builder.mutation<void, Partial<YouthProfilingProps>>({
-            query: (data) => ({
-                url: "youth_profilings/",
-                method: "POST",
-                body: data,
-            }),
-            invalidatesTags: [{ type: "YouthProfiling", id: "YouthProfilingLIST" }],
-        }),
-        editYouthProfiling: builder.mutation<void, { id: number; data: object }>({
+        addYouthProfiling: builder.mutation<void, Partial<YouthProfilingProps>>(
+            {
+                query: (data) => ({
+                    url: "youth_profilings/",
+                    method: "POST",
+                    body: data,
+                }),
+                invalidatesTags: [
+                    { type: "YouthProfiling", id: "YouthProfilingLIST" },
+                ],
+            }
+        ),
+        editYouthProfiling: builder.mutation<
+            void,
+            { id: number; data: object }
+        >({
             query: ({ id, data }) => ({
                 url: `youth_profilings/${id}`,
                 method: "PATCH",
                 body: data,
             }),
-            invalidatesTags: [{ type: "YouthProfiling", id: "YouthProfilingLIST" }],
+            invalidatesTags: [
+                { type: "YouthProfiling", id: "YouthProfilingLIST" },
+            ],
         }),
         deleteYouthProfiling: builder.mutation<void, number>({
             query: (id) => ({
