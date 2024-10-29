@@ -128,7 +128,15 @@ const ActivitiesTable = () => {
             );
         } else if (userDetail.role === "Chairperson") {
             return allActivities.filter(
-                (activity) => activity.barangay === userDetail.barangay
+                (activity) =>
+                    activity.barangay === userDetail.barangay &&
+                    activity.type !== "Federation"
+            );
+        } else if (userDetail.role === "Federation") {
+            return allActivities.filter(
+                (activity) =>
+                    activity.barangay === userDetail.barangay &&
+                    activity.type !== "Chairperson"
             );
         }
 

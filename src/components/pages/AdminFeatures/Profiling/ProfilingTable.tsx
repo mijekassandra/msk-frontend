@@ -83,14 +83,12 @@ const ProfilingTable = () => {
 
     const filteredRows = allYouthProfiling
         .filter((profile) => {
-            // Check if adminMode is true and selectedBarangay is not empty
             if (adminMode && selectedBarangay) {
                 return (
                     profile.barangay === selectedBarangay &&
                     profile.profile_id !== null
                 );
             }
-            // Otherwise, filter by user's barangay
             return (
                 profile.barangay === userDetail?.barangay &&
                 profile.profile_id !== null

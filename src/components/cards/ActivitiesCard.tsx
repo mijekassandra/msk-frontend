@@ -126,17 +126,17 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                 </Typography>
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <CalendarMonth />
-                    <Typography variant="subtitle1" fontFamily="Poppins">
+                    <Typography variant="h5" fontFamily="Poppins">
                         {date_of_activity}
                     </Typography>
                 </Stack>
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <LocationOn />
-                    <Typography variant="subtitle1" fontFamily="Poppins">
+                    <Typography variant="h5" fontFamily="Poppins">
                         {location}
                     </Typography>
                 </Stack>
-                {/* <Stack
+                <Stack
                     direction="row"
                     justifyContent="flex-end"
                     marginRight="20px"
@@ -149,7 +149,7 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                     >
                         VIEW
                     </TertiaryButton>
-                </Stack> */}
+                </Stack>
             </Grid>
         </Grid>
     );

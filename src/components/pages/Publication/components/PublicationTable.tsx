@@ -89,10 +89,17 @@ const PublicationTable = () => {
             );
         } else if (userDetail.role === "Chairperson") {
             return allPublications.filter(
-                (publication) => publication.barangay === userDetail.barangay
+                (publication) =>
+                    publication.barangay === userDetail.barangay &&
+                    publication.type !== "Federation"
+            );
+        } else if (userDetail.role === "Federation") {
+            return allPublications.filter(
+                (publication) =>
+                    publication.barangay === userDetail.barangay &&
+                    publication.type !== "Chairperson"
             );
         }
-
         return allPublications;
     }, [allPublications, userDetail?.role]);
 

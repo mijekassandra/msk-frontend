@@ -58,6 +58,8 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
                         type === "Federation"
                             ? DefaultLogo
                             : matchingBarangay?.logo
+                            ? `/${matchingBarangay.logo}`
+                            : DefaultLogo
                     }
                     height="40px"
                 />

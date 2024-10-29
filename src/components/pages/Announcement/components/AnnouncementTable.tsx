@@ -129,7 +129,15 @@ const AnnouncementTable = () => {
             );
         } else if (userDetail.role === "Chairperson") {
             return allAnnouncements.filter(
-                (announcement) => announcement.barangay === userDetail.barangay
+                (announcement) =>
+                    announcement.barangay === userDetail.barangay &&
+                    announcement.type !== "Federation"
+            );
+        } else if (userDetail.role === "Federation") {
+            return allAnnouncements.filter(
+                (announcement) =>
+                    announcement.barangay === userDetail.barangay &&
+                    announcement.type !== "Chairperson"
             );
         }
         return allAnnouncements;
