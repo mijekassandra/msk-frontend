@@ -9,7 +9,7 @@ export interface YouthProfilingProps {
     civil_status: string;
     sex: string;
     religion: string;
-    contact_no: string;
+    contact_number: string;
     email: string;
     vote_status: string;
     address: string;

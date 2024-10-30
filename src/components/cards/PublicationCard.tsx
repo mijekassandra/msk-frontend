@@ -163,7 +163,12 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                             <Typography
                                 variant="h5"
                                 onClick={onCommentsClick}
-                                sx={{ cursor: "pointer" }}
+                                sx={{
+                                    cursor: "pointer",
+                                    "&:hover": {
+                                        textDecoration: "underline",
+                                    },
+                                }}
                             >
                                 {comments} comments{" "}
                             </Typography>

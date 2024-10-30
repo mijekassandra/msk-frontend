@@ -12,6 +12,15 @@ interface PublicationProps {
     status: string;
 }
 
+interface FeedbackProps {
+    id: number;
+    feedback: string;
+    created_at: string;
+    updated_at: string;
+    publication_id: number;
+    account_id: number;
+}
+
 const { VITE_APP_ENDPOINT } = import.meta.env;
 
 const baseQuery = fetchBaseQuery({
@@ -31,8 +40,10 @@ const baseQuery = fetchBaseQuery({
 export const publicationApi = createApi({
     reducerPath: "publicationApi",
     baseQuery,
-    tagTypes: ["Publication"],
+    tagTypes: ["Publication", "Feedback"],
     endpoints: (builder) => ({
+        //TODO --------------------- PUBLICATION QUERY -------------------------
+
         getPublications: builder.query<PublicationProps[], void>({
             query: () => "/publications",
             providesTags: (result) =>
@@ -73,6 +84,39 @@ export const publicationApi = createApi({
             }),
             invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
         }),
+        //TODO --------------------- FEEDBACKS QUERY -------------------------
+
+        getAllFeedbacksByPublicationId: builder.query<FeedbackProps, number>({
+            query: (id) => `/publication/${id}/feedbacks`,
+            providesTags: (result, error, id) => [{ type: "Feedback", id }],
+        }),
+        getFeedbackById: builder.query<FeedbackProps, number>({
+            query: (id) => `/feedback/${id}`,
+            providesTags: (result, error, id) => [{ type: "Feedback", id }],
+        }),
+        createFeedback: builder.mutation({
+            query: ({ id, feedback }) => ({
+                url: `publication/${id}/feedback`,
+                method: "POST",
+                body: { feedback },
+            }),
+            invalidatesTags: [{ type: "Feedback", id: "FeedbackLIST" }],
+        }),
+        editFeedback: builder.mutation<void, { id: number; feedback: object }>({
+            query: ({ id, feedback }) => ({
+                url: `/feedback/${id}`,
+                method: "PUT",
+                body: feedback,
+            }),
+            invalidatesTags: [{ type: "Feedback", id: "FeedbackLIST" }],
+        }),
+        deleteFeedbackById: builder.mutation({
+            query: (id) => ({
+                url: `/feedback/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: [{ type: "Feedback", id: "FeedbackLIST" }],
+        }),
     }),
 });
 
@@ -81,4 +125,9 @@ export const {
     useGetPublicationByIDQuery,
     useAddPublicationMutation,
     useEditPublicationMutation,
+    useGetAllFeedbacksByPublicationIdQuery,
+    useGetFeedbackByIdQuery,
+    useCreateFeedbackMutation,
+    useEditFeedbackMutation,
+    useDeleteFeedbackByIdMutation,
 } = publicationApi;

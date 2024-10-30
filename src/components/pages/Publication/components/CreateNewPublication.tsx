@@ -313,21 +313,6 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             fileName={fileName} // Pass the file name
                             mode={mode}
                         />
-
-                        {alert && (
-                            <Box
-                                sx={{
-                                    position: "fixed",
-                                    bottom: 16,
-                                    right: 16,
-                                    zIndex: 1000,
-                                }}
-                            >
-                                <Alert variant="filled" severity="error">
-                                    {alert}
-                                </Alert>
-                            </Box>
-                        )}
                     </Stack>
                 )
             }

@@ -89,12 +89,18 @@ const PublicationDetails = () => {
 
             {/* Feedback Form Modal */}
             {activeModal?.name === "feedbackForm" && (
-                <FeedbackForm onClose={closeModal} />
+                <FeedbackForm
+                    onClose={closeModal}
+                    publicationID={publication.id}
+                />
             )}
 
             {/* Comments List Modal */}
             {activeModal?.name === "commentForm" && (
-                <CommentsList onClose={closeModal} />
+                <CommentsList
+                    onClose={closeModal}
+                    publicationID={publication.id}
+                />
             )}
         </Stack>
     );
