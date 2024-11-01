@@ -79,15 +79,13 @@ const PublicationList = () => {
         setCurrentPage(value);
     };
 
-    // // Handle Feedback click
-    // const handleFeedbackClick = () => {
-    //     openModal("feedbackForm");
-    // };
+    const handleFeedbackClick = (publicationID: number) => {
+        openModal("feedbackForm", { publicationID });
+    };
 
-    // // Handle Comments click
-    // const handleCommentsClick = () => {
-    //     openModal("commentForm", { comments: publication.comments });
-    // };
+    const handleCommentsClick = (publicationID: number) => {
+        openModal("commentForm", { publicationID });
+    };
 
     const handleNavigation = (path: string) => {
         navigate(path);
@@ -144,13 +142,34 @@ const PublicationList = () => {
                                 type={publication.type}
                                 views={24}
                                 comments={5}
-                                rating={5}
-                                // onFeedbackClick={handleFeedbackClick}
-                                // onCommentsClick={handleCommentsClick}
+                                rating={publication.totalRating}
+                                publicationID={publication.id}
+                                onFeedbackClick={() =>
+                                    handleFeedbackClick(publication.id)
+                                }
+                                onCommentsClick={() =>
+                                    handleCommentsClick(publication.id)
+                                }
                             />
                         ))}
                     </Stack>
                 )}
+
+            {/* Feedback Form Modal */}
+            {activeModal?.name === "feedbackForm" && (
+                <FeedbackForm
+                    onClose={closeModal}
+                    publicationID={activeModal.data.publicationID}
+                />
+            )}
+
+            {/* Comments List Modal */}
+            {activeModal?.name === "commentForm" && (
+                <CommentsList
+                    onClose={closeModal}
+                    publicationID={activeModal.data.publicationID}
+                />
+            )}
 
             {allPublicationsError && <ErrorDisplay />}
             {(allPublicationsLoading || isFetching) && (

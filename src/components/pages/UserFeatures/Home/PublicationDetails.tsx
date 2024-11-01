@@ -79,6 +79,7 @@ const PublicationDetails = () => {
                         rating={5}
                         onFeedbackClick={handleFeedbackClick}
                         onCommentsClick={handleCommentsClick}
+                        publicationID={publication.id}
                     ></PublicationCard>
                 ) : (
                     <Typography variant="h6">

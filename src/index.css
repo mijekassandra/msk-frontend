@@ -17,7 +17,8 @@
 
 /* Adjust the spacing and size of the SweetAlert2 modal */
 .my-swal-popup {
-  width: 450px !important; /
+  width: 450px !important; 
+  z-index: 9999 !important;
 }
 
 /* Custom styles for the SweetAlert2 button */

@@ -10,6 +10,7 @@ interface PublicationProps {
     created_at: string;
     barangay: string;
     status: string;
+    totalRating: number;
 }
 
 interface FeedbackProps {
@@ -95,27 +96,33 @@ export const publicationApi = createApi({
             providesTags: (result, error, id) => [{ type: "Feedback", id }],
         }),
         createFeedback: builder.mutation({
-            query: ({ id, feedback }) => ({
+            query: ({ id, feedback, rating }) => ({
                 url: `publication/${id}/feedback`,
                 method: "POST",
-                body: { feedback },
+                body: { feedback, rating },
             }),
-            invalidatesTags: [{ type: "Feedback", id: "FeedbackLIST" }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: "Feedback", id },
+            ],
         }),
-        editFeedback: builder.mutation<void, { id: number; feedback: object }>({
+        editFeedback: builder.mutation<void, { id: number; feedback: string }>({
             query: ({ id, feedback }) => ({
                 url: `/feedback/${id}`,
                 method: "PUT",
-                body: feedback,
+                body: { feedback }, // Nested feedback structure
             }),
-            invalidatesTags: [{ type: "Feedback", id: "FeedbackLIST" }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: "Feedback", id },
+            ],
         }),
         deleteFeedbackById: builder.mutation({
             query: (id) => ({
                 url: `/feedback/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: [{ type: "Feedback", id: "FeedbackLIST" }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: "Feedback", id },
+            ],
         }),
     }),
 });

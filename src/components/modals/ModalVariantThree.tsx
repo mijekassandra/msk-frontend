@@ -1,5 +1,12 @@
 import React, { ReactNode } from "react";
-import { Modal, Box, Typography, Divider, Stack, IconButton } from "@mui/material";
+import {
+    Modal,
+    Box,
+    Typography,
+    Divider,
+    Stack,
+    IconButton,
+} from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 // import components
@@ -14,7 +21,9 @@ interface ModalVariantThreeProps {
     headerIcon: ReactNode | string;
 }
 
-const ModalVariantThree: React.FC<ModalVariantThreeProps> = (props: ModalVariantThreeProps) => {
+const ModalVariantThree: React.FC<ModalVariantThreeProps> = (
+    props: ModalVariantThreeProps
+) => {
     return (
         <Modal
             disableAutoFocus
@@ -73,7 +82,12 @@ const ModalVariantThree: React.FC<ModalVariantThreeProps> = (props: ModalVariant
                     </IconButton>
                 </Stack>
                 <Divider />
-                <Stack marginBlock="20px">{props.content}</Stack>
+                <Stack
+                    marginBlock="20px"
+                    sx={{ overflowY: "auto", maxHeight: "350px" }}
+                >
+                    {props.content}
+                </Stack>
             </Box>
         </Modal>
     );

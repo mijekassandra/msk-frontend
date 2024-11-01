@@ -17,48 +17,96 @@ import ModalVariantThree from "../../../modals/ModalVariantThree";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 
 // api slice
-import { useCreateFeedbackMutation } from "../../Publication/api/publicationApi";
+import {
+    useCreateFeedbackMutation,
+    useEditFeedbackMutation,
+} from "../../Publication/api/publicationApi";
 
 interface FeedbackFormProps {
     onClose: () => void;
+    onCloseComment?: () => void;
     publicationID: number;
+    initialFeedback?: { rating: number; comment: string } | null;
+    isEdit?: boolean;
+    onSubmitSuccess?: () => void;
 }
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
     onClose,
     publicationID,
+    initialFeedback = { rating: 0, comment: "" },
+    isEdit = false,
+    onSubmitSuccess,
+    onCloseComment,
 }) => {
     // logged in user role
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
     const [feedback, setFeedback] = useState({
-        rating: 5,
-        comment: "",
+        rating: initialFeedback?.rating || 0,
+        comment: initialFeedback?.comment || "",
     });
     const [alert, setAlert] = useState<string | null>(null);
 
-    const [createFeedback, { isLoading }] = useCreateFeedbackMutation();
+    const [createFeedback, { isLoading: isLoadingCreate }] =
+        useCreateFeedbackMutation();
+    const [editFeedback, { isLoading: isLoadingEdit }] =
+        useEditFeedbackMutation();
+
+    const [fieldErrors, setFieldErrors] = useState({
+        rating: false,
+        comment: false,
+    });
+    const [errorDisplay, setErrorDisplay] = useState("");
 
     const handleChange = (key: keyof typeof feedback, value: any) => {
         setFeedback((prevFeedback) => ({
             ...prevFeedback,
             [key]: value,
         }));
+
+        setFieldErrors((prevErrors) => ({
+            ...prevErrors,
+            [key]: false,
+        }));
+    };
+
+    const validateForm = () => {
+        const errors = {
+            rating: !feedback.rating,
+            comment: !feedback.comment,
+        };
+
+        setFieldErrors(errors);
+
+        // Check if any errors exist
+        return !Object.values(errors).some((error) => error === true);
     };
 
     const handleSubmit = async () => {
-        try {
-            const response = await createFeedback({
-                id: publicationID,
-                feedback: { ...feedback, account_id: userDetail.id },
-            });
+        const isValid = validateForm();
 
-            console.log("response: ", response);
+        if (!isValid) {
+            setErrorDisplay("Please fill in all required fields");
+            return;
+        }
+
+        try {
+            const response = isEdit
+                ? await editFeedback({
+                      id: publicationID,
+                      feedback: feedback.comment,
+                  })
+                : await createFeedback({
+                      id: publicationID,
+                      feedback: feedback.comment,
+                      rating: feedback.rating,
+                  });
+
+            // console.log("response: ", response);
 
             if (response.error) {
-                // console.log("alert: ", alert);
                 // console.log("error: ", response.error);
-                // console.log("feedback: ", feedback);
 
                 setAlert(response.error.data.message);
 
@@ -67,8 +115,10 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 }, 4000);
             } else if (response.data.status === "success") {
                 Swal.fire({
-                    title: "Create Success!",
-                    text: "The comment has been successfully posted.",
+                    title: isEdit ? "Update Success!" : "Create Success!",
+                    text: isEdit
+                        ? "The comment has been successfully updated."
+                        : "The comment has been successfully posted.",
                     icon: "success",
                     confirmButtonText: "OK",
                     customClass: {
@@ -78,29 +128,30 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                         confirmButton: "my-swal-button",
                     },
                 });
+                onSubmitSuccess?.();
                 onClose();
+                if (isEdit) {
+                    onCloseComment();
+                }
             }
         } catch (error) {
-            console.log("alert: ", alert);
-            console.log("error: ", error);
-
-            setAlert(
-                error instanceof Error
-                    ? error.message
-                    : "An unexpected error occurred"
-            );
+            const typedError = error as {
+                data: { status: string; message: string; error?: any };
+            };
+            const errorMessage =
+                typedError?.data?.message || "An unexpected error occurred";
+            setErrorDisplay(errorMessage);
 
             setTimeout(() => {
-                setAlert(null);
-            }, 4000);
+                setErrorDisplay("");
+            }, 5000);
         }
     };
 
     return (
         <ModalVariantThree
             onClose={onClose}
-            // onSave={}
-            headerTitle="Feedback"
+            headerTitle={isEdit ? "Edit Feedback" : "Feedback"}
             headerIcon={<ThumbsUpDownOutlined sx={{ fontSize: "16px" }} />}
             content={
                 <Stack rowGap={1.5} justifyContent="center" alignItems="center">
@@ -120,6 +171,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                             handleChange("rating", newValue)
                         }
                         size="large"
+                        readOnly={isEdit ? true : false}
                     />
                     <TextField
                         id="outlined-email"
@@ -130,19 +182,34 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                         minRows={5}
                         maxRows={10}
                         fullWidth
-                        margin="normal"
                         value={feedback.comment}
+                        error={fieldErrors.comment}
                         onChange={(e) =>
                             handleChange("comment", e.target.value)
                         }
                     />
+                    <Stack alignContent="end" sx={{ width: "100%" }}>
+                        {errorDisplay && (
+                            <Typography
+                                variant="caption"
+                                textAlign="right"
+                                color="error.main"
+                            >
+                                {errorDisplay}
+                            </Typography>
+                        )}
+                    </Stack>
                     <PrimaryButton
                         onClick={handleSubmit}
                         size="medium"
                         width="100%"
-                        disabled={isLoading}
+                        disabled={isLoadingCreate || isLoadingEdit}
                     >
-                        {isLoading ? "Submitting..." : "SUBMIT"}
+                        {isLoadingCreate || isLoadingEdit
+                            ? "Submitting..."
+                            : isEdit
+                            ? "UPDATE"
+                            : "SUBMIT"}
                     </PrimaryButton>
                     {alert && (
                         <Box

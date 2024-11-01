@@ -105,7 +105,10 @@ const UserHome = () => {
                         rowGap={4}
                         direction="row"
                         flexWrap="wrap"
-                        justifyContent="start"
+                        justifyContent={{
+                            md: "center",
+                            xs: "center",
+                        }}
                     >
                         {paginatedPublications.map((publication) => (
                             <BlogCard

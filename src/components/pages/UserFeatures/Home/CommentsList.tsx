@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Stack,
     Box,
     Typography,
     Avatar,
     CircularProgress,
+    IconButton,
+    Menu,
+    MenuItem,
 } from "@mui/material";
+import { CommentOutlined, MoreHoriz } from "@mui/icons-material";
+import { formatDistanceStrict } from "date-fns";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 import Swal from "sweetalert2";
 
-// import
+// import components
 import ModalVariantThree from "../../../modals/ModalVariantThree";
-import { CommentOutlined } from "@mui/icons-material";
-
-// import component
+import FeedbackForm from "./FeedbackForm";
 
 // import apiSlice
 import {
     useGetAllFeedbacksByPublicationIdQuery,
-    useGetFeedbackByIdQuery,
-    useEditFeedbackMutation,
     useDeleteFeedbackByIdMutation,
 } from "../../Publication/api/publicationApi";
 
@@ -27,21 +30,107 @@ interface CommentsListProps {
     publicationID: number;
 }
 
-const CommentsList: React.FC<CommentsListProps> = ({ onClose }) => {
+const CommentsList: React.FC<CommentsListProps> = ({
+    onClose,
+    publicationID,
+}) => {
+    // logged in user role
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
     const {
         data: allComments = [],
         isError,
         isLoading,
         refetch,
-    } = useGetAllFeedbacksByPublicationIdQuery;
-
-    const [editComment] = useEditFeedbackMutation();
+    } = useGetAllFeedbacksByPublicationIdQuery(publicationID);
     const [deleteFeedbackById] = useDeleteFeedbackByIdMutation();
 
-    // Force refetch if needed
-    useEffect(() => {
+    const [editComment, setEditComment] = useState<{
+        rating: number;
+        comment: string;
+        id: number;
+    } | null>(null);
+
+    const [isFeedbackFormOpen, setFeedbackFormOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<{
+        [key: number]: HTMLElement | null;
+    }>({}); // Use object to store anchorEl for each comment
+
+    const formatTimeAgo = (dateString: string) => {
+        const date = new Date(dateString);
+        return formatDistanceStrict(date, new Date(), { addSuffix: true });
+    };
+
+    const handleClick = (
+        event: React.MouseEvent<HTMLButtonElement>,
+        commentId: number
+    ) => {
+        setAnchorEl((prev) => ({ ...prev, [commentId]: event.currentTarget }));
+    };
+
+    const handleCloseMenu = (commentId: number) => {
+        setAnchorEl((prev) => ({ ...prev, [commentId]: null }));
+    };
+
+    const handleEdit = (comment: any) => {
+        console.log("Selected comment for editing:", comment);
+        setEditComment({
+            rating: comment.rating,
+            comment: comment.feedback,
+            id: comment.id,
+        });
+        setFeedbackFormOpen(true);
+        handleCloseMenu(comment.id);
+    };
+
+    const handleFeedbackFormClose = () => {
+        setFeedbackFormOpen(false);
+        setEditComment(null);
+    };
+
+    const handleFeedbackFormSuccess = () => {
         refetch();
-    }, []);
+        handleFeedbackFormClose();
+    };
+
+    const handleDelete = async (commentId: number) => {
+        onClose();
+        handleCloseMenu(commentId);
+        const result = await Swal.fire({
+            title: "Delete Comment?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Delete!",
+            customClass: {
+                title: "my-swal-title",
+                htmlContainer: "my-swal-text",
+                popup: "my-swal-popup",
+            },
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await deleteFeedbackById(commentId);
+
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "The comment has been deleted.",
+                    icon: "success",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
+                    confirmButtonText: "OK",
+                });
+            } catch (error) {
+                Swal.fire("Error!", "Failed to delete the comment.", "error");
+            }
+        }
+    };
 
     return (
         <ModalVariantThree
@@ -49,7 +138,16 @@ const CommentsList: React.FC<CommentsListProps> = ({ onClose }) => {
             headerTitle="Comments"
             headerIcon={<CommentOutlined sx={{ fontSize: "14px" }} />}
             content={
-                isLoading ? (
+                isFeedbackFormOpen ? (
+                    <FeedbackForm
+                        onClose={handleFeedbackFormClose}
+                        publicationID={editComment?.id || publicationID}
+                        initialFeedback={editComment}
+                        isEdit={Boolean(editComment)}
+                        onSubmitSuccess={handleFeedbackFormSuccess}
+                        onCloseComment={onClose}
+                    />
+                ) : isLoading ? (
                     <CircularProgress />
                 ) : isError ? (
                     <Typography color="error">
@@ -68,7 +166,7 @@ const CommentsList: React.FC<CommentsListProps> = ({ onClose }) => {
                     </Stack>
                 ) : (
                     <Stack spacing={2}>
-                        {allComments.map((comment) => (
+                        {allComments.map((comment: any) => (
                             <Box
                                 key={comment.id}
                                 sx={{
@@ -81,33 +179,100 @@ const CommentsList: React.FC<CommentsListProps> = ({ onClose }) => {
                                     boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.1)",
                                 }}
                             >
-                                <Avatar sx={{ width: "35px", height: "35px" }}>
-                                    {comment.userInitials || "U"}{" "}
-                                    {/* Assuming user initials */}
+                                <Avatar
+                                    sx={{
+                                        width: "35px",
+                                        height: "35px",
+                                        marginTop: "6px",
+                                    }}
+                                >
+                                    {comment.feedback_by.charAt(0) || "A"}
                                 </Avatar>
-                                <Stack spacing={0.5}>
+                                <Stack spacing={0.5} flexGrow={1}>
                                     <Stack
                                         direction="row"
                                         alignItems="center"
                                         spacing={1}
+                                        justifyContent="space-between"
                                     >
-                                        <Typography
-                                            variant="body1"
-                                            fontWeight={600}
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            spacing={1}
                                         >
-                                            {comment.userName || "Anonymous"}{" "}
-                                            {/* Display user name */}
-                                        </Typography>
-                                        <Typography
-                                            variant="caption"
-                                            color="textSecondary"
+                                            <Typography
+                                                variant="body1"
+                                                fontWeight={600}
+                                            >
+                                                {comment.feedback_by ||
+                                                    "Anonymous"}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                color="textSecondary"
+                                            >
+                                                •{" "}
+                                                {comment.updated_at
+                                                    ? formatTimeAgo(
+                                                          comment.updated_at
+                                                      )
+                                                    : "Just now"}
+                                            </Typography>
+                                        </Stack>
+                                        {userDetail.id ===
+                                            comment.account_id && (
+                                            <Stack direction="row" spacing={1}>
+                                                <IconButton
+                                                    onClick={(e) =>
+                                                        handleClick(
+                                                            e,
+                                                            comment.id
+                                                        )
+                                                    }
+                                                >
+                                                    <MoreHoriz
+                                                        sx={{
+                                                            color: "#606060",
+                                                            fontSize: "18px",
+                                                        }}
+                                                    />
+                                                </IconButton>
+                                            </Stack>
+                                        )}
+
+                                        <Menu
+                                            anchorEl={
+                                                anchorEl[comment.id] || null
+                                            }
+                                            open={Boolean(anchorEl[comment.id])}
+                                            onClose={() =>
+                                                handleCloseMenu(comment.id)
+                                            }
+                                            PaperProps={{
+                                                sx: {
+                                                    boxShadow:
+                                                        "0px 1px 3px rgba(0, 0, 0, 0.1)",
+                                                },
+                                            }}
                                         >
-                                            • {comment.timeAgo || "Just now"}{" "}
-                                            {/* Display time */}
-                                        </Typography>
+                                            <MenuItem
+                                                onClick={() =>
+                                                    handleEdit(comment)
+                                                }
+                                            >
+                                                Edit
+                                            </MenuItem>
+                                            <MenuItem
+                                                onClick={() =>
+                                                    handleDelete(comment.id)
+                                                }
+                                            >
+                                                Delete
+                                            </MenuItem>
+                                        </Menu>
                                     </Stack>
                                     <Typography variant="body1">
-                                        {comment.commentText}
+                                        {comment.feedback}
                                     </Typography>
                                 </Stack>
                             </Box>
@@ -115,7 +280,7 @@ const CommentsList: React.FC<CommentsListProps> = ({ onClose }) => {
                     </Stack>
                 )
             }
-        ></ModalVariantThree>
+        />
     );
 };
 

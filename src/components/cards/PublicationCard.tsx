@@ -8,7 +8,12 @@ import { RootState } from "../../store";
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
 
+// api service
+
+import { useGetAllFeedbacksByPublicationIdQuery } from "../pages/Publication/api/publicationApi";
+
 interface PublicationCardProps {
+    publicationID: number;
     barangay: string | null;
     date: string;
     cardImage: string;
@@ -26,6 +31,7 @@ interface PublicationCardProps {
 }
 
 const PublicationCard: React.FC<PublicationCardProps> = ({
+    publicationID,
     barangay,
     date,
     cardImage,
@@ -43,10 +49,27 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
     // Fetch adminMode and selectedBarangay from the Redux store
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
 
+    const {
+        data: feedbacks = [],
+        isLoading,
+        isError,
+    } = useGetAllFeedbacksByPublicationIdQuery(publicationID);
+
     // find the image for seal
     const matchingBarangay = !adminMode
         ? barangays.Barangays.find((b) => b.barangayName === barangay)
         : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+
+    // Calculate feedback count based on fetched data
+    const feedbackCount = feedbacks ? feedbacks.length : 0;
+
+    const averageRating =
+        feedbacks.length > 0
+            ? feedbacks.reduce(
+                  (sum: number, feedback: any) => sum + feedback.rating,
+                  0
+              ) / feedbacks.length
+            : 0;
 
     return (
         <Grid
@@ -170,9 +193,14 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                                     },
                                 }}
                             >
-                                {comments} comments{" "}
+                                {feedbackCount}{" "}
+                                {feedbackCount > 1 ? "comments" : "comment"}
                             </Typography>
-                            <Rating name="read-only" value={rating} />
+                            <Rating
+                                name="read-only"
+                                readOnly
+                                value={averageRating}
+                            />
                         </>
                     ) : null}
                 </Stack>
