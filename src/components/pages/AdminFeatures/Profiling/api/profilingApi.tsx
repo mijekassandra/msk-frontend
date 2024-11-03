@@ -2,21 +2,28 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface YouthProfilingProps {
     id: number;
+    profile_img: string;
     first_name: string;
     last_name: string;
     middle_name: string;
     date_of_birth: string;
+    address: string;
     civil_status: string;
-    sex: string;
+    gender: string;
     religion: string;
     contact_number: string;
-    email: string;
-    vote_status: string;
-    address: string;
+    voter_status: string;
     educational_attainment: string;
+    educational_reason: string;
+    occupation: string;
+    agency: string;
+    disability: string;
+    medical_condition: string;
+    youth_organization: string;
     skill: string;
     interest: string;
-    date: string;
+    brgy_id: number;
+    account_id: number;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;
@@ -27,43 +34,22 @@ export const youthProfilingApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: VITE_APP_ENDPOINT }),
     tagTypes: ["YouthProfiling"],
     endpoints: (builder) => ({
-        getYouthProfilings: builder.query<YouthProfilingProps[], void>({
-            query: () => "youth_profilings/",
-            providesTags: (result) =>
-                result
-                    ? [
-                          ...result.map(
-                              ({ id }) =>
-                                  ({ type: "YouthProfiling", id } as const)
-                          ),
-                          { type: "YouthProfiling", id: "YouthProfilingLIST" },
-                      ]
-                    : [{ type: "YouthProfiling", id: "YouthProfilingLIST" }],
-        }),
-        getYouthProfilingByID: builder.query<YouthProfilingProps, number>({
-            query: (id) => `youth_profilings/${id}`,
-            providesTags: (result, error, id) => [
-                { type: "YouthProfiling", id },
+        addYouthProfiling: builder.mutation<void, FormData>({
+            query: (formData) => ({
+                url: "/profiling",
+                method: "PUT",
+                body: formData,
+            }),
+            invalidatesTags: [
+                { type: "YouthProfiling", id: "YouthProfilingLIST" },
             ],
         }),
-        addYouthProfiling: builder.mutation<void, Partial<YouthProfilingProps>>(
-            {
-                query: (data) => ({
-                    url: "youth_profilings/",
-                    method: "POST",
-                    body: data,
-                }),
-                invalidatesTags: [
-                    { type: "YouthProfiling", id: "YouthProfilingLIST" },
-                ],
-            }
-        ),
         editYouthProfiling: builder.mutation<
             void,
-            { id: number; data: object }
+            { id: number; data: FormData }
         >({
             query: ({ id, data }) => ({
-                url: `youth_profilings/${id}`,
+                url: `/profiling/${id}`,
                 method: "PATCH",
                 body: data,
             }),
@@ -71,23 +57,21 @@ export const youthProfilingApi = createApi({
                 { type: "YouthProfiling", id: "YouthProfilingLIST" },
             ],
         }),
-        deleteYouthProfiling: builder.mutation<void, number>({
-            query: (id) => ({
-                url: `youth_profilings/${id}`,
-                method: "DELETE",
-            }),
-            invalidatesTags: (result, error, id) => [
-                { type: "YouthProfiling", id },
-                { type: "YouthProfiling", id: "YouthProfilingLIST" },
-            ],
-        }),
+        // deleteYouthProfiling: builder.mutation<void, number>({
+        //     query: (id) => ({
+        //         url: `youth_profilings/${id}`,
+        //         method: "DELETE",
+        //     }),
+        //     invalidatesTags: (result, error, id) => [
+        //         { type: "YouthProfiling", id },
+        //         { type: "YouthProfiling", id: "YouthProfilingLIST" },
+        //     ],
+        // }),
     }),
 });
 
 export const {
-    useGetYouthProfilingsQuery,
-    useGetYouthProfilingByIDQuery,
     useAddYouthProfilingMutation,
     useEditYouthProfilingMutation,
-    useDeleteYouthProfilingMutation,
+    // useDeleteYouthProfilingMutation,
 } = youthProfilingApi;

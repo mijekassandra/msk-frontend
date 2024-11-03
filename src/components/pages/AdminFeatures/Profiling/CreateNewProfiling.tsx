@@ -33,15 +33,20 @@ interface CreateNewProfilingProps {
         religion?: string;
         contact_number?: string;
         email?: string;
-        vote_status?: string;
+        voter_status?: string;
         address?: string;
+        purok?: string;
         educational_attainment?: string;
-        skills?: string;
-        interest?: string;
+        educational_reason?: string;
+        occupation?: string;
+        agency?: string;
         disability?: string;
         medical_condition?: string;
-        working?: string;
-        organization?: string;
+        youth_organization?: string;
+        skills?: string;
+        interest?: string;
+        isMember?: string;
+        // profile_img?: string;
     };
     onClose: () => void;
     // addYouthProfiling: any;
@@ -83,16 +88,20 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
         religion: initialData.religion || "",
         contact_number: initialData.contact_number || "",
         email: initialData.email || "",
-        vote_status: initialData.vote_status || "",
+        voter_status: initialData.voter_status || "",
         address: initialData.address || "",
+        purok: initialData.purok || "",
         educational_attainment: initialData.educational_attainment || "",
-        skills: initialData.skills || "",
-        interest: initialData.interest || "",
+        educational_reason: initialData.educational_reason || "",
         disability: initialData.disability || "",
         medical_condition: initialData.medical_condition || "",
-        organization: initialData.organization || "",
-        working: initialData.organization || "",
-        age: "",
+        youth_organization: initialData.youth_organization || "",
+        occupation: initialData.occupation || "",
+        agency: initialData.agency || "",
+        skills: initialData.skills || "",
+        interest: initialData.interest || "",
+        isMember: initialData.youth_organization ? "yes" : "no",
+        age: null,
     });
 
     // Handle unified input change for other textfield
@@ -110,7 +119,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
             setFormData((prevData) => ({
                 ...prevData,
                 date_of_birth: null,
-                age: "",
+                age: null,
             }));
             return;
         }
@@ -138,14 +147,11 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
     };
 
     useEffect(() => {
-        if (formData.date_of_birth) {
-            const initialAge = calculateAge(formData.date_of_birth);
-            setFormData((prevData) => ({
-                ...prevData,
-                age: initialAge,
-            }));
-        }
-    }, [formData.date_of_birth]);
+        setFormData((prevData) => ({
+            ...prevData,
+            isMember: formData.youth_organization ? "yes" : "no",
+        }));
+    }, [formData.youth_organization]);
 
     return (
         <ModalVariantOne
@@ -216,7 +222,9 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
 
                         <Grid container item spacing={2} xs={12}>
                             <Grid item xs={12} sm={4}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <LocalizationProvider
+                                    dateAdapter={AdapterDayjs}
+                                >
                                     <DatePicker
                                         slotProps={{
                                             textField: {
@@ -233,7 +241,9 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                                 ? dayjs(formData.date_of_birth)
                                                 : null
                                         }
-                                        onChange={(newDate) => handleDateChange(newDate)}
+                                        onChange={(newDate) =>
+                                            handleDateChange(newDate)
+                                        }
                                         sx={{
                                             width: "100%",
                                         }}
@@ -270,7 +280,9 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     </MenuItem>
                                     <MenuItem value="Female">Female</MenuItem>
                                     <MenuItem value="Male">Male</MenuItem>
-                                    <MenuItem value="No Preference">No Preference</MenuItem>
+                                    <MenuItem value="No Preference">
+                                        No Preference
+                                    </MenuItem>
                                 </TextField>
                             </Grid>
                         </Grid>
@@ -282,7 +294,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     size="small"
                                     select
                                     variant="outlined"
-                                    name="civil status"
+                                    name="civil_status"
                                     value={formData.civil_status || ""}
                                     onChange={handleInputChange}
                                     disabled={mode === "view"}
@@ -293,8 +305,12 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     </MenuItem>
                                     <MenuItem value="Single">Single</MenuItem>
                                     <MenuItem value="Married">Married</MenuItem>
-                                    <MenuItem value="Separated">Separated</MenuItem>
-                                    <MenuItem value="Divorced">Divorced</MenuItem>
+                                    <MenuItem value="Separated">
+                                        Separated
+                                    </MenuItem>
+                                    <MenuItem value="Divorced">
+                                        Divorced
+                                    </MenuItem>
                                     <MenuItem value="Widowed">Widowed</MenuItem>
                                 </TextField>
                             </Grid>
@@ -307,7 +323,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.religion}
+                                    value={formData.religion || ""}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
@@ -320,7 +336,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     fullWidth
                                     disabled={mode === "view"}
                                     onChange={handleInputChange}
-                                    // value={formData.purok}
+                                    value={formData.purok || ""}
                                 />
                             </Grid>
                         </Grid>
@@ -328,13 +344,13 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                         <Grid container item spacing={2} xs={12}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    name="Contact No"
+                                    name="contact_number"
                                     label="Contact No."
                                     variant="outlined"
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.contact_number}
+                                    value={formData.contact_number || ""}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
@@ -346,7 +362,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.email}
+                                    value={formData.email || ""}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
@@ -360,7 +376,9 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     select
                                     variant="outlined"
                                     name="educational_attainment"
-                                    value={formData.educational_attainment || ""}
+                                    value={
+                                        formData.educational_attainment || ""
+                                    }
                                     disabled={mode === "view"}
                                     onChange={handleInputChange}
                                     label="Select Educational Attainment"
@@ -368,23 +386,36 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     <MenuItem value="" disabled>
                                         Select Educational Attainment
                                     </MenuItem>
-                                    <MenuItem value="Elementary Level">Elementary Level</MenuItem>
+                                    <MenuItem value="Elementary Level">
+                                        Elementary Level
+                                    </MenuItem>
                                     <MenuItem value="Elementary Graduate">
                                         Elementary Graduate
                                     </MenuItem>
-                                    <MenuItem value="High School Level">High School Level</MenuItem>
+                                    <MenuItem value="High School Level">
+                                        High School Level
+                                    </MenuItem>
                                     <MenuItem value="High School Graduate ">
                                         High School Graduate{" "}
                                     </MenuItem>
-                                    <MenuItem value="College Level">College Level</MenuItem>
-                                    <MenuItem value="College Graduate">College Graduate</MenuItem>
-                                    <MenuItem value="Masters Degree">Masters Degree</MenuItem>
-                                    <MenuItem value="Doctorate Degree">Doctorate Degree</MenuItem>
+                                    <MenuItem value="College Level">
+                                        College Level
+                                    </MenuItem>
+                                    <MenuItem value="College Graduate">
+                                        College Graduate
+                                    </MenuItem>
+                                    <MenuItem value="Masters Degree">
+                                        Masters Degree
+                                    </MenuItem>
+                                    <MenuItem value="Doctorate Degree">
+                                        Doctorate Degree
+                                    </MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    name="Out of School"
+                                    name="educational_reason"
+                                    value={formData.educational_reason || ""}
                                     label="If out of School Youth, please indicate reason"
                                     variant="outlined"
                                     size="small"
@@ -401,8 +432,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     size="small"
                                     select
                                     variant="outlined"
-                                    name="civil_status"
-                                    value={formData.working || ""}
+                                    name="occupation"
+                                    value={formData.occupation || ""}
                                     disabled={mode === "view"}
                                     onChange={handleInputChange}
                                     label="Working"
@@ -410,13 +441,14 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     <MenuItem value="" disabled>
                                         Working?
                                     </MenuItem>
-                                    <MenuItem value="Yes">Yes</MenuItem>
-                                    <MenuItem value="No">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
+                                    <MenuItem value="no">No</MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    name="Government Agency"
+                                    name="agency"
+                                    value={formData.agency || ""}
                                     label="If government, what agency?"
                                     variant="outlined"
                                     size="small"
@@ -447,8 +479,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     <MenuItem value="" disabled>
                                         Do you have disability/ies?
                                     </MenuItem>
-                                    <MenuItem value="Yes">Yes</MenuItem>
-                                    <MenuItem value="No">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
+                                    <MenuItem value="no">No</MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -466,8 +498,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     <MenuItem value="" disabled>
                                         Do you have medical condition?
                                     </MenuItem>
-                                    <MenuItem value="Yes">Yes</MenuItem>
-                                    <MenuItem value="No">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
+                                    <MenuItem value="no">No</MenuItem>
                                 </TextField>
                             </Grid>
                         </Grid>
@@ -479,29 +511,32 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     size="small"
                                     select
                                     variant="outlined"
-                                    name="organization"
+                                    name="isMember"
                                     disabled={mode === "view"}
-                                    value={formData.organization || ""}
+                                    value={formData.isMember}
                                     onChange={handleInputChange}
                                     label="Are you a member of any youth organization"
                                 >
                                     <MenuItem value="" disabled>
-                                        Are you a member of any youth organization
+                                        Are you a member of any youth
+                                        organization
                                     </MenuItem>
-                                    <MenuItem value="Yes">Yes</MenuItem>
-                                    <MenuItem value="No">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
+                                    <MenuItem value="no">No</MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <TextField
-                                    name="Organization"
-                                    label="If YES, please specify what organization"
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    disabled={mode === "view"}
-                                    onChange={handleInputChange}
-                                />
+                                {formData.isMember === "yes" && (
+                                    <TextField
+                                        name="Organization"
+                                        label="If YES, please specify what organization"
+                                        variant="outlined"
+                                        size="small"
+                                        fullWidth
+                                        disabled={mode === "view"}
+                                        onChange={handleInputChange}
+                                    />
+                                )}
                             </Grid>
                         </Grid>
 

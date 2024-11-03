@@ -40,7 +40,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     onCloseComment,
 }) => {
     // logged in user role
-    const userDetail = useSelector((state: RootState) => state.auth.user);
+    const usreDetail = useSelector((state: RootState) => state.auth.user);
 
     const [feedback, setFeedback] = useState({
         rating: initialFeedback?.rating || 0,

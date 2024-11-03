@@ -7,6 +7,8 @@ import {
     MenuItem,
     Avatar,
     Button,
+    Box,
+    Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -37,6 +39,10 @@ const ManageProfile = () => {
     // logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
+    const [avatarPreview, setAvatarPreview] = useState("");
+    const [alert, setAlert] = useState(null);
+    const [isMember, setIsMember] = useState("");
+
     // get and update profile
     const { data: userProfile, isLoading: userProfileLoading } =
         useGetUserProfileQuery();
@@ -45,7 +51,6 @@ const ManageProfile = () => {
 
     // Combine the loading states
     const isLoading = userProfileLoading || updateProfileLoading;
-    const [avatarPreview, setAvatarPreview] = useState("");
 
     const [formData, setFormData] = useState({
         first_name: "",
@@ -53,6 +58,7 @@ const ManageProfile = () => {
         last_name: "",
         gender: "",
         address: "",
+        // purok: "",
         contact_number: "",
         email: "",
         date_of_birth: "",
@@ -60,6 +66,12 @@ const ManageProfile = () => {
         religion: "",
         voter_status: "",
         educational_attainment: "",
+        educational_reason: "",
+        occupation: "",
+        agency: "",
+        disability: "",
+        medical_condition: "",
+        youth_organization: "",
         skills: "",
         interest: "",
         profile_img: "",
@@ -115,30 +127,36 @@ const ManageProfile = () => {
         // Append all fields to FormData
         for (const [key, value] of Object.entries(formData)) {
             if (key === "profile_img" && value instanceof File) {
-                console.log(`Appending file: ${key}`, value); // Double-check file appending
-                formDataToSend.append(key, value); // Append file
+                formDataToSend.append(key, value);
             } else {
-                console.log(`Appending field: ${key}`, value); // Double-check other fields
-                formDataToSend.append(key, value); // Append string fields
+                formDataToSend.append(key, value);
             }
         }
 
         try {
-            const response = await updateProfile(formDataToSend).unwrap();
+            const response = await updateProfile(formDataToSend);
 
-            Swal.fire({
-                title: "Success!",
-                text: "The profile has been updated successfully.",
-                icon: "success",
-                confirmButtonText: "OK",
-                customClass: {
-                    title: "my-swal-title",
-                    htmlContainer: "my-swal-text",
-                    popup: "my-swal-popup",
-                    confirmButton: "my-swal-button",
-                },
-            });
-            console.log("Profile updated successfully", response);
+            if (response.error) {
+                setAlert(response.error.data.message);
+
+                setTimeout(() => {
+                    setAlert(null);
+                }, 4000);
+                console.log("response: ", response);
+            } else if (response.data.status === "success") {
+                Swal.fire({
+                    title: "Success!",
+                    text: "The profile has been updated successfully.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        title: "my-swal-title",
+                        htmlContainer: "my-swal-text",
+                        popup: "my-swal-popup",
+                        confirmButton: "my-swal-button",
+                    },
+                });
+            }
         } catch (error) {
             console.error("Error updating profile:", error);
         }
@@ -174,12 +192,27 @@ const ManageProfile = () => {
                 voter_status: userProfile.data.voter_status || "",
                 educational_attainment:
                     userProfile.data.educational_attainment || "",
+                educational_reason: userProfile.data.educational_reason || "",
+                occupation: userProfile.data.occupation || "",
+                agency: userProfile.data.agency || "",
+                disability: userProfile.data.disability || "",
+                medical_condition: userProfile.data.medical_condition || "",
+                youth_organization: userProfile.data.youth_organization || "",
                 skills: userProfile.data.skills || "",
                 interest: userProfile.data.interest || "",
                 profile_img: userProfile.data.profile_img || "",
             });
         }
     }, [userProfile]);
+
+    // Set isMember based on youth_organization when data is fetched
+    useEffect(() => {
+        if (formData.youth_organization) {
+            setIsMember("yes");
+        } else {
+            setIsMember("no");
+        }
+    }, [formData.youth_organization]);
 
     return (
         <Stack rowGap={3}>
@@ -235,7 +268,7 @@ const ManageProfile = () => {
                                 </Stack>
                             </Grid>
                             <Grid container item sm={12} gap={2}>
-                                <Grid item sm={3} xs={12}>
+                                <Grid item sm={2.6} xs={12}>
                                     <Typography variant="body1">
                                         First name
                                     </Typography>
@@ -250,7 +283,7 @@ const ManageProfile = () => {
                                         onChange={handleInputChange}
                                     />
                                 </Grid>
-                                <Grid item sm={3} xs={12}>
+                                <Grid item sm={2.6} xs={12}>
                                     <Typography variant="body1">
                                         Last name
                                     </Typography>
@@ -265,7 +298,7 @@ const ManageProfile = () => {
                                         onChange={handleInputChange}
                                     />
                                 </Grid>
-                                <Grid item sm={3} xs={12}>
+                                <Grid item sm={2.6} xs={12}>
                                     <Typography variant="body1">
                                         Middle name
                                     </Typography>
@@ -280,10 +313,25 @@ const ManageProfile = () => {
                                         onChange={handleInputChange}
                                     />
                                 </Grid>
+                                <Grid item sm={2.6} xs={12}>
+                                    <Typography variant="body1">
+                                        Ext. (optional)
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="Ext."
+                                        variant="outlined"
+                                        margin="dense"
+                                        // name="extension"
+                                        // value={formData.middle_name}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
                             </Grid>
 
                             <Grid container item sm={12} gap={2}>
-                                <Grid item sm={2.2} xs={12}>
+                                <Grid item sm={2.6} xs={12}>
                                     <Typography variant="body1">
                                         Birthdate
                                     </Typography>
@@ -322,7 +370,7 @@ const ManageProfile = () => {
                                         />
                                     </LocalizationProvider>
                                 </Grid>
-                                <Grid item sm={2.2} xs={12}>
+                                <Grid item sm={2.6} xs={12}>
                                     <Typography variant="body1">
                                         Gender
                                     </Typography>
@@ -358,7 +406,7 @@ const ManageProfile = () => {
                                         </MenuItem>
                                     </TextField>
                                 </Grid>
-                                <Grid item sm={2.2} xs={12}>
+                                <Grid item sm={2.6} xs={12}>
                                     <Typography variant="body1">
                                         Civil Status
                                     </Typography>
@@ -402,7 +450,7 @@ const ManageProfile = () => {
                                     </TextField>
                                 </Grid>
 
-                                <Grid item sm={2.2} xs={12}>
+                                <Grid item sm={2.6} xs={12}>
                                     <Typography variant="body1">
                                         Religion
                                     </Typography>
@@ -420,22 +468,7 @@ const ManageProfile = () => {
                             </Grid>
 
                             <Grid container item sm={12} gap={2}>
-                                <Grid item sm={4.6} xs={12}>
-                                    <Typography variant="body1">
-                                        Address
-                                    </Typography>
-                                    <TextField
-                                        fullWidth
-                                        size="small"
-                                        placeholder="Address"
-                                        variant="outlined"
-                                        margin="dense"
-                                        name="address"
-                                        value={formData.address}
-                                        onChange={handleInputChange}
-                                    />
-                                </Grid>
-                                <Grid item sm={4.6} xs={12}>
+                                <Grid item sm={3.5} xs={12}>
                                     <Typography variant="body1">
                                         Contact No.
                                     </Typography>
@@ -450,23 +483,22 @@ const ManageProfile = () => {
                                         onChange={handleInputChange}
                                     />
                                 </Grid>
-                                {/* <Grid item sm={3} xs={12}>
-                  <Typography variant="body1">Email Address</Typography>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    placeholder="Email Address"
-                    variant="outlined"
-                    margin="dense"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                  />
-                </Grid> */}
-                            </Grid>
-
-                            <Grid container item sm={12} gap={2}>
-                                <Grid item sm={4.6} xs={12}>
+                                <Grid item sm={3.55} xs={12}>
+                                    <Typography variant="body1">
+                                        Email Address
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="Email Address"
+                                        variant="outlined"
+                                        margin="dense"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
+                                <Grid item sm={3.55} xs={12}>
                                     <Typography variant="body1">
                                         Voter Status
                                     </Typography>
@@ -500,9 +532,42 @@ const ManageProfile = () => {
                                         </MenuItem>
                                     </TextField>
                                 </Grid>
-                                <Grid item sm={4.6} xs={12}>
+                                <Grid item sm={5.4} xs={12}>
                                     <Typography variant="body1">
-                                        Educational Attainment
+                                        Address
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="Address"
+                                        variant="outlined"
+                                        margin="dense"
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        Purok
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="Purok"
+                                        variant="outlined"
+                                        margin="dense"
+                                        // name="purok"
+                                        // value={formData.address}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
+                            </Grid>
+
+                            <Grid container item sm={12} gap={2}>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        Highest Educational Attainment
                                     </Typography>
                                     <TextField
                                         fullWidth
@@ -553,10 +618,199 @@ const ManageProfile = () => {
                                         </MenuItem>
                                     </TextField>
                                 </Grid>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        If out of School Youth, please indicate
+                                        reason
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="Reason.."
+                                        variant="outlined"
+                                        margin="dense"
+                                        multiline
+                                        name="educational_reason"
+                                        value={formData.educational_reason}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        Working?
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        select
+                                        variant="outlined"
+                                        margin="dense"
+                                        name="occupation"
+                                        value={formData.occupation}
+                                        onChange={handleInputChange}
+                                        label="Select"
+                                        InputLabelProps={{
+                                            shrink: false,
+                                            style: {
+                                                display: formData.occupation
+                                                    ? "none"
+                                                    : "block",
+                                            },
+                                        }}
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select
+                                        </MenuItem>
+                                        <MenuItem value="yes">Yes</MenuItem>
+                                        <MenuItem value="no">No</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        If government, what agency?
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="Government Agency"
+                                        variant="outlined"
+                                        margin="dense"
+                                        multiline
+                                        name="agency"
+                                        value={formData.agency}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
                             </Grid>
 
+                            <Typography variant="subtitle2">
+                                Other Information
+                            </Typography>
                             <Grid container item sm={12} gap={2}>
-                                <Grid item sm={4.6} xs={12}>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        Do you have disability/ies?
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        select
+                                        variant="outlined"
+                                        margin="dense"
+                                        name="disability"
+                                        value={formData.disability}
+                                        onChange={handleInputChange}
+                                        label="Select"
+                                        InputLabelProps={{
+                                            shrink: false,
+                                            style: {
+                                                display: formData.disability
+                                                    ? "none"
+                                                    : "block",
+                                            },
+                                        }}
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select
+                                        </MenuItem>
+                                        <MenuItem value="yes">Yes</MenuItem>
+                                        <MenuItem value="no">No</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        Do you have medical condition?
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        select
+                                        variant="outlined"
+                                        margin="dense"
+                                        name="medical_condition"
+                                        value={formData.medical_condition}
+                                        onChange={handleInputChange}
+                                        label="Select"
+                                        InputLabelProps={{
+                                            shrink: false,
+                                            style: {
+                                                display:
+                                                    formData.medical_condition
+                                                        ? "none"
+                                                        : "block",
+                                            },
+                                        }}
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select
+                                        </MenuItem>
+                                        <MenuItem value="yes">Yes</MenuItem>
+                                        <MenuItem value="no">No</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item sm={5.4} xs={12}>
+                                    <Typography variant="body1">
+                                        Are you a member of any youth
+                                        organization?
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        select
+                                        variant="outlined"
+                                        margin="dense"
+                                        name="isMember"
+                                        value={isMember} // Track Yes/No separately
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setIsMember(value);
+                                            if (value === "no") {
+                                                handleInputChange({
+                                                    target: {
+                                                        name: "youth_organization",
+                                                        value: "",
+                                                    },
+                                                });
+                                            }
+                                        }}
+                                        placeholder="Select"
+                                        InputLabelProps={{
+                                            style: { display: "none" },
+                                        }}
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select
+                                        </MenuItem>
+                                        <MenuItem value="yes">Yes</MenuItem>
+                                        <MenuItem value="no">No</MenuItem>
+                                    </TextField>
+                                </Grid>
+
+                                <Grid item sm={5.4} xs={12}>
+                                    {isMember === "yes" && (
+                                        <>
+                                            <Typography variant="body1">
+                                                If YES, what organization?
+                                            </Typography>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                placeholder="Organization"
+                                                variant="outlined"
+                                                margin="dense"
+                                                name="youth_organization"
+                                                multiline
+                                                value={
+                                                    formData.youth_organization ||
+                                                    ""
+                                                }
+                                                onChange={handleInputChange}
+                                            />
+                                        </>
+                                    )}
+                                </Grid>
+
+                                <Grid item sm={5.4} xs={12}>
                                     <Typography variant="body1">
                                         Skills
                                     </Typography>
@@ -572,7 +826,7 @@ const ManageProfile = () => {
                                         onChange={handleInputChange}
                                     />
                                 </Grid>
-                                <Grid item sm={4.6} xs={12}>
+                                <Grid item sm={5.4} xs={12}>
                                     <Typography variant="body1">
                                         Interest
                                     </Typography>
@@ -602,6 +856,20 @@ const ManageProfile = () => {
                     </Stack>
                 }
             ></DashboardCard>
+            {alert && (
+                <Box
+                    sx={{
+                        position: "fixed",
+                        bottom: 16,
+                        right: 16,
+                        zIndex: 1000,
+                    }}
+                >
+                    <Alert variant="filled" severity="error">
+                        {alert}
+                    </Alert>
+                </Box>
+            )}
 
             <LoadingDisplay open={isLoading} />
         </Stack>
