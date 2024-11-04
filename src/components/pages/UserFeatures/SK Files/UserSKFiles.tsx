@@ -19,6 +19,19 @@ const UserSKFiles = () => {
         setTabMode(mode);
     };
 
+    const getFileUrl = () => {
+        switch (tabMode) {
+            case "administrative":
+                return "src/assets/administrative.pdf";
+            case "financial":
+                return "src/assets/financial.pdf";
+            case "project":
+                return "src/assets/project.pdf";
+            default:
+                return "";
+        }
+    };
+
     return (
         <Stack gap={2}>
             <LogoHeader header="SK FILES" />
@@ -66,17 +79,15 @@ const UserSKFiles = () => {
                     </Button>
                 </Stack>
                 <Divider sx={{ borderBottomWidth: 3.5 }} />
+                <DisplayThumbnail fileUrl="src/assets/administrative.pdf" />
+                <DisplayThumbnail fileUrl="src/assets/Dummy Docs.docx" />
 
-                <DisplayThumbnail fileUrl="src\assets\administrative.pdf" />
-                {/* <Stack
-                    direction="row"
-                    flexWrap="wrap"
-                    gap={3}
-                    justifyContent="center"
-                ></Stack> */}
-                <Stack direction="row">
-                    <Typography>Here</Typography>{" "}
-                </Stack>
+                {/* <embed
+                    width="191"
+                    height="207"
+                    src="src\assets\administrative.pdf"
+                    type="application/pdf"
+                /> */}
             </Stack>
         </Stack>
     );
