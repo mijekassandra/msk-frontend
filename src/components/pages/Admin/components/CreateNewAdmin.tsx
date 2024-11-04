@@ -42,14 +42,12 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
     const [formData, setFormData] = useState({
         id: initialData.id || "",
         username: initialData.username || "",
-        email: initialData.email || "",
         role: initialData.role || "",
         barangay: initialData.barangay || "",
     });
     const [errorDisplay, setErrorDisplay] = useState("");
     const [fieldErrors, setFieldErrors] = useState({
         username: false,
-        email: false,
         barangay: false,
     });
     const [alert, setAlert] = useState(null);
@@ -67,8 +65,6 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
     const validateForm = () => {
         const errors = {
             username: !formData.username,
-            email: !formData.email,
-            barangay: !formData.barangay,
         };
 
         setFieldErrors(errors);
@@ -199,7 +195,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                         error={fieldErrors.username}
                         disabled={mode === "view"}
                     />
-                    <TextField
+                    {/* <TextField
                         id="outlined-email"
                         name="email"
                         label="Email"
@@ -208,7 +204,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                         error={fieldErrors.email}
                         onChange={handleInputChange}
                         disabled={mode === "view"}
-                    />
+                    /> */}
 
                     {(userDetail?.role === "Super Admin" ||
                         userDetail?.role === "Federation") && (
@@ -220,7 +216,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                             name="barangay"
                             placeholder="Select Barangay"
                             value={formData.barangay}
-                            error={fieldErrors?.barangay}
+                            // error={fieldErrors?.barangay}
                             onChange={handleInputChange}
                             disabled={mode === "view"}
                         >

@@ -31,7 +31,7 @@ const ProfilingTable = () => {
         (state: RootState) => state.admin.selectedBarangay
     );
 
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
         "create"
     ); // for modal mode, either create or edit

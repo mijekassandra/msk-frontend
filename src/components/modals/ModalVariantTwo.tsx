@@ -6,6 +6,7 @@ import {
     Divider,
     Stack,
     IconButton,
+    CircularProgress,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
@@ -21,6 +22,7 @@ interface ModalVariantTwoProps {
     subheader?: ReactNode;
     mode: "create" | "edit" | "view";
     maxWidth?: string;
+    loading: boolean;
 }
 
 const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
@@ -31,6 +33,7 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
     mode,
     maxWidth = "600px",
     subheader,
+    loading = false,
 }) => {
     return (
         <Modal
@@ -96,8 +99,15 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
                             width="150px"
                             color="info"
                             onClick={onSave}
+                            disabled={loading}
                         >
-                            {mode === "create" ? "Publish" : "Save"}
+                            {loading ? (
+                                <CircularProgress size={20} color="inherit" />
+                            ) : mode === "create" ? (
+                                "Publish"
+                            ) : (
+                                "Save"
+                            )}
                         </PrimaryButton>
                     </Stack>
                 ) : null}

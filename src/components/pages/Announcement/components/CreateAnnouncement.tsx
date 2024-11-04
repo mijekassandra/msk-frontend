@@ -75,6 +75,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
         content: false,
     });
     const [alert, setAlert] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // Function to handle file selection from CustomUpload2
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,6 +196,8 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
             setTimeout(() => {
                 setErrorDisplay("");
             }, 5000);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -223,6 +226,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
             }
             mode={mode}
             maxWidth={mode === "view" ? "800px" : ""}
+            loading={loading}
             content={
                 mode === "view" ? (
                     <>

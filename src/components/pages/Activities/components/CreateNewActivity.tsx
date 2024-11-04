@@ -87,6 +87,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
         content: false,
     });
     const [alert, setAlert] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // Function to handle file selection from CustomUpload2
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -221,6 +222,8 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
             setTimeout(() => {
                 setErrorDisplay("");
             }, 5000);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -249,6 +252,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
             }
             mode={mode}
             maxWidth={mode === "view" ? "800px" : ""}
+            loading={loading}
             content={
                 mode === "view" ? (
                     <>

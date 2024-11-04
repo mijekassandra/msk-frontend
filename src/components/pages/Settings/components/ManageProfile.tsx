@@ -61,7 +61,7 @@ const ManageProfile = () => {
         // purok: "",
         contact_number: "",
         email: "",
-        date_of_birth: "",
+        date_of_birth: null,
         civil_status: "",
         religion: "",
         voter_status: "",
@@ -90,7 +90,7 @@ const ManageProfile = () => {
     const handleDateChange = (newDate: any) => {
         setFormData({
             ...formData,
-            date_of_birth: newDate ? dayjs(newDate).format("YYYY-MM-DD") : "",
+            date_of_birth: newDate ? dayjs(newDate).format("YYYY-MM-DD") : null,
         });
     };
 
@@ -128,7 +128,10 @@ const ManageProfile = () => {
         for (const [key, value] of Object.entries(formData)) {
             if (key === "profile_img" && value instanceof File) {
                 formDataToSend.append(key, value);
-            } else {
+            } else if (key === "date_of_birth" && value) {
+                // Only append date_of_birth if it is not blank
+                formDataToSend.append(key, value);
+            } else if (key !== "date_of_birth") {
                 formDataToSend.append(key, value);
             }
         }

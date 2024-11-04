@@ -186,7 +186,7 @@ const CommentsList: React.FC<CommentsListProps> = ({
                                         marginTop: "6px",
                                     }}
                                 >
-                                    {comment.feedback_by.charAt(0) || "A"}
+                                    {comment.feedback_by?.charAt(0) || "A"}
                                 </Avatar>
                                 <Stack spacing={0.5} flexGrow={1}>
                                     <Stack

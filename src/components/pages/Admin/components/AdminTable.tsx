@@ -172,6 +172,7 @@ const AdminTable = () => {
     useEffect(() => {
         refetch();
         // console.log(`${userDetail?.role}:'s list are: `, filteredRows);
+        console.log(`users `, filteredRows);
     }, [userDetail?.role, refetch]);
 
     useEffect(() => {

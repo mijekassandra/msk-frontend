@@ -74,6 +74,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
         content: false,
     });
     const [alert, setAlert] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // Function to handle file selection from CustomUpload2
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,6 +196,8 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
             setTimeout(() => {
                 setErrorDisplay("");
             }, 5000);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -223,6 +226,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
             }
             mode={mode}
             maxWidth={mode === "view" ? "800px" : ""}
+            loading={loading}
             content={
                 mode === "view" ? (
                     <>
