@@ -53,9 +53,9 @@ export const publicationApi = createApi({
                           ...result.map(
                               ({ id }) => ({ type: "Publication", id } as const)
                           ),
-                          { type: "Publication", id: "PublicationLIST" },
+                          { type: "Publication", id: "LIST" },
                       ]
-                    : [{ type: "Publication", id: "PublicationLIST" }],
+                    : [{ type: "Publication", id: "LIST" }],
         }),
         getPublicationByID: builder.query<PublicationProps, number>({
             query: (id) => `/publication/${id}`,
@@ -71,7 +71,7 @@ export const publicationApi = createApi({
                     body: formData,
                 };
             },
-            invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
+            invalidatesTags: [{ type: "Publication", id: "LIST" }],
         }),
 
         editPublication: builder.mutation<
@@ -83,7 +83,10 @@ export const publicationApi = createApi({
                 method: "PUT",
                 body: publication,
             }),
-            invalidatesTags: [{ type: "Publication", id: "PublicationLIST" }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: "Publication", id: "LIST" },
+                { type: "Publication", id },
+            ],
         }),
         //TODO --------------------- FEEDBACKS QUERY -------------------------
 
@@ -102,6 +105,7 @@ export const publicationApi = createApi({
                 body: { feedback, rating },
             }),
             invalidatesTags: (result, error, { id }) => [
+                { type: "Feedback", id: "LIST" },
                 { type: "Feedback", id },
             ],
         }),
@@ -112,6 +116,7 @@ export const publicationApi = createApi({
                 body: { feedback }, // Nested feedback structure
             }),
             invalidatesTags: (result, error, { id }) => [
+                { type: "Feedback", id: "LIST" },
                 { type: "Feedback", id },
             ],
         }),

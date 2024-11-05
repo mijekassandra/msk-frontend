@@ -38,9 +38,15 @@ async function generatePDF(data: YouthProfilingProps | any) {
     const formattedBirthDate = formatDate(data.date_of_birth);
 
 
-console.log("data: ", data)
+    console.log("data: ", data)
+    console.log("matchingBarangay: ", matchingBarangay)
+    // console.log("barangayLogo: ", barangayLogo)
+
     const skfedlogo = await loadImageToBase64('src/assets/SKFed.png');
     const barangayLogo = await loadImageToBase64((matchingBarangay as { barangayName: string; logo: string }).logo);
+
+    
+
 
     //TODO Adding logos at the top
     doc.addImage(skfedlogo, 'PNG', 15, 15, 30, 30); 

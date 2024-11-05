@@ -42,9 +42,9 @@ export const announcementApi = createApi({
                               ({ id }) =>
                                   ({ type: "Announcement", id } as const)
                           ),
-                          { type: "Announcement", id: "AnnouncementLIST" },
+                          { type: "Announcement", id: "LIST" },
                       ]
-                    : [{ type: "Announcement", id: "AnnouncementLIST" }],
+                    : [{ type: "Announcement", id: "LIST" }],
         }),
         getAnnouncementByID: builder.query<AnnouncementProps, number>({
             query: (id) => `/announcement/${id}`,
@@ -60,7 +60,7 @@ export const announcementApi = createApi({
                     body: formData,
                 };
             },
-            invalidatesTags: [{ type: "Announcement", id: "AnnouncementLIST" }],
+            invalidatesTags: [{ type: "Announcement", id: "LIST" }],
         }),
         editAnnouncement: builder.mutation<
             void,
@@ -71,7 +71,10 @@ export const announcementApi = createApi({
                 method: "PUT",
                 body: announcement,
             }),
-            invalidatesTags: [{ type: "Announcement", id: "AnnouncementLIST" }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: "Announcement", id: "LIST" },
+                { type: "Announcement", id },
+            ],
         }),
         deleteAnnouncement: builder.mutation<void, number>({
             query: (id) => ({
@@ -80,7 +83,7 @@ export const announcementApi = createApi({
             }),
             invalidatesTags: (result, error, id) => [
                 { type: "Announcement", id },
-                { type: "Announcement", id: "AnnouncementLIST" },
+                { type: "Announcement", id: "LIST" },
             ],
         }),
     }),

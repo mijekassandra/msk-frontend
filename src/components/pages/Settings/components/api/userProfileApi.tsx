@@ -42,7 +42,7 @@ export const userProfile = createApi({
                     const { data } = await queryFulfilled;
 
                     // Dispatch the updateProfileSuccess action with the updated profile data
-                    dispatch(updateProfileSuccess(data.data)); // Only dispatch the "data" field from response
+                    dispatch(updateProfileSuccess(data)); // Only dispatch the "data" field from response
                     console.log("Updated profile data:", data); // Check if profile_img URL is correct
                 } catch (error) {
                     console.error("Update profile failed:", error);

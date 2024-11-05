@@ -56,9 +56,9 @@ const ManageProfile = () => {
         first_name: "",
         middle_name: "",
         last_name: "",
+        name_ext: "",
         gender: "",
         address: "",
-        // purok: "",
         contact_number: "",
         email: "",
         date_of_birth: null,
@@ -88,9 +88,13 @@ const ManageProfile = () => {
 
     // specific for Date Change
     const handleDateChange = (newDate: any) => {
+        const formattedDate = newDate
+            ? dayjs(newDate).format("YYYY-MM-DD")
+            : "";
+        console.log("Selected Date: ", formattedDate);
         setFormData({
             ...formData,
-            date_of_birth: newDate ? dayjs(newDate).format("YYYY-MM-DD") : null,
+            date_of_birth: formattedDate,
         });
     };
 
@@ -138,6 +142,7 @@ const ManageProfile = () => {
 
         try {
             const response = await updateProfile(formDataToSend);
+            console.log("response here: ", response);
 
             if (response.error) {
                 setAlert(response.error.data.message);
@@ -145,7 +150,6 @@ const ManageProfile = () => {
                 setTimeout(() => {
                     setAlert(null);
                 }, 4000);
-                console.log("response: ", response);
             } else if (response.data.status === "success") {
                 Swal.fire({
                     title: "Success!",
@@ -185,11 +189,12 @@ const ManageProfile = () => {
                 first_name: userProfile.data.first_name || "",
                 middle_name: userProfile.data.middle_name || "",
                 last_name: userProfile.data.last_name || "",
+                name_ext: userProfile.data.name_ext || "",
                 gender: userProfile.data.gender || "",
                 address: userProfile.data.address || "",
                 contact_number: userProfile.data.contact_number || "",
                 email: userProfile.data.email || "",
-                date_of_birth: userProfile.data.date_of_birth || null,
+                date_of_birth: userProfile.data.date_of_birth || "",
                 civil_status: userProfile.data.civil_status || "",
                 religion: userProfile.data.religion || "",
                 voter_status: userProfile.data.voter_status || "",
@@ -215,7 +220,8 @@ const ManageProfile = () => {
         } else {
             setIsMember("no");
         }
-    }, [formData.youth_organization]);
+        console.log("formdata: ", formData);
+    }, [formData.youth_organization, formData]);
 
     return (
         <Stack rowGap={3}>
@@ -326,8 +332,8 @@ const ManageProfile = () => {
                                         placeholder="Ext."
                                         variant="outlined"
                                         margin="dense"
-                                        // name="extension"
-                                        // value={formData.middle_name}
+                                        name="name_ext"
+                                        value={formData.name_ext}
                                         onChange={handleInputChange}
                                     />
                                 </Grid>
@@ -363,7 +369,7 @@ const ManageProfile = () => {
                                                         ? dayjs(newDate).format(
                                                               "YYYY-MM-DD"
                                                           )
-                                                        : null
+                                                        : ""
                                                 );
                                             }}
                                             sx={{
@@ -535,7 +541,7 @@ const ManageProfile = () => {
                                         </MenuItem>
                                     </TextField>
                                 </Grid>
-                                <Grid item sm={5.4} xs={12}>
+                                <Grid item sm={11} xs={12}>
                                     <Typography variant="body1">
                                         Address
                                     </Typography>
@@ -547,21 +553,6 @@ const ManageProfile = () => {
                                         margin="dense"
                                         name="address"
                                         value={formData.address}
-                                        onChange={handleInputChange}
-                                    />
-                                </Grid>
-                                <Grid item sm={5.4} xs={12}>
-                                    <Typography variant="body1">
-                                        Purok
-                                    </Typography>
-                                    <TextField
-                                        fullWidth
-                                        size="small"
-                                        placeholder="Purok"
-                                        variant="outlined"
-                                        margin="dense"
-                                        // name="purok"
-                                        // value={formData.address}
                                         onChange={handleInputChange}
                                     />
                                 </Grid>

@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, CircularProgress } from "@mui/material";
 import TertiaryButton from "./TertiaryButton";
 import PrimaryButton from "./PrimaryButton";
 import React, { MouseEvent } from "react";
@@ -11,6 +11,8 @@ interface TwoChoiceProps {
     justifyContent?: string;
     leftOnClick?: (event: MouseEvent<HTMLButtonElement>) => void;
     rightOnClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+    disabled?: boolean;
+    loading?: boolean;
 }
 
 const TwoChoice: React.FC<TwoChoiceProps> = ({
@@ -21,6 +23,8 @@ const TwoChoice: React.FC<TwoChoiceProps> = ({
     justifyContent = "flex-end",
     leftOnClick,
     rightOnClick,
+    disabled,
+    loading,
 }) => {
     return (
         <Stack
@@ -31,13 +35,26 @@ const TwoChoice: React.FC<TwoChoiceProps> = ({
             justifyContent={justifyContent}
         >
             {leftText && (
-                <TertiaryButton variant="text" color={color} size={size} onClick={leftOnClick}>
+                <TertiaryButton
+                    variant="text"
+                    color={color}
+                    size={size}
+                    onClick={leftOnClick}
+                >
                     {" "}
                     {leftText}
                 </TertiaryButton>
             )}
-            <PrimaryButton size={size} onClick={rightOnClick}>
-                {rightText}
+            <PrimaryButton
+                size={size}
+                onClick={rightOnClick}
+                disabled={disabled}
+            >
+                {loading ? (
+                    <CircularProgress size={20} color="inherit" />
+                ) : (
+                    rightText
+                )}
             </PrimaryButton>
         </Stack>
     );

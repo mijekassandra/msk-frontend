@@ -48,7 +48,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
     const [errorDisplay, setErrorDisplay] = useState("");
     const [fieldErrors, setFieldErrors] = useState({
         username: false,
-        barangay: false,
+        // barangay: false,
     });
     const [alert, setAlert] = useState(null);
 

@@ -45,7 +45,6 @@ const PublicationTable = () => {
         isError: allPublicationsError,
         isSuccess: allPublicationsSuccess,
         isLoading: allPublicationsLoading,
-        refetch,
     } = useGetPublicationsQuery();
 
     //mutations
@@ -73,11 +72,6 @@ const PublicationTable = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-
-    // Force refetch if needed
-    useEffect(() => {
-        refetch();
-    }, []);
 
     //   Filter publications based on user role (Super Admin, Federation)
     const filteredRows = React.useMemo(() => {

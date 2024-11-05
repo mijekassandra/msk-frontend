@@ -47,7 +47,6 @@ const AnnouncementTable = () => {
         isError: allAnnouncementsError,
         isSuccess: allAnnouncementsSuccess,
         isLoading: allAnnouncementsLoading,
-        refetch,
     } = useGetAnnouncementsQuery();
 
     //mutations
@@ -115,11 +114,6 @@ const AnnouncementTable = () => {
         }
     };
 
-    // Force refetch if needed
-    useEffect(() => {
-        refetch();
-    }, []);
-
     const filteredRows = React.useMemo(() => {
         if (adminMode && selectedBarangay) {
             return allAnnouncements.filter(
@@ -177,7 +171,10 @@ const AnnouncementTable = () => {
                         <Visibility
                             sx={{
                                 color: "primary.dark",
-                                fontSize: "22px",
+                                fontSize: {
+                                    lg: "20px",
+                                    xs: "16px",
+                                },
                             }}
                         />
                     </IconButton>
@@ -195,7 +192,10 @@ const AnnouncementTable = () => {
                                 <BorderColor
                                     sx={{
                                         color: "secondary.light",
-                                        fontSize: "22px",
+                                        fontSize: {
+                                            lg: "20px",
+                                            xs: "16px",
+                                        },
                                     }}
                                 />
                             </IconButton>
@@ -208,7 +208,10 @@ const AnnouncementTable = () => {
                                 <Delete
                                     sx={{
                                         color: "error.main",
-                                        fontSize: "22px",
+                                        fontSize: {
+                                            lg: "20px",
+                                            xs: "16px",
+                                        },
                                     }}
                                 />
                             </IconButton>

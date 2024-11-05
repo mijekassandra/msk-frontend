@@ -217,9 +217,9 @@ const Login = () => {
                                     {errorDisplay}
                                 </Typography>
                             )}
-                            <Typography variant="body1" textAlign="center">
+                            {/* <Typography variant="body1" textAlign="center">
                                 Forgot Password?
-                            </Typography>
+                            </Typography> */}
                             <Stack sx={{ marginTop: "25px" }}>
                                 <PrimaryButton
                                     size="large"

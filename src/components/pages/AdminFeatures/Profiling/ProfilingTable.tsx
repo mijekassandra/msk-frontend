@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import {
     Visibility,
     BorderColor,
     Delete,
     AddCircle,
-    Download,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
@@ -18,8 +17,13 @@ import PrimaryButton from "../../../buttons/PrimaryButton";
 import CreateNewProfiling from "./CreateNewProfiling";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
+
 // import apiSlices
-import { useGetUsersQuery, useEditUserMutation } from "../../Admin/api/userApi";
+import {
+    useGetProfilesQuery,
+    useAddYouthProfilingMutation,
+    useEditYouthProfilingMutation,
+} from "../Profiling/api/profilingApi";
 
 const ProfilingTable = () => {
     // logged in user details
@@ -35,16 +39,17 @@ const ProfilingTable = () => {
     const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
         "create"
     ); // for modal mode, either create or edit
-    const [currentProfiling, setCurrentProfiling] = useState({});
+    const [currentProfiling, setCurrentProfiling] = useState<any>({});
 
     const {
         data: allYouthProfiling = [],
         isError: allYouthProfilingError,
         isSuccess: allYouthProfilingSuccess,
         isLoading: allYouthProfilingLoading,
-    } = useGetUsersQuery();
+    } = useGetProfilesQuery();
 
-    const [editUser] = useEditUserMutation();
+    const [addYouthProfiling] = useAddYouthProfilingMutation();
+    const [editYouthProfiling] = useEditYouthProfilingMutation();
 
     const handleAddProfilingClick = () => {
         setModalMode("create");
@@ -58,11 +63,11 @@ const ProfilingTable = () => {
         setIsModalOpen(true);
     };
 
-    const handleViewProfilingClick = (profile: any) => {
-        setModalMode("view");
-        setCurrentProfiling(profile);
-        setIsModalOpen(true);
-    };
+    // const handleViewProfilingClick = (profile: any) => {
+    //     setModalMode("view");
+    //     setCurrentProfiling(profile);
+    //     setIsModalOpen(true);
+    // };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -86,14 +91,10 @@ const ProfilingTable = () => {
         .filter((profile) => {
             if (adminMode && selectedBarangay) {
                 return (
-                    profile.barangay === selectedBarangay &&
-                    profile.profile_id !== null
+                    profile.barangay === selectedBarangay && profile.id !== null
                 );
             }
-            return (
-                profile.barangay === userDetail?.barangay &&
-                profile.profile_id !== null
-            );
+            return allYouthProfiling;
         })
         .map((profile) => ({
             ...profile,
@@ -199,7 +200,6 @@ const ProfilingTable = () => {
                 <CustomDataGrid
                     rows={filteredRows}
                     columns={columns}
-                    getRowId={(row: any) => row.profile_id ?? row.account_id}
                     isLoading={allYouthProfilingLoading}
                     tableLabel="LIST OF KK Profile Profiling"
                     actionButton={
@@ -229,8 +229,9 @@ const ProfilingTable = () => {
                     mode={modalMode}
                     initialData={currentProfiling}
                     onClose={handleCloseModal}
-                    // addYouthProfiling={addYouthProfiling}
-                    editYouthProfiling={editUser}
+                    addYouthProfiling={addYouthProfiling}
+                    editYouthProfiling={editYouthProfiling}
+                    age={calculateAge(currentProfiling.date_of_birth)}
                 />
             )}
 

@@ -21,7 +21,6 @@ import LoadingDisplay from "../../../displays/LoadingDisplay";
 // import apiSlices
 import {
     useGetActivtiesQuery,
-    useGetActivityByIDQuery,
     useAddActivityMutation,
     useEditActivityMutation,
 } from "../api/activityApi";
@@ -47,7 +46,6 @@ const ActivitiesTable = () => {
         isError: allActivitiesError,
         isSuccess: allActivitiesSuccess,
         isLoading: allActivitiesLoading,
-        refetch,
     } = useGetActivtiesQuery();
 
     const [addActivity] = useAddActivityMutation();
@@ -74,11 +72,6 @@ const ActivitiesTable = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-
-    // Force refetch if needed
-    useEffect(() => {
-        refetch();
-    }, []);
 
     // const handleDeleteActivity = async (activity: any) => {
     //     // confirmation dialog
@@ -181,18 +174,24 @@ const ActivitiesTable = () => {
                             }}
                         />
                     </IconButton>
-                    <IconButton
-                        aria-label="edit"
-                        onClick={() => handleEditActivityClick(params.row)}
-                    >
-                        <BorderColor
-                            sx={{
-                                color: "secondary.light",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton>
-                    {/* <IconButton
+                    {!adminMode &&
+                    !selectedBarangay &&
+                    userDetail?.role !== "Super Admin" ? (
+                        <>
+                            <IconButton
+                                aria-label="edit"
+                                onClick={() =>
+                                    handleEditActivityClick(params.row)
+                                }
+                            >
+                                <BorderColor
+                                    sx={{
+                                        color: "secondary.light",
+                                        fontSize: "22px",
+                                    }}
+                                />
+                            </IconButton>
+                            {/* <IconButton
                         aria-label="folder"
                         onClick={() => handleDeleteActivity(params.row)}
                     >
@@ -203,6 +202,8 @@ const ActivitiesTable = () => {
                             }}
                         />
                     </IconButton> */}
+                        </>
+                    ) : null}
                 </Box>
             ),
         },

@@ -168,12 +168,11 @@ const AdminTable = () => {
         selectedBarangay,
     ]);
 
-    // When the user role changes, refetch
-    useEffect(() => {
-        refetch();
-        // console.log(`${userDetail?.role}:'s list are: `, filteredRows);
-        console.log(`users `, filteredRows);
-    }, [userDetail?.role, refetch]);
+    // // When the user role changes, refetch
+    // useEffect(() => {
+    //     refetch();
+    // }, [userDetail?.role, refetch]);
+    console.log("filteredRows", filteredRows);
 
     useEffect(() => {
         if (alert) {
@@ -188,12 +187,20 @@ const AdminTable = () => {
 
     const columns = [
         { field: "username", headerName: "Username", minWidth: 200, flex: 1 },
+        {
+            field: "first_name",
+            headerName: "First Name",
+            minWidth: 130,
+            flex: 1,
+        },
+        { field: "last_name", headerName: "Last Name", minWidth: 130, flex: 1 },
+        { field: "gender", headerName: "Gender", maxWidth: 100, flex: 0.5 },
         { field: "email", headerName: "Email", minWidth: 200, flex: 1 },
         {
             field: "account_status",
             headerName: "Status",
             maxWidth: 100,
-            flex: 1,
+            flex: 0.5,
         },
         {
             field: "role",
@@ -215,7 +222,7 @@ const AdminTable = () => {
             cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
-                    <IconButton
+                    {/* <IconButton
                         aria-label="view"
                         onClick={() => handleViewAccountClick(params.row)}
                     >
@@ -225,7 +232,7 @@ const AdminTable = () => {
                                 fontSize: "22px",
                             }}
                         />
-                    </IconButton>
+                    </IconButton> */}
 
                     {!adminMode && !selectedBarangay ? (
                         <>

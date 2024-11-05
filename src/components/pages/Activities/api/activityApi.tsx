@@ -43,9 +43,9 @@ export const activityApi = createApi({
                           ...result.map(
                               ({ id }) => ({ type: "Activity", id } as const)
                           ),
-                          { type: "Activity", id: "ActivityLIST" },
+                          { type: "Activity", id: "LIST" },
                       ]
-                    : [{ type: "Activity", id: "ActivityLIST" }],
+                    : [{ type: "Activity", id: "LIST" }],
         }),
         getActivityByID: builder.query<ActivityApiProps, number>({
             query: (id) => `/activity/${id}`, // Use id in the URL
@@ -61,7 +61,7 @@ export const activityApi = createApi({
                     body: formData,
                 };
             },
-            invalidatesTags: [{ type: "Activity", id: "ActivityLIST" }],
+            invalidatesTags: [{ type: "Activity", id: "LIST" }],
         }),
         editActivity: builder.mutation<void, { id: number; activity: object }>({
             query: ({ id, activity }) => ({
@@ -69,7 +69,10 @@ export const activityApi = createApi({
                 method: "PUT",
                 body: activity,
             }),
-            invalidatesTags: [{ type: "Activity", id: "ActivityLIST" }],
+            invalidatesTags: (result, error, { id }) => [
+                { type: "Activity", id: "LIST" },
+                { type: "Activity", id },
+            ],
         }),
     }),
 });

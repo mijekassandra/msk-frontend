@@ -22,6 +22,7 @@ interface ModalVariantOneProps {
     onSave: () => void;
     mode: "create" | "edit" | "view";
     maxWidth?: string;
+    loading: boolean;
 }
 
 const ModalVariantOne: React.FC<ModalVariantOneProps> = (
@@ -82,6 +83,8 @@ const ModalVariantOne: React.FC<ModalVariantOneProps> = (
                         <TwoChoice
                             leftText="Cancel"
                             rightText="Confirm"
+                            disabled={props.loading}
+                            loading={props.loading}
                             color="error"
                             size="medium"
                             leftOnClick={props.onClose}

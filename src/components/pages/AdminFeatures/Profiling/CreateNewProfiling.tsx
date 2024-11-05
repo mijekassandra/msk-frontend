@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../../../../index.css";
 import {
-    Divider,
     Stack,
     TextField,
     Typography,
     Grid,
-    FormControl,
-    InputLabel,
-    Select,
     MenuItem,
+    Alert,
+    Box,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -27,6 +25,7 @@ interface CreateNewProfilingProps {
         first_name?: string;
         last_name?: string;
         middle_name?: string;
+        name_ext?: string;
         date_of_birth?: string;
         civil_status?: string;
         gender?: string;
@@ -48,8 +47,9 @@ interface CreateNewProfilingProps {
         isMember?: string;
         // profile_img?: string;
     };
+    age?: number;
     onClose: () => void;
-    // addYouthProfiling: any;
+    addYouthProfiling: any;
     editYouthProfiling: any;
 }
 
@@ -57,7 +57,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
     mode,
     initialData = {},
     onClose,
-    // addYouthProfiling,
+    age,
+    addYouthProfiling,
     editYouthProfiling,
 }) => {
     // specific for calculating age
@@ -82,7 +83,10 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
         first_name: initialData.first_name || "",
         last_name: initialData.last_name || "",
         middle_name: initialData.middle_name || "",
-        date_of_birth: initialData.date_of_birth || null,
+        name_ext: initialData.name_ext || "",
+        date_of_birth: initialData.date_of_birth
+            ? dayjs(initialData.date_of_birth).format("YYYY-MM-DD")
+            : "",
         civil_status: initialData.civil_status || "",
         gender: initialData.gender || "",
         religion: initialData.religion || "",
@@ -90,7 +94,6 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
         email: initialData.email || "",
         voter_status: initialData.voter_status || "",
         address: initialData.address || "",
-        purok: initialData.purok || "",
         educational_attainment: initialData.educational_attainment || "",
         educational_reason: initialData.educational_reason || "",
         disability: initialData.disability || "",
@@ -100,17 +103,66 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
         agency: initialData.agency || "",
         skills: initialData.skills || "",
         interest: initialData.interest || "",
-        isMember: initialData.youth_organization ? "yes" : "no",
-        age: null,
+        isMember: initialData.isMember || "no",
+        age: age || null,
     });
+    const [errorDisplay, setErrorDisplay] = useState("");
+    const [fieldErrors, setFieldErrors] = useState({
+        first_name: false,
+        last_name: false,
+        middle_name: false,
+        date_of_birth: false,
+        civil_status: false,
+        gender: false,
+        religion: false,
+        contact_number: false,
+        email: false,
+        voter_status: false,
+        address: false,
+        educational_attainment: false,
+        disability: false,
+        medical_condition: false,
+        occupation: false,
+    });
+    const [alert, setAlert] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    // Handle unified input change for other textfield
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormData({
-            ...formData,
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement> | any
+    ) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
             [name]: value,
-        });
+            ...(name === "isMember" && value === "no"
+                ? { youth_organization: "" }
+                : {}),
+        }));
+    };
+
+    const validateForm = () => {
+        const errors = {
+            first_name: !formData.first_name,
+            last_name: !formData.last_name,
+            middle_name: !formData.middle_name,
+            date_of_birth: !formData.date_of_birth,
+            civil_status: !formData.civil_status,
+            gender: !formData.gender,
+            religion: !formData.religion,
+            contact_number: !formData.contact_number,
+            email: !formData.email,
+            voter_status: !formData.voter_status,
+            address: !formData.address,
+            educational_attainment: !formData.educational_attainment,
+            disability: !formData.disability,
+            medical_condition: !formData.medical_condition,
+            occupation: !formData.occupation,
+        };
+
+        setFieldErrors(errors);
+
+        // Check if any errors exist
+        return !Object.values(errors).some((error) => error === true);
     };
 
     // Handler for date_of_birth field change
@@ -118,7 +170,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
         if (!newDate) {
             setFormData((prevData) => ({
                 ...prevData,
-                date_of_birth: null,
+                date_of_birth: "",
                 age: null,
             }));
             return;
@@ -135,14 +187,85 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
     };
 
     const handleSubmitProfiling = async () => {
+        const isValid = validateForm();
+
+        if (!isValid) {
+            setErrorDisplay("Please fill in all required fields");
+            return;
+        }
+
         try {
+            const formDataToSend = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                formDataToSend.append(key, String(value ?? ""));
+            });
+
             if (mode === "create") {
-                console.log("create");
-            } else if (mode == "edit") {
-                console.log("edit");
+                const response = await addYouthProfiling(formDataToSend);
+
+                console.log("response: ", response);
+                if (response.error) {
+                    setAlert(
+                        response.error.message || "Failed to create profile."
+                    );
+                    setTimeout(() => setAlert(null), 4000);
+                } else if (response.data?.status === "success") {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "KK Profile has been successfully created.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            title: "my-swal-title",
+                            htmlContainer: "my-swal-text",
+                            popup: "my-swal-popup",
+                            confirmButton: "my-swal-button",
+                        },
+                    });
+                    onClose();
+                }
+            } else if (mode === "edit") {
+                const response = await editYouthProfiling({
+                    id: formData.id,
+                    data: formData,
+                });
+
+                console.log("response", response);
+                console.log("formData", formData);
+
+                if (response.error) {
+                    setAlert(response.error.data.message);
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (
+                    response.data &&
+                    response.data.status === "success"
+                ) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "KK Profile has been successfully updated.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            title: "my-swal-title",
+                            htmlContainer: "my-swal-text",
+                            popup: "my-swal-popup",
+                            confirmButton: "my-swal-button",
+                        },
+                    });
+                    onClose();
+                }
             }
         } catch (error) {
-            console.log("Failed:", error);
+            const typedError = error as {
+                data: { status: string; message: string; error?: any };
+            };
+            const errorMessage =
+                typedError?.data?.message || "An unexpected error occurred";
+            setErrorDisplay(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -152,6 +275,16 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
             isMember: formData.youth_organization ? "yes" : "no",
         }));
     }, [formData.youth_organization]);
+
+    useEffect(() => {
+        if (errorDisplay) {
+            const timer = setTimeout(() => {
+                setErrorDisplay("");
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [errorDisplay]);
 
     return (
         <ModalVariantOne
@@ -166,55 +299,71 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
             }
             mode={mode}
             maxWidth={"60%"}
+            loading={loading}
             content={
-                <Stack spacing={2} height="auto">
+                <Stack
+                    spacing={2}
+                    sx={{
+                        height: "400px",
+                        overflowY: "auto",
+                        paddingBottom: "20px",
+                    }}
+                >
                     <Typography variant="h5">Personal Information</Typography>
                     <Grid container rowGap={2}>
                         <Grid container item spacing={2} xs={12}>
                             <Grid item xs={12} sm={6} md={3}>
                                 <TextField
-                                    name="last_name"
-                                    label="Last Name"
+                                    name="first_name"
+                                    label="First Name"
+                                    required
                                     variant="outlined"
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.last_name}
+                                    value={formData.first_name || ""}
+                                    error={fieldErrors?.first_name}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} md={3}>
                                 <TextField
-                                    name="first_name"
-                                    label="First Name"
+                                    name="last_name"
+                                    label="Last Name"
+                                    required
                                     variant="outlined"
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.first_name}
+                                    value={formData.last_name || ""}
+                                    error={fieldErrors?.last_name}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
+
                             <Grid item xs={12} sm={6} md={3}>
                                 <TextField
                                     name="middle_name"
                                     label="Middle Name"
+                                    required
                                     variant="outlined"
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.middle_name}
+                                    value={formData.middle_name || ""}
+                                    error={fieldErrors?.middle_name}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} md={3}>
                                 <TextField
-                                    name="ext"
+                                    name="name_ext"
                                     label="Ext."
                                     variant="outlined"
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
+                                    value={formData.name_ext || ""}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
@@ -250,19 +399,19 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     />
                                 </LocalizationProvider>
                             </Grid>
-                            <Grid item xs={12} sm={4}>
+                            <Grid item xs={12} sm={2}>
                                 <TextField
                                     name="age"
                                     label="Age"
                                     variant="outlined"
                                     size="small"
                                     fullWidth
-                                    value={formData.age} // Display the calculated age
+                                    value={formData.age || ""}
                                     disabled={true}
                                 />
                             </Grid>
 
-                            <Grid item xs={12} sm={4}>
+                            <Grid item xs={12} sm={3}>
                                 <TextField
                                     fullWidth
                                     size="small"
@@ -271,6 +420,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     name="gender"
                                     placeholder="Select Gender"
                                     value={formData.gender || ""}
+                                    required
+                                    error={fieldErrors?.gender}
                                     disabled={mode === "view"}
                                     onChange={handleInputChange}
                                     label="Gender"
@@ -285,17 +436,86 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     </MenuItem>
                                 </TextField>
                             </Grid>
-                        </Grid>
-
-                        <Grid container item spacing={2} xs={12}>
-                            <Grid item xs={12} sm={4}>
+                            <Grid item xs={12} sm={3}>
                                 <TextField
                                     fullWidth
                                     size="small"
                                     select
+                                    placeholder="Voter Status"
+                                    required
+                                    variant="outlined"
+                                    name="voter_status"
+                                    value={formData.voter_status}
+                                    error={fieldErrors?.voter_status}
+                                    onChange={handleInputChange}
+                                    label="Select Status"
+                                >
+                                    <MenuItem value="" disabled>
+                                        Select Status
+                                    </MenuItem>
+                                    <MenuItem value="active">Active</MenuItem>
+                                    <MenuItem value="inactive">
+                                        Inactive
+                                    </MenuItem>
+                                </TextField>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                name="address"
+                                label="Address"
+                                required
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                disabled={mode === "view"}
+                                value={formData.address || ""}
+                                error={fieldErrors?.address}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+
+                        <Grid container item spacing={2} xs={12}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    name="contact_number"
+                                    label="Contact No."
+                                    required
+                                    variant="outlined"
+                                    size="small"
+                                    fullWidth
+                                    disabled={mode === "view"}
+                                    value={formData.contact_number || ""}
+                                    error={fieldErrors?.contact_number}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    name="email"
+                                    label="Email Address"
+                                    required
+                                    variant="outlined"
+                                    size="small"
+                                    fullWidth
+                                    disabled={mode === "view"}
+                                    value={formData.email || ""}
+                                    error={fieldErrors?.email}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid container item spacing={2} xs={12}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    required
+                                    select
                                     variant="outlined"
                                     name="civil_status"
                                     value={formData.civil_status || ""}
+                                    error={fieldErrors?.civil_status}
                                     onChange={handleInputChange}
                                     disabled={mode === "view"}
                                     label="Civil Status"
@@ -315,54 +535,17 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                 </TextField>
                             </Grid>
 
-                            <Grid item xs={12} sm={4}>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     name="religion"
                                     label="Religion"
                                     variant="outlined"
+                                    required
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
                                     value={formData.religion || ""}
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <TextField
-                                    name="purok"
-                                    label="Purok"
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    disabled={mode === "view"}
-                                    onChange={handleInputChange}
-                                    value={formData.purok || ""}
-                                />
-                            </Grid>
-                        </Grid>
-
-                        <Grid container item spacing={2} xs={12}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    name="contact_number"
-                                    label="Contact No."
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    disabled={mode === "view"}
-                                    value={formData.contact_number || ""}
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    name="email_address"
-                                    label="Email Address"
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    disabled={mode === "view"}
-                                    value={formData.email || ""}
+                                    error={fieldErrors?.religion}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
@@ -375,10 +558,12 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     size="small"
                                     select
                                     variant="outlined"
+                                    required
                                     name="educational_attainment"
                                     value={
                                         formData.educational_attainment || ""
                                     }
+                                    error={fieldErrors?.educational_attainment}
                                     disabled={mode === "view"}
                                     onChange={handleInputChange}
                                     label="Select Educational Attainment"
@@ -431,9 +616,11 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     fullWidth
                                     size="small"
                                     select
+                                    required
                                     variant="outlined"
                                     name="occupation"
                                     value={formData.occupation || ""}
+                                    error={fieldErrors?.occupation}
                                     disabled={mode === "view"}
                                     onChange={handleInputChange}
                                     label="Working"
@@ -462,7 +649,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
 
                     <Typography variant="h5">Other Information</Typography>
 
-                    <Grid container rowGap={2}>
+                    <Grid container rowGap={2} paddingBottom={2}>
                         <Grid container item spacing={2} xs={12}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -472,7 +659,9 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     variant="outlined"
                                     name="disability"
                                     disabled={mode === "view"}
+                                    required
                                     value={formData.disability || ""}
+                                    error={fieldErrors?.disability}
                                     onChange={handleInputChange}
                                     label="Do you have disability/ies?"
                                 >
@@ -491,7 +680,9 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     variant="outlined"
                                     name="medical_condition"
                                     disabled={mode === "view"}
+                                    required
                                     value={formData.medical_condition || ""}
+                                    error={fieldErrors?.medical_condition}
                                     onChange={handleInputChange}
                                     label="Do you have medical condition?"
                                 >
@@ -513,7 +704,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     variant="outlined"
                                     name="isMember"
                                     disabled={mode === "view"}
-                                    value={formData.isMember}
+                                    value={formData.isMember || ""}
                                     onChange={handleInputChange}
                                     label="Are you a member of any youth organization"
                                 >
@@ -549,24 +740,48 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.skills}
+                                    value={formData.skills || ""}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} md={6}>
                                 <TextField
-                                    name="interests"
+                                    name="interest"
                                     label="Interest"
                                     variant="outlined"
                                     size="small"
                                     fullWidth
                                     disabled={mode === "view"}
-                                    value={formData.interest}
+                                    value={formData.interest || ""}
                                     onChange={handleInputChange}
                                 />
                             </Grid>
                         </Grid>
+                        {errorDisplay && (
+                            <Typography
+                                variant="caption"
+                                textAlign="right"
+                                color="error.main"
+                                width="100%"
+                            >
+                                {errorDisplay}
+                            </Typography>
+                        )}
                     </Grid>
+                    {alert && (
+                        <Box
+                            sx={{
+                                position: "fixed",
+                                bottom: 16,
+                                right: 16,
+                                zIndex: 1000,
+                            }}
+                        >
+                            <Alert variant="filled" severity="error">
+                                {alert}
+                            </Alert>
+                        </Box>
+                    )}
                 </Stack>
             }
         />
