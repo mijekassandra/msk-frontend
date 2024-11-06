@@ -223,6 +223,7 @@ const CommentsList: React.FC<CommentsListProps> = ({
                                             comment.account_id && (
                                             <Stack direction="row" spacing={1}>
                                                 <IconButton
+                                                    sx={{ padding: "0" }}
                                                     onClick={(e) =>
                                                         handleClick(
                                                             e,

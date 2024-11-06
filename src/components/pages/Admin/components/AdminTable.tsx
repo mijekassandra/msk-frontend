@@ -51,7 +51,7 @@ const AdminTable = () => {
         isError: allUsersError,
         isSuccess: allUsersSuccess,
         isLoading: allUsersLoading,
-        refetch,
+        // refetch,
     } = useGetUsersQuery();
 
     const [addAccount] = useRegisterUserMutation();

@@ -40,7 +40,7 @@ const ActivitiesList = () => {
         isSuccess: allActivitiesSuccess,
         isLoading: allActivitiesLoading,
         isFetching,
-        refetch,
+        // refetch,
     } = useGetActivtiesQuery();
 
     // Step 1: Filter publications for published status
@@ -86,9 +86,9 @@ const ActivitiesList = () => {
         navigate(path);
     };
 
-    useEffect(() => {
-        refetch();
-    }, []);
+    // useEffect(() => {
+    //     refetch();
+    // }, []);
 
     return (
         <Stack gap={2}>

@@ -35,7 +35,7 @@ const UserSKActivities = () => {
         isError: allActivitiesError,
         isLoading: allActivitiesLoading,
         isFetching,
-        refetch,
+        // refetch,
     } = useGetActivtiesQuery();
 
     // Step 1: Filter activities for published status
@@ -87,10 +87,10 @@ const UserSKActivities = () => {
         }
     };
 
-    // Refetch data on mount
-    useEffect(() => {
-        refetch();
-    }, []);
+    // // Refetch data on mount
+    // useEffect(() => {
+    //     refetch();
+    // }, []);
 
     return (
         <Stack gap={2}>

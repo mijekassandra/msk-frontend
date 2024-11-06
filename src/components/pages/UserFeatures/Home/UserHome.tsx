@@ -29,6 +29,7 @@ const UserHome = () => {
         isError: allPublicationsError,
         isLoading: allPublicationsLoading,
         isFetching,
+        // refetch
     } = useGetPublicationsQuery();
 
     const handleReadMore = (publication: any) => {
