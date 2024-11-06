@@ -49,7 +49,7 @@ const UserSKActivities = () => {
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
-    // Filter activities based on search query
+    //! Filter activities based on search query
     const filteredActivities = sortedActivities.filter((activity) =>
         activity.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -72,7 +72,7 @@ const UserSKActivities = () => {
         setCurrentPage(value);
     };
 
-    // Search function to update search query and reset pagination
+    //! Search function to update search query and reset pagination
     const handleSearch = (query: string) => {
         setSearchQuery(query);
         setCurrentPage(1); // Reset to first page on new search
