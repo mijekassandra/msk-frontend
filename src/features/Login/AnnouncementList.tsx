@@ -12,6 +12,7 @@ import LogoHeader from "../../components/displays/LogoHeader";
 import LoadingDisplay from "../../components/displays/LoadingDisplay";
 import ErrorDisplay from "../../components/displays/ErrorDisplay";
 import AnnouncementCard from "../../components/cards/AnnouncementCard.js";
+import SearchInput from "../../components/displays/SearchInput.tsx";
 
 // api
 import { useGetAnnouncementsQuery } from "../../components/pages/Announcement/api/announcementApi.js";
@@ -27,6 +28,7 @@ const AnnouncementList = () => {
     // logged in user role
     const userDetail = useSelector((state: RootState) => state.auth.user);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const {
         data: allAnnouncements = [],
@@ -47,15 +49,20 @@ const AnnouncementList = () => {
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
+    //! Filter announcements based on search query
+    const filteredAnnouncements = sortedAnnouncements.filter((announcement) =>
+        announcement.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     // Step 3: Paginate the filtered and sorted announcements
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const paginatedAnnouncements = sortedAnnouncements.slice(
+    const paginatedAnnouncements = filteredAnnouncements.slice(
         startIndex,
         startIndex + ITEMS_PER_PAGE
     );
 
     // Calculate total number of pages based on the filtered and sorted announcements
-    const totalPages = Math.ceil(sortedAnnouncements.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(filteredAnnouncements.length / ITEMS_PER_PAGE);
 
     // Handle MUI Pagination change
     const handlePageChange = (
@@ -63,6 +70,12 @@ const AnnouncementList = () => {
         value: number
     ) => {
         setCurrentPage(value);
+    };
+
+    //! Search function to update search query and reset pagination
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        setCurrentPage(1);
     };
 
     const handleNavigation = (path: string) => {
@@ -73,14 +86,17 @@ const AnnouncementList = () => {
         }
     };
 
-    useEffect(() => {
-        refetch();
-    }, []);
+    // useEffect(() => {
+    //     refetch();
+    // }, []);
 
     return (
         <Stack gap={2}>
             <LogoHeader header="SK ANNOUNCEMENTS" />
-            <Stack sx={{ alignItems: "flex-end" }}>
+            <Stack
+                direction="row"
+                sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
                 <Button
                     onClick={() => handleNavigation("/dashboard")}
                     sx={{ paddingInline: "20px" }}
@@ -88,6 +104,17 @@ const AnnouncementList = () => {
                 >
                     BACK TO DASHBOARD
                 </Button>
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    marginBlock={1}
+                    marginLeft={1}
+                >
+                    <SearchInput
+                        placeholder="Search announcement title"
+                        onSearch={handleSearch}
+                    />
+                </Stack>
             </Stack>
 
             {/* Show EmptyDisplay if there are no published announcements */}

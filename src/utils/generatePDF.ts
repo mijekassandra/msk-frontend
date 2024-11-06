@@ -1,9 +1,7 @@
 import jsPDF from "jspdf";
 import { YouthProfilingProps } from "../components/pages/AdminFeatures/Profiling/api/profilingApi";
-import SKFedLogo from "../assets/SKFed.png"
 import { formatDate } from "./dateUtil";
 import barangays from "../mockData/Barangay.json"
-
 
 // Helper function to convert an image to base64
 function loadImageToBase64(url: string): Promise<string> {
@@ -39,14 +37,8 @@ async function generatePDF(data: YouthProfilingProps | any) {
 
 
     console.log("data: ", data)
-    console.log("matchingBarangay: ", matchingBarangay)
-    // console.log("barangayLogo: ", barangayLogo)
-
-    const skfedlogo = await loadImageToBase64('src/assets/SKFed.png');
-    const barangayLogo = await loadImageToBase64((matchingBarangay as { barangayName: string; logo: string }).logo);
-
-    
-
+    const skfedlogo = await loadImageToBase64('/src/assets/SKFed.png');
+    const barangayLogo = await loadImageToBase64(`/src/assets/${matchingBarangay?.logo.split('/').pop()}`);
 
     //TODO Adding logos at the top
     doc.addImage(skfedlogo, 'PNG', 15, 15, 30, 30); 
@@ -135,12 +127,12 @@ async function generatePDF(data: YouthProfilingProps | any) {
     doc.setFont("helvetica", "normal");
     doc.text("If out of school, please indicate the reason: ", 15, 151);
     doc.setFont("helvetica", "bold");
-    doc.text(`${data.reason || "N/A"}`, 90, 151);
+    doc.text(`${data.educational_reason || "N/A"}`, 90, 151);
 
     doc.setFont("helvetica", "normal");
     doc.text("If working: ", 15, 157);
     doc.setFont("helvetica", "bold");
-    doc.text(`${data.working || "N/A"}`, 35, 157);
+    doc.text(`${data.occupation || "N/A"}`, 35, 157);
 
     doc.setFont("helvetica", "normal");
     doc.text("If government, what agency? ", 15, 163);
@@ -168,17 +160,17 @@ async function generatePDF(data: YouthProfilingProps | any) {
     doc.setFont("helvetica", "normal");
     doc.text("Are you a member of any youth organization? ", 15, 198);
     doc.setFont("helvetica", "bold");
-    doc.text(`${data.youth_organization || ""}`, 95, 198);
+    doc.text(data.youth_organization ? "yes" : "no", 95, 198);
 
     doc.setFont("helvetica", "normal");
     doc.text("If YES, please specify what organization: ", 15, 204);
     doc.setFont("helvetica", "bold");
-    doc.text(`${data.organization || "N/A"}`, 88, 204);
+    doc.text(`${data.youth_organization || "N/A"}`, 88, 204);
 
     doc.setFont("helvetica", "normal");
     doc.text("Skills: ", 15, 210);
     doc.setFont("helvetica", "bold");
-    doc.text(`${data.skill || ""}`, 30, 210);
+    doc.text(`${data.skills || ""}`, 30, 210);
 
     doc.setFont("helvetica", "normal");
     doc.text("Interests: ", 15, 216);

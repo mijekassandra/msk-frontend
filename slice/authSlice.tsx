@@ -33,15 +33,23 @@ const authSlice = createSlice({
             localStorage.removeItem("user");
         },
         updateProfileSuccess: (state, action) => {
-            if (state.user) {
-                state.user = {
-                    ...state.user, // Keep existing properties like "role"
-                    ...action.payload, // Override with updated profile properties
-                    profile_img:
-                        action.payload.profileImgPath || state.user.profile_img,
-                };
-                localStorage.setItem("user", JSON.stringify(state.user));
-            }
+            console.log("Before mutation, state.user:", state.user);
+
+            // Check if action.payload contains a `data` field, then flatten it
+            const updatedUser = action.payload.data
+                ? { ...action.payload.data }
+                : { ...action.payload };
+
+            state.user = {
+                ...state.user,
+                ...updatedUser,
+                profile_img:
+                    action.payload.data?.profileImgPath ||
+                    state.user.profile_img,
+            };
+
+            // console.log("After mutation, state.user:", state.user);
+            // localStorage.setItem("user", JSON.stringify(state.user)); // Persist in localStorage
         },
         clearSuccessMessage: (state) => {
             state.successMessage = null;

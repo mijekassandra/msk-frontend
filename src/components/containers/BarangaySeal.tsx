@@ -70,6 +70,10 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
         finalLogo = "";
     }
 
+    // useEffect(() => {
+    //     console.log("User details updated in sidebar:", userDetail);
+    // }, [userDetail]);
+
     return (
         <Stack
             sx={{

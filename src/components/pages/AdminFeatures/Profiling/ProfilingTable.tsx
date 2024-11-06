@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, Alert } from "@mui/material";
 import {
     Visibility,
     BorderColor,
@@ -23,6 +23,7 @@ import {
     useGetProfilesQuery,
     useAddYouthProfilingMutation,
     useEditYouthProfilingMutation,
+    useDeleteYouthProfilingMutation,
 } from "../Profiling/api/profilingApi";
 
 const ProfilingTable = () => {
@@ -40,6 +41,7 @@ const ProfilingTable = () => {
         "create"
     ); // for modal mode, either create or edit
     const [currentProfiling, setCurrentProfiling] = useState<any>({});
+    const [alert, setAlert] = useState(null);
 
     const {
         data: allYouthProfiling = [],
@@ -50,6 +52,7 @@ const ProfilingTable = () => {
 
     const [addYouthProfiling] = useAddYouthProfilingMutation();
     const [editYouthProfiling] = useEditYouthProfilingMutation();
+    const [deleteYouthProfiling] = useDeleteYouthProfilingMutation();
 
     const handleAddProfilingClick = () => {
         setModalMode("create");
@@ -61,6 +64,53 @@ const ProfilingTable = () => {
         setModalMode("edit");
         setCurrentProfiling(profile);
         setIsModalOpen(true);
+    };
+
+    const handleDeleteProfiling = async (profile: any) => {
+        // confirmation dialog
+        const result = await Swal.fire({
+            title: "Delete Profiling?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Delete!",
+            customClass: {
+                title: "my-swal-title",
+                htmlContainer: "my-swal-text",
+                popup: "my-swal-popup",
+            },
+        });
+
+        // if final confirmation
+        if (result.isConfirmed) {
+            try {
+                const response = await deleteYouthProfiling(profile.id);
+
+                if (response.error) {
+                    setAlert(response.error.data.message);
+
+                    setTimeout(() => {
+                        setAlert(null);
+                    }, 4000);
+                } else if (response.data.status === "success") {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "The KK Profiling has been deleted.",
+                        icon: "success",
+                        customClass: {
+                            title: "my-swal-title",
+                            htmlContainer: "my-swal-text",
+                            popup: "my-swal-popup",
+                            confirmButton: "my-swal-button",
+                        },
+                        confirmButtonText: "OK",
+                    });
+                }
+            } catch (error) {
+                console.log("Error: ", error);
+            }
+        }
     };
 
     // const handleViewProfilingClick = (profile: any) => {
@@ -93,6 +143,9 @@ const ProfilingTable = () => {
                 return (
                     profile.barangay === selectedBarangay && profile.id !== null
                 );
+            }
+            if (userDetail.role === "Chairperson") {
+                return profile.barangay === userDetail.barangay;
             }
             return allYouthProfiling;
         })
@@ -176,7 +229,12 @@ const ProfilingTable = () => {
                                     }}
                                 />
                             </IconButton>
-                            <IconButton aria-label="folder">
+                            <IconButton
+                                aria-label="folder"
+                                onClick={() =>
+                                    handleDeleteProfiling(params.row)
+                                }
+                            >
                                 <Delete
                                     sx={{
                                         color: "error.main",
@@ -233,6 +291,20 @@ const ProfilingTable = () => {
                     editYouthProfiling={editYouthProfiling}
                     age={calculateAge(currentProfiling.date_of_birth)}
                 />
+            )}
+            {alert && (
+                <Box
+                    sx={{
+                        position: "fixed",
+                        bottom: 16,
+                        right: 16,
+                        zIndex: 1000,
+                    }}
+                >
+                    <Alert variant="filled" severity="error">
+                        {alert}
+                    </Alert>
+                </Box>
             )}
 
             <LoadingDisplay open={allYouthProfilingLoading} />

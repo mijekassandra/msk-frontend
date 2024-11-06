@@ -40,10 +40,7 @@ export const userProfile = createApi({
             async onQueryStarted(formData, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-
-                    // Dispatch the updateProfileSuccess action with the updated profile data
-                    dispatch(updateProfileSuccess(data)); // Only dispatch the "data" field from response
-                    console.log("Updated profile data:", data); // Check if profile_img URL is correct
+                    dispatch(updateProfileSuccess(data));
                 } catch (error) {
                     console.error("Update profile failed:", error);
                 }
@@ -62,7 +59,6 @@ export const userProfile = createApi({
     }),
 });
 
-// Export hooks for usage in components
 export const {
     useGetUserProfileQuery,
     useUpdateProfileMutation,

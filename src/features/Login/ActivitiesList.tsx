@@ -13,6 +13,7 @@ import LoadingDisplay from "../../components/displays/LoadingDisplay";
 import ErrorDisplay from "../../components/displays/ErrorDisplay";
 import ActivitiesCard from "../../components/cards/ActivitiesCard.js";
 import EmptyDisplay from "../../components/displays/EmptyDisplay.js";
+import SearchInput from "../../components/displays/SearchInput.tsx";
 
 // api
 import { useGetActivtiesQuery } from "../../components/pages/Activities/api/activityApi.tsx";
@@ -31,6 +32,7 @@ const ActivitiesList = () => {
     }>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const {
         data: allActivities = [],
@@ -52,21 +54,32 @@ const ActivitiesList = () => {
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
+    //! Filter activities based on search query
+    const filteredActivities = sortedActivities.filter((activity) =>
+        activity.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     // Step 3: Paginate the filtered and sorted publications
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const paginatedActivities = sortedActivities.slice(
+    const paginatedActivities = filteredActivities.slice(
         startIndex,
         startIndex + ITEMS_PER_PAGE
     );
 
     // Calculate total number of pages based on the filtered and sorted publications
-    const totalPages = Math.ceil(sortedActivities.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(filteredActivities.length / ITEMS_PER_PAGE);
 
     const handlePageChange = (
         event: React.ChangeEvent<unknown>,
         value: number
     ) => {
         setCurrentPage(value);
+    };
+
+    //! Search function to update search query and reset pagination
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        setCurrentPage(1); // Reset to first page on new search
     };
 
     const handleNavigation = (path: string) => {
@@ -80,7 +93,10 @@ const ActivitiesList = () => {
     return (
         <Stack gap={2}>
             <LogoHeader header="SK ACTIVITIES" />
-            <Stack sx={{ alignItems: "flex-end" }}>
+            <Stack
+                direction="row"
+                sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
                 <Button
                     onClick={() => handleNavigation("/dashboard")}
                     sx={{ paddingInline: "20px" }}
@@ -88,6 +104,17 @@ const ActivitiesList = () => {
                 >
                     BACK TO DASHBOARD
                 </Button>
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    marginBlock={1}
+                    marginLeft={1}
+                >
+                    <SearchInput
+                        placeholder="Search activity title"
+                        onSearch={handleSearch}
+                    />
+                </Stack>
             </Stack>
 
             {/* Show EmptyDisplay if there are no activities */}

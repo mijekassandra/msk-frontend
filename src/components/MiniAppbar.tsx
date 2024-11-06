@@ -1,9 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-
 import {
     AppBar,
     Box,
@@ -75,10 +73,10 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     // Handle Logout
     const handleLogout = async () => {
         try {
-            await logout().unwrap(); // Perform the logout request
-            dispatch(logoutSuccess()); // Clear the token from Redux state
-            dispatch(userApi.util.resetApiState()); // Clear all RTK Query caches to remove stale data
-            dispatch(resetAdminState()); // Clear Admin state
+            await logout().unwrap();
+            dispatch(logoutSuccess());
+            dispatch(userApi.util.resetApiState());
+            dispatch(resetAdminState());
 
             // redirect back 2 logout
             navigate("/");

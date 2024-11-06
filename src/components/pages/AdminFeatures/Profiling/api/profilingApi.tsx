@@ -88,16 +88,16 @@ export const youthProfilingApi = createApi({
             ],
         }),
 
-        // deleteYouthProfiling: builder.mutation<void, number>({
-        //     query: (id) => ({
-        //         url: `youth_profilings/${id}`,
-        //         method: "DELETE",
-        //     }),
-        //     invalidatesTags: (result, error, id) => [
-        //         { type: "YouthProfiling", id },
-        //         { type: "YouthProfiling", id: "YouthProfilingLIST" },
-        //     ],
-        // }),
+        deleteYouthProfiling: builder.mutation<void, number>({
+            query: (id) => ({
+                url: `profiling/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: (result, error, id) => [
+                { type: "YouthProfiling", id },
+                { type: "YouthProfiling", id: "LIST" },
+            ],
+        }),
     }),
 });
 
@@ -105,5 +105,5 @@ export const {
     useGetProfilesQuery,
     useAddYouthProfilingMutation,
     useEditYouthProfilingMutation,
-    // useDeleteYouthProfilingMutation,
+    useDeleteYouthProfilingMutation,
 } = youthProfilingApi;

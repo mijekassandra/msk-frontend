@@ -91,7 +91,6 @@ const ManageProfile = () => {
         const formattedDate = newDate
             ? dayjs(newDate).format("YYYY-MM-DD")
             : "";
-        console.log("Selected Date: ", formattedDate);
         setFormData({
             ...formData,
             date_of_birth: formattedDate,
@@ -142,7 +141,6 @@ const ManageProfile = () => {
 
         try {
             const response = await updateProfile(formDataToSend);
-            console.log("response here: ", response);
 
             if (response.error) {
                 setAlert(response.error.data.message);
@@ -220,8 +218,7 @@ const ManageProfile = () => {
         } else {
             setIsMember("no");
         }
-        console.log("formdata: ", formData);
-    }, [formData.youth_organization, formData]);
+    }, [formData.youth_organization]);
 
     return (
         <Stack rowGap={3}>

@@ -136,7 +136,7 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                         {location}
                     </Typography>
                 </Stack>
-                <Stack
+                {/* <Stack
                     direction="row"
                     justifyContent="flex-end"
                     marginRight="20px"
@@ -149,7 +149,7 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                     >
                         VIEW
                     </TertiaryButton>
-                </Stack>
+                </Stack> */}
             </Grid>
         </Grid>
     );

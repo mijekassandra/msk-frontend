@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
-import { Stack, TextField, Pagination, Button } from "@mui/material";
+import { Stack, Button, Pagination } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
 import { formatDate } from "../../../../utils/dateUtil";
 import NoImage from "../../../../assets/no-image.png";
@@ -13,21 +13,22 @@ import ActivitiesCard from "../../../cards/ActivitiesCard";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import EmptyDisplay from "../../../displays/EmptyDisplay";
+import SearchInput from "../../../displays/SearchInput";
 
 // import api
 import { useGetActivtiesQuery } from "../../Activities/api/activityApi";
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
-const ITEMS_PER_PAGE = 3; // Define how many items per page
+const ITEMS_PER_PAGE = 3;
 
 const UserSKActivities = () => {
     const navigate = useNavigate();
 
-    // logged in user role
+    // Get user details from Redux state
     const userDetail = useSelector((state: RootState) => state.auth.user);
-
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const {
         data: allActivities = [],
@@ -37,28 +38,33 @@ const UserSKActivities = () => {
         refetch,
     } = useGetActivtiesQuery();
 
-    // Step 1: Filter actitivities for published status
+    // Step 1: Filter activities for published status
     const publishedActivities = allActivities.filter(
         (activity) => activity.status === "published"
     );
 
-    // Step 2: Sort the filtered actitivities by date (latest first)
+    // Step 2: Sort the filtered activities by date (latest first)
     const sortedActivities = [...publishedActivities].sort(
         (a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
-    // Step 3: Paginate the filtered and sorted actitivities
+    // Filter activities based on search query
+    const filteredActivities = sortedActivities.filter((activity) =>
+        activity.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Step 3: Paginate the filtered and sorted activities
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const paginatedActivities = sortedActivities.slice(
+    const paginatedActivities = filteredActivities.slice(
         startIndex,
         startIndex + ITEMS_PER_PAGE
     );
 
-    // Calculate total number of pages based on the filtered and sorted publications
-    const totalPages = Math.ceil(sortedActivities.length / ITEMS_PER_PAGE);
+    // Calculate total number of pages based on the filtered and sorted activities
+    const totalPages = Math.ceil(filteredActivities.length / ITEMS_PER_PAGE);
 
-    // Handle MUI Pagination change
+    // Handle pagination change
     const handlePageChange = (
         event: React.ChangeEvent<unknown>,
         value: number
@@ -66,10 +72,22 @@ const UserSKActivities = () => {
         setCurrentPage(value);
     };
 
-    const handleNavigation = (path: string) => {
-        navigate(path);
+    // Search function to update search query and reset pagination
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        setCurrentPage(1); // Reset to first page on new search
     };
 
+    // Navigation handler based on user role
+    const handleNavigation = (path: string) => {
+        if (userDetail?.role === "User") {
+            navigate("/home");
+        } else {
+            navigate(path);
+        }
+    };
+
+    // Refetch data on mount
     useEffect(() => {
         refetch();
     }, []);
@@ -77,31 +95,32 @@ const UserSKActivities = () => {
     return (
         <Stack gap={2}>
             <LogoHeader header="SK ACTIVITIES" />
-            <Stack sx={{ alignItems: "flex-end" }}>
+
+            <Stack
+                direction="row"
+                sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
                 <Button
-                    onClick={() => handleNavigation("/home")}
+                    onClick={() => handleNavigation("/dashboard")}
                     sx={{ paddingInline: "20px" }}
                     startIcon={<ArrowBackIos />}
                 >
                     BACK TO DASHBOARD
                 </Button>
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    marginBlock={1}
+                    marginLeft={1}
+                >
+                    <SearchInput
+                        placeholder="Search activity title"
+                        onSearch={handleSearch}
+                    />
+                </Stack>
             </Stack>
 
-            <Stack direction="row" justifyContent="flex-end" marginBlock={1}>
-                <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    placeholder="Search"
-                    sx={{
-                        width: 400,
-                        minWidth: {
-                            sm: 300,
-                            xs: "100%",
-                        },
-                    }}
-                />
-            </Stack>
-
+            {/* Conditional displays for activities */}
             {!allActivitiesLoading &&
                 !isFetching &&
                 !allActivitiesError &&
@@ -119,7 +138,7 @@ const UserSKActivities = () => {
                         flexWrap="wrap"
                         justifyContent="space-evenly"
                     >
-                        {allActivities.map((activity) => (
+                        {paginatedActivities.map((activity) => (
                             <ActivitiesCard
                                 key={activity.id}
                                 barangay={
@@ -136,7 +155,10 @@ const UserSKActivities = () => {
                                 }
                                 title={activity.title}
                                 location="Brgy. Gaston, Lagonglong Mis. Or"
-                            ></ActivitiesCard>
+                                date_of_activity={formatDate(
+                                    activity.date_of_activity
+                                )}
+                            />
                         ))}
                     </Stack>
                 )}
@@ -147,7 +169,7 @@ const UserSKActivities = () => {
             )}
 
             {/* Pagination controls */}
-            {sortedActivities.length > 0 && (
+            {filteredActivities.length > 0 && (
                 <Stack
                     direction="row"
                     justifyContent="center"

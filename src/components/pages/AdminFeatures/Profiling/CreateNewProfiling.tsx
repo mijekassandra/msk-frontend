@@ -203,7 +203,6 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
             if (mode === "create") {
                 const response = await addYouthProfiling(formDataToSend);
 
-                console.log("response: ", response);
                 if (response.error) {
                     setAlert(
                         response.error.message || "Failed to create profile."
@@ -229,9 +228,6 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                     id: formData.id,
                     data: formData,
                 });
-
-                console.log("response", response);
-                console.log("formData", formData);
 
                 if (response.error) {
                     setAlert(response.error.data.message);
@@ -605,6 +601,7 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     variant="outlined"
                                     size="small"
                                     fullWidth
+                                    onChange={handleInputChange}
                                     disabled={mode === "view"}
                                 />
                             </Grid>
@@ -628,8 +625,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     <MenuItem value="" disabled>
                                         Working?
                                     </MenuItem>
-                                    <MenuItem value="yes">Yes</MenuItem>
                                     <MenuItem value="no">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -668,8 +665,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     <MenuItem value="" disabled>
                                         Do you have disability/ies?
                                     </MenuItem>
-                                    <MenuItem value="yes">Yes</MenuItem>
                                     <MenuItem value="no">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -689,8 +686,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     <MenuItem value="" disabled>
                                         Do you have medical condition?
                                     </MenuItem>
-                                    <MenuItem value="yes">Yes</MenuItem>
                                     <MenuItem value="no">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
                                 </TextField>
                             </Grid>
                         </Grid>
@@ -712,8 +709,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                         Are you a member of any youth
                                         organization
                                     </MenuItem>
-                                    <MenuItem value="yes">Yes</MenuItem>
                                     <MenuItem value="no">No</MenuItem>
+                                    <MenuItem value="yes">Yes</MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} sm={6}>
