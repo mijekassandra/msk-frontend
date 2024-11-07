@@ -219,6 +219,7 @@ const CommentsList: React.FC<CommentsListProps> = ({
                                                     : "Just now"}
                                             </Typography>
                                         </Stack>
+
                                         {userDetail.id ===
                                             comment.account_id && (
                                             <Stack direction="row" spacing={1}>
@@ -240,6 +241,37 @@ const CommentsList: React.FC<CommentsListProps> = ({
                                                 </IconButton>
                                             </Stack>
                                         )}
+
+                                        {/* <Menu
+                                            anchorEl={
+                                                anchorEl[comment.id] || null
+                                            }
+                                            open={Boolean(anchorEl[comment.id])}
+                                            onClose={() =>
+                                                handleCloseMenu(comment.id)
+                                            }
+                                            PaperProps={{
+                                                sx: {
+                                                    boxShadow:
+                                                        "0px 1px 3px rgba(0, 0, 0, 0.1)",
+                                                },
+                                            }}
+                                        >
+                                            <MenuItem
+                                                onClick={() =>
+                                                    handleEdit(comment)
+                                                }
+                                            >
+                                                Edit
+                                            </MenuItem>
+                                            <MenuItem
+                                                onClick={() =>
+                                                    handleDelete(comment.id)
+                                                }
+                                            >
+                                                Delete
+                                            </MenuItem>
+                                        </Menu> */}
 
                                         <Menu
                                             anchorEl={

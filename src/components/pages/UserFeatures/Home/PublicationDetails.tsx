@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { Stack, Typography, Button, Fab } from "@mui/material";
+import { Stack, Typography, Button } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "../../../../assets/no-image.png";
 

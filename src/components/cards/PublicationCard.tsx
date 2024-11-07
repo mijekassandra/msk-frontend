@@ -1,9 +1,18 @@
-import React, { MouseEvent } from "react";
-import { Stack, Grid, Typography, Rating } from "@mui/material";
+import React, { MouseEvent, useState } from "react";
+import {
+    Stack,
+    Grid,
+    Typography,
+    Rating,
+    Popover,
+    IconButton,
+} from "@mui/material";
 import barangays from "../../mockData/Barangay.json";
 import DefaultLogo from "../../assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { FacebookCounter, FacebookSelector } from "@charkour/react-reactions";
+import { AddReactionOutlined } from "@mui/icons-material";
 
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
@@ -70,6 +79,19 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                   0
               ) / feedbacks.length
             : 0;
+
+    //! Reaction
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const handleOpenPopover = (event: MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClosePopover = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     return (
         <Grid
@@ -182,20 +204,55 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                 >
                     {mode !== "view" ? (
                         <>
-                            {/* <Typography variant="h5">{views} views</Typography> */}
-                            <Typography
-                                variant="h5"
-                                onClick={onCommentsClick}
-                                sx={{
-                                    cursor: "pointer",
-                                    "&:hover": {
-                                        textDecoration: "underline",
-                                    },
-                                }}
-                            >
-                                {feedbackCount}{" "}
-                                {feedbackCount > 1 ? "comments" : "comment"}
-                            </Typography>
+                            <Stack direction="row" alignItems="center" gap={1}>
+                                {/* <FacebookCounter alwaysShowOthers />
+                                <IconButton onClick={handleOpenPopover}>
+                                    <AddReactionOutlined
+                                        sx={{ fontSize: "24px" }}
+                                    />
+                                </IconButton> */}
+
+                                <Popover
+                                    open={open}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClosePopover}
+                                    anchorOrigin={{
+                                        vertical: "center",
+                                        horizontal: "left",
+                                    }}
+                                    transformOrigin={{
+                                        vertical: "center",
+                                        horizontal: "right",
+                                    }}
+                                    sx={{
+                                        "& .MuiPaper-root": {
+                                            backgroundColor: "transparent",
+                                            boxShadow: "none",
+                                            paddingBlock: "10px",
+                                            width: "200px",
+                                            height: "85px",
+                                            alignContent: "center",
+                                            // background: "pink",
+                                        },
+                                    }}
+                                >
+                                    <FacebookSelector iconSize={24} />
+                                </Popover>
+                                <Typography
+                                    variant="h5"
+                                    onClick={onCommentsClick}
+                                    sx={{
+                                        cursor: "pointer",
+                                        "&:hover": {
+                                            textDecoration: "underline",
+                                        },
+                                    }}
+                                >
+                                    {feedbackCount}{" "}
+                                    {feedbackCount > 1 ? "comments" : "comment"}
+                                </Typography>
+                            </Stack>
+
                             <Rating
                                 name="read-only"
                                 readOnly

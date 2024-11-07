@@ -38,7 +38,7 @@ const ModalVariantThree: React.FC<ModalVariantThreeProps> = (
             <Box
                 sx={{
                     width: "100%",
-                    maxWidth: "400px",
+                    maxWidth: "500px",
                     bgcolor: "background.paper",
                     padding: "15px 20px",
                     borderRadius: "4px",

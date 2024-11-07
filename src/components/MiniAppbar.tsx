@@ -28,6 +28,7 @@ import {
 
 // import components
 import LoadingDisplay from "./displays/LoadingDisplay";
+import NotificationComponent from "./layout/NotificationComponent";
 
 // import apiSlices
 import { logoutSuccess } from "../../slice/authSlice";
@@ -52,6 +53,8 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
         null
     );
+    const [anchorNotifEl, setAnchorNotifEl] =
+        React.useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -86,6 +89,15 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
         }
     };
 
+    //! NOTIFICATION
+    const handleClickNotif = (event: any) => {
+        setAnchorNotifEl(event.currentTarget);
+    };
+
+    const handleCloseNotif = () => {
+        setAnchorNotifEl(null);
+    };
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar
@@ -104,21 +116,32 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                     >
                         <Menu />
                     </IconButton>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        <Badge
-                            badgeContent={5}
-                            color="error"
-                            overlap="circular"
-                        >
-                            <Notifications
-                                sx={{ color: "primary.main", fontSize: "28px" }}
-                            />
-                        </Badge>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <IconButton onClick={handleClickNotif}>
+                            <Badge
+                                badgeContent={5}
+                                color="error"
+                                overlap="circular"
+                            >
+                                <Notifications
+                                    sx={{
+                                        color: "primary.main",
+                                        fontSize: "28px",
+                                    }}
+                                />
+                            </Badge>
+                        </IconButton>
+
                         <IconButton onClick={handleClick}>
                             <AccountCircle
                                 sx={{ color: "primary.main", fontSize: "28px" }}
                             />
                         </IconButton>
+                        <NotificationComponent
+                            anchorEl={anchorNotifEl}
+                            onClose={handleCloseNotif}
+                        />
+
                         <Popover
                             id={id}
                             open={open}
