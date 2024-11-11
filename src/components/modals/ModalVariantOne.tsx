@@ -22,7 +22,7 @@ interface ModalVariantOneProps {
     onSave: () => void;
     mode: "create" | "edit" | "view";
     maxWidth?: string;
-    loading: boolean;
+    loading?: boolean;
 }
 
 const ModalVariantOne: React.FC<ModalVariantOneProps> = (

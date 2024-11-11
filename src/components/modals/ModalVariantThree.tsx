@@ -18,7 +18,7 @@ interface ModalVariantThreeProps {
     headerTitle?: string;
     onClose: () => void;
     subheader?: ReactNode;
-    headerIcon: ReactNode | string;
+    headerIcon?: ReactNode | string;
 }
 
 const ModalVariantThree: React.FC<ModalVariantThreeProps> = (

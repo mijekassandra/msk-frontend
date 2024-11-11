@@ -2,50 +2,47 @@ import React, { useState } from "react";
 import { Stack, Typography } from "@mui/material";
 import ModalVariantThree from "../../../modals/ModalVariantThree";
 import PrimaryButton from "../../../buttons/PrimaryButton";
+import { FileUploadOutlined } from "@mui/icons-material";
 
 interface UploadSKFileProps {
     onClose: () => void;
+    // initialData?: {
+    //     id?: number;
+    //     file_name?: string;
+    //     attachment?: File | null | string;
+    //     created_at?: string;
+    // };
     onUpload: (formData: FormData) => void;
 }
 
-const UploadSKFile: React.FC<UploadSKFileProps> = ({ onClose, onUpload }) => {
-    // Single state object to manage file data
-    const [fileData, setFileData] = useState<{
-        file: File | null;
-        fileName: string;
-        fileType: string;
-        fileSize: number;
-    }>({
-        file: null,
-        fileName: "",
-        fileType: "",
-        fileSize: 0,
-    });
+const UploadSKFile: React.FC<UploadSKFileProps> = ({
+    onClose,
+    // initialData = {},
+    onUpload,
+}) => {
+    const [attachment, setAttachment] = useState<File | null>(null);
+    const [fileName, setFileName] = useState<string>("");
 
-    // Handle file input change
+    // Handle file selection
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0];
-            setFileData({
-                file: file,
-                fileName: file.name,
-                fileType: file.name.split(".").pop() || "",
-                fileSize: file.size,
-            });
+        const file = event.target.files && event.target.files[0];
+        if (file) {
+            setAttachment(file); // Store the file in state
+            setFileName(file.name); // Set file name to show in the state
         }
     };
 
-    // Handle upload button click
+    // Prepare FormData and trigger the upload function passed as prop
     const handleUploadClick = () => {
-        if (fileData.file) {
-            // Create FormData object
+        if (attachment) {
             const formData = new FormData();
-            formData.append("file_name", fileData.fileName);
-            formData.append("file_size", fileData.fileSize.toString());
-            formData.append("file_type", fileData.fileType);
-            formData.append("upload_file", fileData.file);
+            formData.append("attachment", attachment);
+            formData.append("file_name", fileName);
 
             onUpload(formData);
+            onClose();
+        } else {
+            alert("Please select a file to upload.");
         }
     };
 
@@ -53,6 +50,7 @@ const UploadSKFile: React.FC<UploadSKFileProps> = ({ onClose, onUpload }) => {
         <ModalVariantThree
             onClose={onClose}
             headerTitle="UPLOAD FILES"
+            headerIcon={<FileUploadOutlined sx={{ fontSize: "16px" }} />}
             content={
                 <Stack>
                     <Stack

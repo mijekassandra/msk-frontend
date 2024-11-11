@@ -1,47 +1,92 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { RootState } from "../../../../store";
 
 interface SkFileApiProps {
     id: number;
     file_name: string;
-    file_size: number;
-    file_type: string;
-    upload_date: string; // ISO date string
+    attachment: string;
+    description: string;
+    account_id: number;
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;
 
+const baseQuery = fetchBaseQuery({
+    baseUrl: VITE_APP_ENDPOINT,
+    prepareHeaders: (headers, { getState }) => {
+        const state = getState() as RootState;
+        const token = state.auth.token;
+
+        if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
+        }
+        return headers;
+    },
+});
+
 export const skFileApi = createApi({
     reducerPath: "skFilesApi",
-    baseQuery: fetchBaseQuery({ baseUrl: VITE_APP_ENDPOINT }), // Change this to your API base URL
+    baseQuery,
     tagTypes: ["SKFile"],
     endpoints: (builder) => ({
         getSkFiles: builder.query<SkFileApiProps[], void>({
-            query: () => "sk_files/",
+            query: () => "/sk-file",
             providesTags: (result) =>
-                result
+                Array.isArray(result)
                     ? [
-                          ...result.map(({ id }) => ({ type: "SKFile", id } as const)),
-                          { type: "SKFile", id: "SKFileLIST" },
+                          ...result.map(
+                              ({ id }) => ({ type: "SKFile", id } as const)
+                          ),
+                          { type: "SKFile", id: "LIST" },
                       ]
-                    : [{ type: "SKFile", id: "SKFileLIST" }],
+                    : [{ type: "SKFile", id: "LIST" }],
         }),
-        uploadSkFile: builder.mutation<SkFileApiProps, FormData>({
+        uploadSkFile: builder.mutation<void, FormData>({
             query: (formData) => ({
-                url: "sk_files/",
+                url: "/sk-file",
                 method: "POST",
                 body: formData,
             }),
-            invalidatesTags: ["SKFile"],
+            invalidatesTags: [{ type: "SKFile", id: "LIST" }],
+            async onQueryStarted(arg, { queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                } catch (error) {
+                    console.error("Error occurred during upload:", error);
+                }
+            },
         }),
 
+        updateSkFileById: builder.mutation<
+            void,
+            { id: number; uploadedFile: object }
+        >({
+            query: ({ id, uploadedFile }) => ({
+                url: `/sk-file/${id}`,
+                method: "PUT",
+                body: uploadedFile,
+            }),
+            invalidatesTags: (result, error, { id }) => [
+                { type: "SKFile", id: "LIST" },
+                { type: "SKFile", id },
+            ],
+        }),
         deleteSkFile: builder.mutation<void, number>({
             query: (id) => ({
-                url: `sk_files/${id}`,
+                url: `/sk-file/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["SKFile"],
+            invalidatesTags: (result, error, id) => [
+                { type: "SKFile", id: "LIST" },
+                { type: "SKFile", id },
+            ],
         }),
     }),
 });
 
-export const { useGetSkFilesQuery, useUploadSkFileMutation, useDeleteSkFileMutation } = skFileApi;
+export const {
+    useGetSkFilesQuery,
+    useUploadSkFileMutation,
+    useUpdateSkFileByIdMutation,
+    useDeleteSkFileMutation,
+} = skFileApi;
