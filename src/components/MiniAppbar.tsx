@@ -156,10 +156,11 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                 horizontal: "right",
                             }}
                         >
-                            <Stack direction="column" sx={{ width: "200px" }}>
+                            <Stack direction="column" sx={{ width: "220px" }}>
                                 <Stack
                                     direction="row"
                                     spacing={1}
+                                    alignItems="center"
                                     sx={{ padding: "10px" }}
                                 >
                                     <Avatar
@@ -175,7 +176,10 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                                         )}
                                     </Avatar>
                                     <Stack>
-                                        <Typography variant="h5">
+                                        <Typography
+                                            variant="h5"
+                                            lineHeight="18px"
+                                        >
                                             {userDetail?.first_name ||
                                             userDetail?.last_name
                                                 ? `${userDetail.first_name} ${userDetail.last_name}`

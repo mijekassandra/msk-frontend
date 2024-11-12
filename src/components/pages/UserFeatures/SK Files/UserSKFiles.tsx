@@ -1,23 +1,31 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Stack, TextField, Button, Divider, Typography } from "@mui/material";
+import { Stack, Button, Divider, Typography, Pagination } from "@mui/material";
 import { useSelector } from "react-redux";
-import { RootState } from "@reduxjs/toolkit/query";
+import { RootState } from "../../../../store";
 
-// import components
+// Import components
 import LogoHeader from "../../../displays/LogoHeader";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import DisplayThumbnail from "./DisplayThumbnail";
 import SearchInput from "../../../displays/SearchInput";
 
+import { useGetSkFilesQuery } from "../../SK Files/api/skFileApi";
+
+const { VITE_FILE_ENDPOINT } = import.meta.env;
+const ITEMS_PER_PAGE = 5; // Define the number of items per page
+
 const UserSKFiles = () => {
     const [tabMode, setTabMode] = useState<
         "administrative" | "financial" | "project"
     >("administrative");
 
-    // logged in user role
-    const userDetail = useSelector((state: RootState) => state.auth.user);
+    const {
+        data: allSkFiles,
+        isError: allSkFilesError,
+        isLoading: allSkFilesLoading,
+    } = useGetSkFilesQuery();
+
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -25,25 +33,38 @@ const UserSKFiles = () => {
         mode: "administrative" | "financial" | "project"
     ) => {
         setTabMode(mode);
+        setCurrentPage(1); // Reset to the first page when changing tabs
     };
 
-    const getFileUrl = () => {
-        switch (tabMode) {
-            case "administrative":
-                return "src/assets/administrative.pdf";
-            case "financial":
-                return "src/assets/financial.pdf";
-            case "project":
-                return "src/assets/project.pdf";
-            default:
-                return "";
-        }
-    };
+    //! Filter SK files based on search query only
+    const filteredFiles =
+        allSkFiles?.skFiles?.filter(
+            (file) =>
+                file.file_name.toLowerCase().includes(searchQuery.toLowerCase()) // Filter by search query only
+        ) || [];
+
+    //! Paginate the filtered files
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedFiles = filteredFiles.slice(
+        startIndex,
+        startIndex + ITEMS_PER_PAGE
+    );
+
+    // Calculate total number of pages based on the filtered files
+    const totalPages = Math.ceil(filteredFiles.length / ITEMS_PER_PAGE);
 
     //! Search function to update search query and reset pagination
     const handleSearch = (query: string) => {
         setSearchQuery(query);
-        setCurrentPage(1);
+        setCurrentPage(1); // Reset to the first page on a new search
+    };
+
+    // Handle MUI Pagination change
+    const handlePageChange = (
+        event: React.ChangeEvent<unknown>,
+        value: number
+    ) => {
+        setCurrentPage(value);
     };
 
     return (
@@ -61,12 +82,14 @@ const UserSKFiles = () => {
                     onSearch={handleSearch}
                 />
             </Stack>
+
             <Stack
                 rowGap={2}
                 sx={{
                     marginInline: 7,
                 }}
             >
+                {/* Tab buttons (no filtering applied) */}
                 <Stack direction="row" justifyContent="space-between" gap={5}>
                     <Button
                         variant={
@@ -89,16 +112,54 @@ const UserSKFiles = () => {
                         PROJECT FILES
                     </Button>
                 </Stack>
-                <Divider sx={{ borderBottomWidth: 3.5 }} />
-                <DisplayThumbnail fileUrl="src/assets/administrative.pdf" />
-                <DisplayThumbnail fileUrl="src/assets/Dummy Docs.docx" />
 
-                {/* <embed
-                    width="191"
-                    height="207"
-                    src="src\assets\administrative.pdf"
-                    type="application/pdf"
-                /> */}
+                <Divider sx={{ borderBottomWidth: 3.5 }} />
+
+                {/* Display SK files */}
+                <Stack
+                    direction="row"
+                    gap={1}
+                    flexWrap="wrap"
+                    justifyContent="space-around"
+                >
+                    {allSkFilesLoading && <LoadingDisplay open={true} />}
+                    {allSkFilesError && <ErrorDisplay />}
+                    {paginatedFiles.length > 0 ? (
+                        paginatedFiles.map((file: any) => (
+                            <DisplayThumbnail
+                                key={file.id}
+                                fileUrl={VITE_FILE_ENDPOINT + file.attachment}
+                                file_name={file.file_name
+                                    .split(".")
+                                    .slice(0, -1)
+                                    .join(".")}
+                            />
+                        ))
+                    ) : (
+                        <Typography variant="body1" marginTop="10px">
+                            No files found.
+                        </Typography>
+                    )}
+                </Stack>
+
+                {/* Pagination controls */}
+                {filteredFiles.length > ITEMS_PER_PAGE && (
+                    <Stack
+                        direction="row"
+                        justifyContent="center"
+                        sx={{ marginTop: "20px" }}
+                    >
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            onChange={handlePageChange}
+                            color="primary"
+                            size="large"
+                            variant="outlined"
+                            shape="rounded"
+                        />
+                    </Stack>
+                )}
             </Stack>
         </Stack>
     );

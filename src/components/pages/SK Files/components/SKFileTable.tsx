@@ -18,12 +18,12 @@ import PrimaryButton from "../../../buttons/PrimaryButton";
 import UploadSKFile from "./UploadSKFile";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
+import { formatDateTime } from "../../../../utils/dateTimeUtil";
 
 // Import API
 import {
     useGetSkFilesQuery,
     useUploadSkFileMutation,
-    useUpdateSkFileByIdMutation,
     useDeleteSkFileMutation,
 } from "../api/skFileApi";
 
@@ -51,10 +51,6 @@ const SKFileTable = () => {
     const handleFileUpload = async (formData: FormData) => {
         try {
             const response = await uploadSkFile(formData);
-            // formData.forEach((value, key) => {
-            //     console.log(`FormData Key: ${key}, Value:`, value);
-            // });
-            console.log("response: ", response);
 
             if (response.error) {
                 setAlert(response.error.data.message);
@@ -85,7 +81,6 @@ const SKFileTable = () => {
 
     //TODO DELETE
     const handleDeleteFile = async (file: any) => {
-        // confirmation dialog
         const result = await Swal.fire({
             title: "Delete File?",
             text: "You won't be able to revert this!",
@@ -104,8 +99,6 @@ const SKFileTable = () => {
         if (result.isConfirmed) {
             try {
                 const response = await deleteSkFile(file.id);
-                // console.log("response: ", response);
-                // console.log("response: ", file.id);
 
                 if (response.error) {
                     setAlert(response.error.data.message);
@@ -155,7 +148,7 @@ const SKFileTable = () => {
             // Append, click, and clean up
             document.body.appendChild(link);
             link.click();
-            URL.revokeObjectURL(blobUrl); // Revoke blob URL after download
+            URL.revokeObjectURL(blobUrl);
             document.body.removeChild(link);
         } catch (error) {
             console.error("Failed to download file:", error);
@@ -166,13 +159,11 @@ const SKFileTable = () => {
         {
             field: "file_type",
             headerName: "File Type",
-            maxWidth: 130,
+            maxWidth: 170,
             renderCell: (params: any) => {
                 const fileName = params.row.attachment;
                 const fileType = fileName.split(".").pop()?.toLowerCase();
 
-                // console.log("params.row", params.row);
-                // console.log("filetype", fileType);
                 let IconComponent = Description;
                 let iconColor = "#2196f3";
 
@@ -205,16 +196,18 @@ const SKFileTable = () => {
         {
             field: "file_size",
             headerName: "Filesize",
-            maxWidth: 100,
+            maxWidth: 150,
             renderCell: (params: any) => {
-                const fileSizeInBytes = params.value;
-                const fileSizeInMB = (fileSizeInBytes / (1024 * 1024)).toFixed(
-                    2
-                ); // Convert to MB and limit to 2 decimal places
-                return <span>{fileSizeInMB} MB</span>;
+                const fileSizeInBytes = params.row.file_size;
+                return <span>{fileSizeInBytes} MB</span>;
             },
         },
-        { field: "created_at", headerName: "Date Upload", maxWidth: 160 },
+        {
+            field: "created_at",
+            headerName: "Date Publish",
+            maxWidth: 160,
+            valueFormatter: (params: any) => formatDateTime(params),
+        },
         {
             field: "action",
             headerName: "Action",
