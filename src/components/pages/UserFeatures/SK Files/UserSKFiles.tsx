@@ -78,7 +78,7 @@ const UserSKFiles = () => {
                 marginLeft={1}
             >
                 <SearchInput
-                    placeholder="Search announcement title"
+                    placeholder="Search SK file "
                     onSearch={handleSearch}
                 />
             </Stack>

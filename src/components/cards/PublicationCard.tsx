@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from "react";
+import React, { MouseEvent, useState, useEffect } from "react";
 import {
     Stack,
     Grid,
@@ -18,8 +18,12 @@ import { AddReactionOutlined } from "@mui/icons-material";
 import PrimaryButton from "../buttons/PrimaryButton";
 
 // api service
-
 import { useGetAllFeedbacksByPublicationIdQuery } from "../pages/Publication/api/publicationApi";
+import {
+    useAddOrUpdateReactionMutation,
+    useGetAllReactionsByPublicationIdQuery,
+    useRemoveReactionMutation,
+} from "../../features/Reaction/api/reactionsApi";
 
 interface PublicationCardProps {
     publicationID: number;
@@ -58,11 +62,29 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
     // Fetch adminMode and selectedBarangay from the Redux store
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
 
+    // authenticiation
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    // state for user reaction
+    const [userReactionState, setUserReactionState] = useState<string | null>(
+        null
+    );
+
     const {
         data: feedbacks = [],
         isLoading,
         isError,
     } = useGetAllFeedbacksByPublicationIdQuery(publicationID);
+
+    const { data: reactions = [] } =
+        useGetAllReactionsByPublicationIdQuery(publicationID);
+
+    const [addOrUpdateReaction] = useAddOrUpdateReactionMutation();
+    const [removeReaction] = useRemoveReactionMutation();
+
+    // const { data: userReactionData } = useGetUserReactionByPublicationIdQuery(publicationID, {
+    //     skip: !userDetail,  // Skip if there's no user logged in
+    // });
 
     // find the image for seal
     const matchingBarangay = !adminMode
@@ -82,16 +104,61 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
 
     //! Reaction
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
     const handleOpenPopover = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
-
     const handleClosePopover = () => {
         setAnchorEl(null);
     };
-
     const open = Boolean(anchorEl);
+
+    // //! Reaction Function
+    // // Sync userReactionState with user-specific reaction data
+    // useEffect(() => {
+    //     if (userReactionData?.reaction) {
+    //         setUserReactionState(userReactionData.reaction);
+    //         console.log(
+    //             "Setting userReactionState from user-specific data:",
+    //             userReactionData.reaction
+    //         );
+    //     } else {
+    //         setUserReactionState(null);
+    //     }
+    // }, [userReactionData]);
+
+    // // Format reactions for FacebookCounter based on aggregated counts
+    // const formattedReactions = [
+    //     ...Object.entries(reactionCounts).map(([key, count]) => ({
+    //         emoji: key.replace("_count", ""), // Remove "_count" suffix for display
+    //         count: Number(count),
+    //     })),
+    // ];
+
+    // const handleSelectReaction = async (reaction: string) => {
+    //     if (userReactionState === reaction) {
+    //         const response = await removeReaction(publicationID);
+    //         if (response) {
+    //             setUserReactionState(null); // Clear local state if reaction is removed
+    //             console.log("Reaction removed, userReactionState set to null");
+    //         }
+    //     } else {
+    //         const response = await addOrUpdateReaction({
+    //             publicationId: publicationID,
+    //             reaction,
+    //         });
+    //         if (response) {
+    //             setUserReactionState(reaction); // Update local state to new reaction
+    //             console.log(
+    //                 "Reaction updated, userReactionState set to:",
+    //                 reaction
+    //             );
+    //         }
+    //     }
+    //     handleClosePopover();
+    // };
+
+    // console.log("Current userReactionState:", userReactionState);
+    // console.log("Reaction counts:", reactionCounts);
 
     return (
         <Grid
@@ -205,13 +272,15 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                     {mode !== "view" ? (
                         <>
                             <Stack direction="row" alignItems="center" gap={1}>
-                                {/* <FacebookCounter alwaysShowOthers />
+                                {/* <FacebookCounter
+                                    counters={formattedReactions}
+                                />
+
                                 <IconButton onClick={handleOpenPopover}>
                                     <AddReactionOutlined
                                         sx={{ fontSize: "24px" }}
                                     />
-                                </IconButton> */}
-
+                                </IconButton>
                                 <Popover
                                     open={open}
                                     anchorEl={anchorEl}
@@ -236,8 +305,19 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                                         },
                                     }}
                                 >
-                                    <FacebookSelector iconSize={24} />
-                                </Popover>
+                                    <FacebookSelector
+                                        iconSize={24}
+                                        onSelect={handleSelectReaction}
+                                        reactions={[
+                                            "like",
+                                            "love",
+                                            "haha",
+                                            "wow",
+                                            "sad",
+                                            "angry",
+                                        ]}
+                                    />
+                                </Popover> */}
                                 <Typography
                                     variant="h5"
                                     onClick={onCommentsClick}

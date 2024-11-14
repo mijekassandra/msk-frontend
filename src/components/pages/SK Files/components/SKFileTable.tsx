@@ -11,6 +11,8 @@ import {
     InsertPhoto,
     Slideshow,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 
 // Import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -30,6 +32,15 @@ import {
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
 const SKFileTable = () => {
+    // logged in user role
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    const selectedBarangay = useSelector(
+        (state: RootState) => state.admin.selectedBarangay
+    );
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const {
         data: allSkFiles = [],
@@ -155,6 +166,12 @@ const SKFileTable = () => {
         }
     };
 
+    //TODO VIEW
+    const handleView = (file: any) => {
+        const fileUrl = `${VITE_FILE_ENDPOINT}${file.attachment}`;
+        window.open(fileUrl, "_blank");
+    };
+
     const columns = [
         {
             field: "file_type",
@@ -222,19 +239,26 @@ const SKFileTable = () => {
                             sx={{ color: "secondary.main", fontSize: "22px" }}
                         />
                     </IconButton>
-                    <IconButton aria-label="view">
+                    <IconButton
+                        aria-label="view"
+                        onClick={() => handleView(params.row)}
+                    >
                         <Visibility
                             sx={{ color: "primary.dark", fontSize: "22px" }}
                         />
                     </IconButton>
-                    <IconButton
-                        aria-label="delete"
-                        onClick={() => handleDeleteFile(params.row)}
-                    >
-                        <Delete
-                            sx={{ color: "error.main", fontSize: "22px" }}
-                        />
-                    </IconButton>
+                    {!adminMode &&
+                    !selectedBarangay &&
+                    userDetail?.role !== "Super Admin" ? (
+                        <IconButton
+                            aria-label="delete"
+                            onClick={() => handleDeleteFile(params.row)}
+                        >
+                            <Delete
+                                sx={{ color: "error.main", fontSize: "22px" }}
+                            />
+                        </IconButton>
+                    ) : null}
                 </Box>
             ),
         },
@@ -249,13 +273,17 @@ const SKFileTable = () => {
                     isLoading={allSkFilesLoading}
                     tableLabel="LIST OF FILES"
                     actionButton={
-                        <PrimaryButton
-                            size="small"
-                            startIcon={<Publish />}
-                            onClick={handleUploadFileClick}
-                        >
-                            Upload File
-                        </PrimaryButton>
+                        !adminMode &&
+                        !selectedBarangay &&
+                        userDetail?.role !== "Super Admin" ? (
+                            <PrimaryButton
+                                size="small"
+                                startIcon={<Publish />}
+                                onClick={handleUploadFileClick}
+                            >
+                                Upload File
+                            </PrimaryButton>
+                        ) : null
                     }
                 />
             ) : allSkFilesError ? (
