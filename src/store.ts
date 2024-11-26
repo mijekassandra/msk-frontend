@@ -14,6 +14,7 @@ import { youthProfilingApi } from "./components/pages/AdminFeatures/Profiling/ap
 import { apiSlice } from "../slice/apiSlice";
 import { userProfile } from "./components/pages/Settings/components/api/userProfileApi";
 import { reactionsApi } from "./features/Reaction/api/reactionsApi";
+import { notificationApi } from "./features/Notification/api/notificationApi";
 
 
 export const store = configureStore({
@@ -29,6 +30,7 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
     [userProfile.reducerPath]: userProfile.reducer,
     [reactionsApi.reducerPath]: reactionsApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query
   middleware: (getDefaultMiddleware) =>
@@ -41,7 +43,8 @@ export const store = configureStore({
       youthProfilingApi.middleware,
       apiSlice.middleware,
       userProfile.middleware,
-      reactionsApi.middleware
+      reactionsApi.middleware,
+      notificationApi.middleware,
     ),
 });
 

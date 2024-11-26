@@ -18,6 +18,9 @@ import ModalVariantTwo from "../../../modals/ModalVariantTwo";
 import CustomUpload2 from "../../../layout/CustomUpload2";
 import AnnouncementCard from "../../../cards/AnnouncementCard.js";
 
+// api service
+import { useNotifyUsersMutation } from "../../../../features/Notification/api/notificationApi.tsx";
+
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
@@ -45,6 +48,9 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
     addAnnouncement,
     editAnnouncement,
 }) => {
+    // notification api
+    const [postNotification] = useNotifyUsersMutation();
+
     // logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
@@ -142,6 +148,32 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                         setAlert(null);
                     }, 4000);
                 } else if (response.data.status === "success") {
+                    if (formData.status === "published") {
+                        try {
+                            // Determine the notification details
+                            const message =
+                                userDetail.role === "Federation"
+                                    ? `Important Announcement: "${formData.title}" has been published by the Federation.`
+                                    : `Announcement from Barangay ${userDetail.barangay}: "${formData.title}" has been published. Stay updated on the latest news!`;
+
+                            const notificationData = {
+                                type: "announcement",
+                                message,
+                                brgy_id:
+                                    userDetail.role === "Federation"
+                                        ? null
+                                        : userDetail.brgy_id,
+                            };
+
+                            //! Send notification
+                            const res = await postNotification(
+                                notificationData
+                            );
+                        } catch (error) {
+                            console.error("Error sending notification:", error);
+                        }
+                    }
+
                     Swal.fire({
                         title: "Create Success!",
                         text: "The announcement has been successfully created.",
@@ -169,6 +201,29 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                         setAlert(null);
                     }, 4000);
                 } else if (response.data.status === "success") {
+                    if (formData.status === "published") {
+                        try {
+                            // Determine the notification details
+                            const message =
+                                userDetail.role === "Federation"
+                                    ? `Important Announcement: "${formData.title}" has been published by the Federation.`
+                                    : `Announcement from Barangay ${userDetail.barangay}: "${formData.title}" has been published. Stay updated on the latest news!`;
+
+                            const notificationData = {
+                                type: "announcement",
+                                message,
+                                brgy_id:
+                                    userDetail.role === "Federation"
+                                        ? null
+                                        : userDetail.brgy_id,
+                            };
+
+                            // Send notification
+                            await postNotification(notificationData);
+                        } catch (error) {
+                            console.error("Error sending notification:", error);
+                        }
+                    }
                     Swal.fire({
                         title: "Update Success!",
                         text: "The announcement has been successfully updated.",

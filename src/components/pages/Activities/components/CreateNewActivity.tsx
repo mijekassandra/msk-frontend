@@ -25,6 +25,9 @@ import ModalVariantTwo from "../../../modals/ModalVariantTwo";
 import CustomUpload2 from "../../../layout/CustomUpload2";
 import ActivitiesCard from "../../../cards/ActivitiesCard";
 
+// api service
+import { useNotifyUsersMutation } from "../../../../features/Notification/api/notificationApi";
+
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
@@ -54,6 +57,9 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
     addActivity,
     editActivity,
 }) => {
+    // notification api
+    const [postNotification] = useNotifyUsersMutation();
+
     // logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
@@ -169,6 +175,31 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                         setAlert(null);
                     }, 4000);
                 } else if (response.data.status === "success") {
+                    // Check if the updated status is "Published"
+                    if (formData.status === "published") {
+                        try {
+                            // Determine the notification details
+                            const message =
+                                userDetail.role === "Federation"
+                                    ? `New Activity Alert: "${formData.title}" has been organized by the Federation. Join us and be part of the event!`
+                                    : `Exciting Activity in Barangay ${userDetail.barangay}: "${formData.title}" has been posted. Don’t miss out on the fun!`;
+
+                            const notificationData = {
+                                type: "activity",
+                                message,
+                                brgy_id:
+                                    userDetail.role === "Federation"
+                                        ? null
+                                        : userDetail.brgy_id,
+                            };
+
+                            //! Send notification
+                            await postNotification(notificationData);
+                        } catch (error) {
+                            console.error("Error sending notification:", error);
+                        }
+                    }
+
                     Swal.fire({
                         title: "Success!",
                         text: "The activity has been successfully created.",
@@ -196,6 +227,30 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                         setAlert(null);
                     }, 4000);
                 } else if (response.data.status === "success") {
+                    if (formData.status === "published") {
+                        try {
+                            // Determine the notification details
+                            const message =
+                                userDetail.role === "Federation"
+                                    ? `New Activity Alert: "${formData.title}" has been organized by the Federation. Join us and be part of the event!`
+                                    : `Exciting Activity in Barangay ${userDetail.barangay}: "${formData.title}" has been posted. Don’t miss out on the fun!`;
+
+                            const notificationData = {
+                                type: "activity",
+                                message,
+                                brgy_id:
+                                    userDetail.role === "Federation"
+                                        ? null
+                                        : userDetail.brgy_id,
+                            };
+
+                            //! Send notification
+                            await postNotification(notificationData);
+                        } catch (error) {
+                            console.error("Error sending notification:", error);
+                        }
+                    }
+
                     Swal.fire({
                         title: "Success!",
                         text: "The activity has been successfully updated.",

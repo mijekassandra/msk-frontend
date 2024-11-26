@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Popover, Stack, Typography, Box, Avatar } from "@mui/material";
+import {
+    Popover,
+    Stack,
+    Typography,
+    Box,
+    Avatar,
+    CircularProgress,
+} from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { formatDateTime } from "../../utils/dateTimeUtil";
 
 interface NotificationComponentProps {
     anchorEl: HTMLElement | null;
@@ -10,16 +20,29 @@ interface NotificationComponentProps {
     viewed: boolean;
 }
 
+// api service
+import { useGetNotificationsQuery } from "../../features/Notification/api/notificationApi";
+
 const NotificationComponent: React.FC<NotificationComponentProps> = ({
     anchorEl,
     onClose,
-    name,
     action,
     time,
     viewed,
 }) => {
     const open = Boolean(anchorEl);
     const id = open ? "notification-popover" : undefined;
+
+    // logged in user role
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    const {
+        data: notifications,
+        isLoading,
+        isError,
+    } = useGetNotificationsQuery({
+        account_id: userDetail.id,
+    });
 
     return (
         <Popover
@@ -58,183 +81,68 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                     </Typography>
                 </Stack>
                 <Box sx={{ maxHeight: "360px", overflowY: "auto" }}>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        sx={{
-                            padding: "6px 12px",
-                            minHeight: "60px",
-                            borderBottom: "1px solid #e7e7e8",
-                            background: "#f0f6ff",
-                        }}
-                    >
-                        <Avatar sx={{ width: 40, height: 40 }} />
-                        <Stack>
-                            <Typography
-                                variant="body2"
-                                color="#3e3e3e"
-                                lineHeight={1.3}
-                            >
-                                Princess Nina Puzon commented on your
-                                Publication "Excited for next year!"
-                            </Typography>
-
-                            <Typography variant="caption" color="#a6a6a7">
-                                4 hours ago
-                            </Typography>
+                    {isLoading ? (
+                        <Stack
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ minHeight: "200px" }}
+                        >
+                            <CircularProgress />
                         </Stack>
-                    </Stack>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        sx={{
-                            padding: "6px 12px",
-                            minHeight: "60px",
-                            borderBottom: "1px solid #e7e7e8",
-                            // background: "#f0f6ff",
-                        }}
-                    >
-                        <Avatar sx={{ width: 40, height: 40 }} />
-                        <Stack>
-                            <Typography
-                                variant="body2"
-                                color="#3e3e3e"
-                                lineHeight={1.3}
+                    ) : isError ? (
+                        <Typography
+                            textAlign="center"
+                            sx={{ padding: "16px", color: "red" }}
+                        >
+                            Failed to load notifications.
+                        </Typography>
+                    ) : notifications && notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                            <Stack
+                                key={notification.id}
+                                direction="row"
+                                alignItems="center"
+                                gap={1}
+                                sx={{
+                                    padding: "6px 12px",
+                                    minHeight: "60px",
+                                    borderBottom: "1px solid #e7e7e8",
+                                    background: notification.is_read
+                                        ? "#ffffff"
+                                        : "#f0f6ff",
+                                }}
                             >
-                                Princess Nina Puzon commented on your
-                                Publication "Excited for next year!"
-                            </Typography>
+                                <Avatar sx={{ width: 40, height: 40 }} />
+                                <Stack gap={1}>
+                                    <Typography
+                                        variant="body2"
+                                        color="#3e3e3e"
+                                        lineHeight={1.3}
+                                    >
+                                        {notification.message}
+                                    </Typography>
 
-                            <Typography variant="caption" color="#a6a6a7">
-                                4 hours ago
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        sx={{
-                            padding: "6px 12px",
-                            minHeight: "60px",
-                            borderBottom: "1px solid #e7e7e8",
-                            // background: "#f0f6ff",
-                        }}
-                    >
-                        <Avatar sx={{ width: 40, height: 40 }} />
-                        <Stack>
-                            <Typography
-                                variant="body2"
-                                color="#3e3e3e"
-                                lineHeight={1.3}
-                            >
-                                Princess Nina Puzon commented on your
-                                Publication "Excited for next year!"
-                            </Typography>
-
-                            <Typography variant="caption" color="#a6a6a7">
-                                4 hours ago
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        sx={{
-                            padding: "6px 12px",
-                            minHeight: "60px",
-                            borderBottom: "1px solid #e7e7e8",
-                            // background: "#f0f6ff",
-                        }}
-                    >
-                        <Avatar sx={{ width: 40, height: 40 }} />
-                        <Stack>
-                            <Typography
-                                variant="body2"
-                                color="#3e3e3e"
-                                lineHeight={1.3}
-                            >
-                                Princess Nina Puzon commented on your
-                                Publication "Excited for next year!"
-                            </Typography>
-
-                            <Typography variant="caption" color="#a6a6a7">
-                                4 hours ago
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        sx={{
-                            padding: "6px 12px",
-                            minHeight: "60px",
-                            borderBottom: "1px solid #e7e7e8",
-                            // background: "#f0f6ff",
-                        }}
-                    >
-                        <Avatar sx={{ width: 40, height: 40 }} />
-                        <Stack>
-                            <Typography
-                                variant="body2"
-                                color="#3e3e3e"
-                                lineHeight={1.3}
-                            >
-                                Princess Nina Puzon commented on your
-                                Publication "Excited for next year!"
-                            </Typography>
-
-                            <Typography variant="caption" color="#a6a6a7">
-                                4 hours ago
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        sx={{
-                            padding: "6px 12px",
-                            minHeight: "60px",
-                            borderBottom: "1px solid #e7e7e8",
-                            // background: "#f0f6ff",
-                        }}
-                    >
-                        <Avatar sx={{ width: 40, height: 40 }} />
-                        <Stack>
-                            <Typography
-                                variant="body2"
-                                color="#3e3e3e"
-                                lineHeight={1.3}
-                            >
-                                Princess Nina Puzon commented on your
-                                Publication "Excited for next year!"
-                            </Typography>
-
-                            <Typography variant="caption" color="#a6a6a7">
-                                4 hours ago
-                            </Typography>
-                        </Stack>
-                    </Stack>
+                                    <Typography
+                                        variant="caption"
+                                        color="#a6a6a7"
+                                        text="flex-end"
+                                    >
+                                        {formatDateTime(
+                                            notification.created_at
+                                        )}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        ))
+                    ) : (
+                        <Typography
+                            textAlign="center"
+                            sx={{ padding: "16px", color: "#a6a6a7" }}
+                        >
+                            No notifications to show.
+                        </Typography>
+                    )}
                 </Box>
-                <Stack
-                    sx={{
-                        backgroundColor: "primary.light",
-                        padding: "10px",
-                    }}
-                >
-                    <Typography
-                        variant="body1"
-                        textAlign="center"
-                        color="white"
-                    >
-                        See more
-                    </Typography>
-                </Stack>
             </Box>
         </Popover>
     );

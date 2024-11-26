@@ -44,7 +44,6 @@ export const publicationApi = createApi({
     tagTypes: ["Publication", "Feedback"],
     endpoints: (builder) => ({
         //TODO --------------------- PUBLICATION QUERY -------------------------
-
         getPublications: builder.query<PublicationProps[], void>({
             query: () => "/publications",
             providesTags: (result) =>

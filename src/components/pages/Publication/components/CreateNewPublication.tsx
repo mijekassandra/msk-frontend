@@ -18,6 +18,9 @@ import ModalVariantTwo from "../../../modals/ModalVariantTwo";
 import CustomUpload2 from "../../../layout/CustomUpload2";
 import PublicationCard from "../../../cards/PublicationCard";
 
+// api service
+import { useNotifyUsersMutation } from "../../../../features/Notification/api/notificationApi.tsx";
+
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
@@ -45,6 +48,9 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
     addPublication,
     editPublication,
 }) => {
+    // notification api
+    const [postNotification] = useNotifyUsersMutation();
+
     // logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
@@ -142,6 +148,32 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                         setAlert(null);
                     }, 4000);
                 } else if (response.data.status === "success") {
+                    // Check if the updated status is "Published"
+                    if (formData.status === "published") {
+                        try {
+                            // Determine the notification details
+                            const message =
+                                userDetail.role === "Federation"
+                                    ? `A new publication titled "${formData.title}" has been published by the Federation. Check it out!`
+                                    : `A new publication titled "${formData.title}" has been published in Barangay ${userDetail.barangay}. Don’t miss out!`;
+
+                            const notificationData = {
+                                type: "publication",
+                                message,
+                                brgy_id:
+                                    userDetail.role === "Federation"
+                                        ? null
+                                        : userDetail.brgy_id,
+                            };
+
+                            //! Send notification
+                            await postNotification(notificationData);
+                        } catch (error) {
+                            console.error("Error sending notification:", error);
+                        }
+                    }
+
+                    // Show success message regardless of notification
                     Swal.fire({
                         title: "Create Success!",
                         text: "The publication has been successfully created.",
@@ -169,6 +201,28 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                         setAlert(null);
                     }, 4000);
                 } else if (response.data.status === "success") {
+                    if (formData.status === "published") {
+                        try {
+                            // Determine the notification details
+                            const message =
+                                userDetail.role === "Federation"
+                                    ? `A new publication titled "${formData.title}" has been published by the Federation. Check it out!`
+                                    : `A new publication titled "${formData.title}" has been published in Barangay ${userDetail.barangay}. Don’t miss out!`;
+                            const notificationData = {
+                                type: "publication",
+                                message,
+                                brgy_id:
+                                    userDetail.role === "Federation"
+                                        ? null
+                                        : userDetail.brgy_id,
+                            };
+
+                            // Send notification
+                            await postNotification(notificationData);
+                        } catch (error) {
+                            console.error("Error sending notification:", error);
+                        }
+                    }
                     Swal.fire({
                         title: "Update Success!",
                         text: "The publication has been successfully updated.",

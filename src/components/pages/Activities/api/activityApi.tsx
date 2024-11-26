@@ -53,8 +53,6 @@ export const activityApi = createApi({
         }),
         addActivity: builder.mutation<void, Partial<ActivityApiProps>>({
             query: (formData) => {
-                console.log("Activity Details:", formData);
-
                 return {
                     url: "/activity",
                     method: "POST",

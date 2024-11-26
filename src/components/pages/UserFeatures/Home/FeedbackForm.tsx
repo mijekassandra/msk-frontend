@@ -22,6 +22,8 @@ import {
     useEditFeedbackMutation,
 } from "../../Publication/api/publicationApi";
 
+import { useNotifyUsersMutation } from "../../../../features/Notification/api/notificationApi";
+
 interface FeedbackFormProps {
     onClose: () => void;
     onCloseComment?: () => void;
@@ -39,8 +41,11 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     onSubmitSuccess,
     onCloseComment,
 }) => {
+    // notification api
+    const [postNotification] = useNotifyUsersMutation();
+
     // logged in user role
-    const usreDetail = useSelector((state: RootState) => state.auth.user);
+    const userDetail = useSelector((state: RootState) => state.auth.user);
 
     const [feedback, setFeedback] = useState({
         rating: initialFeedback?.rating || 0,

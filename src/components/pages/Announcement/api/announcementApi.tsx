@@ -52,8 +52,6 @@ export const announcementApi = createApi({
         }),
         addAnnouncement: builder.mutation<void, FormData>({
             query: (formData) => {
-                console.log("Publication Details:", formData);
-
                 return {
                     url: "/announcement",
                     method: "POST",
