@@ -14,14 +14,17 @@ import { formatDateTime } from "../../utils/dateTimeUtil";
 interface NotificationComponentProps {
     anchorEl: HTMLElement | null;
     onClose: () => void;
-    name: string;
-    action: string;
-    time: string;
-    viewed: boolean;
+    name?: string;
+    action?: string;
+    time?: string;
+    viewed?: boolean;
 }
 
 // api service
-import { useGetNotificationsQuery } from "../../features/Notification/api/notificationApi";
+import {
+    useGetNotificationsQuery,
+    useMarkNotificationAsReadMutation,
+} from "../../features/Notification/api/notificationApi";
 
 const NotificationComponent: React.FC<NotificationComponentProps> = ({
     anchorEl,
@@ -43,6 +46,17 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
     } = useGetNotificationsQuery({
         account_id: userDetail.id,
     });
+    const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
+
+    const handleMarkAsRead = async (id) => {
+        try {
+            // Call the mutation to mark the notification as read
+            await markNotificationAsRead(id).unwrap();
+            console.log(`Notification ${id} marked as read.`);
+        } catch (error) {
+            console.error("Failed to mark notification as read:", error);
+        }
+    };
 
     return (
         <Popover
@@ -61,7 +75,7 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
         >
             <Box
                 width={{
-                    xs: "250px",
+                    xs: "280px",
                     md: "350px",
                 }}
             >
@@ -101,10 +115,11 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                             <Stack
                                 key={notification.id}
                                 direction="row"
+                                justifyContent="space-between"
                                 alignItems="center"
                                 gap={1}
                                 sx={{
-                                    padding: "6px 12px",
+                                    padding: "8px 16px",
                                     minHeight: "60px",
                                     borderBottom: "1px solid #e7e7e8",
                                     background: notification.is_read
@@ -113,24 +128,68 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                 }}
                             >
                                 <Avatar sx={{ width: 40, height: 40 }} />
-                                <Stack gap={1}>
+                                <Stack gap={0.5}>
                                     <Typography
                                         variant="body2"
+                                        fontWeight={600}
                                         color="#3e3e3e"
                                         lineHeight={1.3}
+                                        textTransform="uppercase"
+                                    >
+                                        {notification.account_id !== null
+                                            ? "CHAIRPERSON"
+                                            : "FEDERATION"}{" "}
+                                        {notification.type}
+                                    </Typography>
+
+                                    <Typography
+                                        variant="body1"
+                                        color="#3e3e3e"
+                                        lineHeight={1.3}
+                                        sx={{
+                                            fontSize: "11px",
+                                        }}
                                     >
                                         {notification.message}
                                     </Typography>
 
-                                    <Typography
-                                        variant="caption"
-                                        color="#a6a6a7"
-                                        text="flex-end"
+                                    <Stack
+                                        direction="row"
+                                        justifyContent="space-between"
                                     >
-                                        {formatDateTime(
-                                            notification.created_at
-                                        )}
-                                    </Typography>
+                                        <Typography
+                                            variant="caption"
+                                            color="#a6a6a7"
+                                        >
+                                            {formatDateTime(
+                                                notification.created_at
+                                            )}
+                                        </Typography>
+                                        <Typography
+                                            variant="caption"
+                                            color={
+                                                notification.is_read
+                                                    ? "text.secondary"
+                                                    : "primary.main"
+                                            } // Change color based on read status
+                                            sx={{
+                                                "&:hover": {
+                                                    cursor: "pointer",
+                                                    color: "primary.dark",
+                                                    textDecoration: "underline",
+                                                },
+                                            }}
+                                            onClick={() =>
+                                                handleMarkAsRead(
+                                                    notification.id
+                                                )
+                                            }
+                                        >
+                                            {notification.is_read
+                                                ? ""
+                                                : "Mark as read"}
+                                        </Typography>
+                                    </Stack>
                                 </Stack>
                             </Stack>
                         ))

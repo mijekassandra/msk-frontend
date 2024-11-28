@@ -47,7 +47,6 @@ export const notificationApi = createApi({
                 params.append("account_id", account_id.toString());
                 if (brgy_id) params.append("brgy_id", brgy_id.toString());
                 const url = `/notifications?${params.toString()}`;
-                console.log("Generated URL:", url); // Debug log
                 return url;
             },
             providesTags: (result) =>

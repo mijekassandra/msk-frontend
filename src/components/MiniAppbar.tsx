@@ -35,6 +35,7 @@ import { logoutSuccess } from "../../slice/authSlice";
 import { useLogoutMutation } from "../../slice/apiSlice";
 import { userApi } from "./pages/Admin/api/userApi";
 import { resetAdminState } from "../../slice/adminSlice";
+import { useGetNotificationsQuery } from "../features/Notification/api/notificationApi";
 
 interface MiniAppbarProps {
     toggleSidebar: () => void;
@@ -50,12 +51,24 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
     // authenticiation
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
+    //! anchor for notif
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
         null
     );
     const [anchorNotifEl, setAnchorNotifEl] =
         React.useState<HTMLButtonElement | null>(null);
 
+    //! notification query
+    const { data: notifications } = useGetNotificationsQuery({
+        account_id: userDetail.id,
+    });
+
+    const unreadNotificationsCount = Array.isArray(notifications)
+        ? notifications.filter((notification) => notification.is_read === 0)
+              .length
+        : 0; // or handle the case when notifications is not an array
+
+    //! anchor for settings dropdown
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -118,18 +131,27 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                     </IconButton>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <IconButton onClick={handleClickNotif}>
-                            <Badge
-                                badgeContent={5}
-                                color="error"
-                                overlap="circular"
-                            >
+                            {unreadNotificationsCount !== 0 ? (
+                                <Badge
+                                    badgeContent={unreadNotificationsCount}
+                                    color="error"
+                                    overlap="circular"
+                                >
+                                    <Notifications
+                                        sx={{
+                                            color: "primary.main",
+                                            fontSize: "28px",
+                                        }}
+                                    />
+                                </Badge>
+                            ) : (
                                 <Notifications
                                     sx={{
                                         color: "primary.main",
                                         fontSize: "28px",
                                     }}
                                 />
-                            </Badge>
+                            )}
                         </IconButton>
 
                         <IconButton onClick={handleClick}>

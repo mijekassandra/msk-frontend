@@ -179,10 +179,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                     if (formData.status === "published") {
                         try {
                             // Determine the notification details
-                            const message =
-                                userDetail.role === "Federation"
-                                    ? `New Activity Alert: "${formData.title}" has been organized by the Federation. Join us and be part of the event!`
-                                    : `Exciting Activity in Barangay ${userDetail.barangay}: "${formData.title}" has been posted. Don’t miss out on the fun!`;
+                            const message = `"${formData.title}" has been posted`;
 
                             const notificationData = {
                                 type: "activity",
@@ -230,10 +227,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                     if (formData.status === "published") {
                         try {
                             // Determine the notification details
-                            const message =
-                                userDetail.role === "Federation"
-                                    ? `New Activity Alert: "${formData.title}" has been organized by the Federation. Join us and be part of the event!`
-                                    : `Exciting Activity in Barangay ${userDetail.barangay}: "${formData.title}" has been posted. Don’t miss out on the fun!`;
+                            const message = `"${formData.title}" has been posted`;
 
                             const notificationData = {
                                 type: "activity",

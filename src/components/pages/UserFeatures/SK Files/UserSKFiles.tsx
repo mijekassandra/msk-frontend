@@ -13,13 +13,9 @@ import SearchInput from "../../../displays/SearchInput";
 import { useGetSkFilesQuery } from "../../SK Files/api/skFileApi";
 
 const { VITE_FILE_ENDPOINT } = import.meta.env;
-const ITEMS_PER_PAGE = 5; // Define the number of items per page
+const ITEMS_PER_PAGE = 5;
 
 const UserSKFiles = () => {
-    const [tabMode, setTabMode] = useState<
-        "administrative" | "financial" | "project"
-    >("administrative");
-
     const {
         data: allSkFiles,
         isError: allSkFilesError,
@@ -28,22 +24,31 @@ const UserSKFiles = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
+    const [fileTypeFilter, setFileTypeFilter] = useState<string>(""); // New state for filtering by file type
 
-    const handleTabChange = (
-        mode: "administrative" | "financial" | "project"
-    ) => {
-        setTabMode(mode);
-        setCurrentPage(1); // Reset to the first page when changing tabs
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        setCurrentPage(1); // Reset to the first page on a new search
     };
 
-    //! Filter SK files based on search query only
-    const filteredFiles =
-        allSkFiles?.skFiles?.filter(
-            (file) =>
-                file.file_name.toLowerCase().includes(searchQuery.toLowerCase()) // Filter by search query only
-        ) || [];
+    const handleFileTypeFilter = (type: string) => {
+        setFileTypeFilter(type); // Set the filter based on the selected file type
+        setCurrentPage(1); // Reset to the first page when the filter changes
+    };
 
-    //! Paginate the filtered files
+    // Filter SK files based on search query and selected file type
+    const filteredFiles =
+        allSkFiles?.skFiles?.filter((file: any) => {
+            const matchesSearchQuery = file.file_name
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+            const matchesFileType = fileTypeFilter
+                ? file.file_type === fileTypeFilter
+                : true; // Only filter by type if a filter is applied
+            return matchesSearchQuery && matchesFileType;
+        }) || [];
+
+    // Paginate the filtered files
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const paginatedFiles = filteredFiles.slice(
         startIndex,
@@ -52,12 +57,6 @@ const UserSKFiles = () => {
 
     // Calculate total number of pages based on the filtered files
     const totalPages = Math.ceil(filteredFiles.length / ITEMS_PER_PAGE);
-
-    //! Search function to update search query and reset pagination
-    const handleSearch = (query: string) => {
-        setSearchQuery(query);
-        setCurrentPage(1); // Reset to the first page on a new search
-    };
 
     // Handle MUI Pagination change
     const handlePageChange = (
@@ -78,7 +77,7 @@ const UserSKFiles = () => {
                 marginLeft={1}
             >
                 <SearchInput
-                    placeholder="Search SK file "
+                    placeholder="Search SK file"
                     onSearch={handleSearch}
                 />
             </Stack>
@@ -86,28 +85,40 @@ const UserSKFiles = () => {
             <Stack
                 rowGap={2}
                 sx={{
-                    marginInline: 7,
+                    marginInline: 6,
                 }}
             >
-                {/* Tab buttons (no filtering applied) */}
+                {/* Filter buttons */}
                 <Stack direction="row" justifyContent="space-between" gap={5}>
                     <Button
+                        variant={fileTypeFilter === "" ? "outlined" : "text"}
+                        onClick={() => handleFileTypeFilter("")}
+                    >
+                        ALL FILES
+                    </Button>
+                    <Button
                         variant={
-                            tabMode === "administrative" ? "outlined" : "text"
+                            fileTypeFilter === "administrative"
+                                ? "outlined"
+                                : "text"
                         }
-                        onClick={() => handleTabChange("administrative")}
+                        onClick={() => handleFileTypeFilter("administrative")}
                     >
                         ADMINISTRATIVE FILES
                     </Button>
                     <Button
-                        variant={tabMode === "financial" ? "outlined" : "text"}
-                        onClick={() => handleTabChange("financial")}
+                        variant={
+                            fileTypeFilter === "financial" ? "outlined" : "text"
+                        }
+                        onClick={() => handleFileTypeFilter("financial")}
                     >
                         FINANCIAL FILES
                     </Button>
                     <Button
-                        variant={tabMode === "project" ? "outlined" : "text"}
-                        onClick={() => handleTabChange("project")}
+                        variant={
+                            fileTypeFilter === "project" ? "outlined" : "text"
+                        }
+                        onClick={() => handleFileTypeFilter("project")}
                     >
                         PROJECT FILES
                     </Button>
@@ -118,9 +129,16 @@ const UserSKFiles = () => {
                 {/* Display SK files */}
                 <Stack
                     direction="row"
-                    gap={1}
+                    rowGap={4}
+                    columnGap={2}
                     flexWrap="wrap"
-                    justifyContent="space-around"
+                    sx={{
+                        justifyContent: {
+                            xs: "start",
+                            sm: "start",
+                            lg: "space-between",
+                        },
+                    }}
                 >
                     {allSkFilesLoading && <LoadingDisplay open={true} />}
                     {allSkFilesError && <ErrorDisplay />}
@@ -136,8 +154,13 @@ const UserSKFiles = () => {
                             />
                         ))
                     ) : (
-                        <Typography variant="body1" marginTop="10px">
-                            No files found.
+                        <Typography
+                            variant="body1"
+                            marginTop="10px"
+                            textAlign="center"
+                            width="100%"
+                        >
+                            No files found
                         </Typography>
                     )}
                 </Stack>

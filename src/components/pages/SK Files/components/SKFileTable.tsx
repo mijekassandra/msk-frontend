@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, IconButton, Stack, Alert, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import {
@@ -64,8 +64,7 @@ const SKFileTable = () => {
             const response = await uploadSkFile(formData);
 
             if (response.error) {
-                setAlert(response.error.data.message);
-
+                setAlert(response.error.data.error.message);
                 setTimeout(() => {
                     setAlert(null);
                 }, 4000);
@@ -82,13 +81,18 @@ const SKFileTable = () => {
                         confirmButton: "my-swal-button",
                     },
                 });
+                setIsModalOpen(false);
             }
-            setIsModalOpen(false);
         } catch (error) {
             console.error("Upload error:", error);
-            setAlert("Failed to upload file.");
         }
     };
+
+    useEffect(() => {
+        if (alert) {
+            console.log("Alert updated:", alert);
+        }
+    }, [alert]);
 
     //TODO DELETE
     const handleDeleteFile = async (file: any) => {
@@ -174,9 +178,9 @@ const SKFileTable = () => {
 
     const columns = [
         {
-            field: "file_type",
-            headerName: "File Type",
-            maxWidth: 170,
+            // field: "file_type",
+            headerName: "File Format",
+            maxWidth: 120,
             renderCell: (params: any) => {
                 const fileName = params.row.attachment;
                 const fileType = fileName.split(".").pop()?.toLowerCase();
@@ -210,6 +214,7 @@ const SKFileTable = () => {
             },
         },
         { field: "file_name", headerName: "Filename", minWidth: 250 },
+        { field: "file_type", headerName: "File Type", minWidth: 250 },
         {
             field: "file_size",
             headerName: "Filesize",
@@ -294,6 +299,7 @@ const SKFileTable = () => {
                 <UploadSKFile
                     onClose={handleCloseModal}
                     onUpload={handleFileUpload}
+                    fileTypeError={alert}
                 />
             )}
 

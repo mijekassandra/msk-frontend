@@ -152,10 +152,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                     if (formData.status === "published") {
                         try {
                             // Determine the notification details
-                            const message =
-                                userDetail.role === "Federation"
-                                    ? `A new publication titled "${formData.title}" has been published by the Federation. Check it out!`
-                                    : `A new publication titled "${formData.title}" has been published in Barangay ${userDetail.barangay}. Don’t miss out!`;
+                            const message = `"${formData.title}" has been published`;
 
                             const notificationData = {
                                 type: "publication",
@@ -204,10 +201,8 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                     if (formData.status === "published") {
                         try {
                             // Determine the notification details
-                            const message =
-                                userDetail.role === "Federation"
-                                    ? `A new publication titled "${formData.title}" has been published by the Federation. Check it out!`
-                                    : `A new publication titled "${formData.title}" has been published in Barangay ${userDetail.barangay}. Don’t miss out!`;
+                            const message = `"${formData.title}" has been published`;
+
                             const notificationData = {
                                 type: "publication",
                                 message,

@@ -151,10 +151,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                     if (formData.status === "published") {
                         try {
                             // Determine the notification details
-                            const message =
-                                userDetail.role === "Federation"
-                                    ? `Important Announcement: "${formData.title}" has been published by the Federation.`
-                                    : `Announcement from Barangay ${userDetail.barangay}: "${formData.title}" has been published. Stay updated on the latest news!`;
+                            const message = `"${formData.title}" has been posted`;
 
                             const notificationData = {
                                 type: "announcement",
@@ -204,10 +201,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                     if (formData.status === "published") {
                         try {
                             // Determine the notification details
-                            const message =
-                                userDetail.role === "Federation"
-                                    ? `Important Announcement: "${formData.title}" has been published by the Federation.`
-                                    : `Announcement from Barangay ${userDetail.barangay}: "${formData.title}" has been published. Stay updated on the latest news!`;
+                            const message = `"${formData.title}" has been posted`;
 
                             const notificationData = {
                                 type: "announcement",

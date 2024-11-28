@@ -70,7 +70,7 @@ const DisplayThumbnail: React.FC<DisplayThumbnailProps> = ({
             alignItems="center"
             rowGap={2}
             sx={{
-                width: "170px",
+                width: "150px",
             }}
         >
             <Stack
