@@ -136,7 +136,7 @@ const UserSKFiles = () => {
                         justifyContent: {
                             xs: "start",
                             sm: "start",
-                            lg: "space-between",
+                            lg: "space-evenly",
                         },
                     }}
                 >
