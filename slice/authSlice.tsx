@@ -33,7 +33,7 @@ const authSlice = createSlice({
             localStorage.removeItem("user");
         },
         updateProfileSuccess: (state, action) => {
-            console.log("Before mutation, state.user:", state.user);
+            // console.log("Before mutation, state.user:", state.user);
 
             // Check if action.payload contains a `data` field, then flatten it
             const updatedUser = action.payload.data

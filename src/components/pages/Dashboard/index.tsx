@@ -42,6 +42,8 @@ import UserSKFiles from "../UserFeatures/SK Files/UserSKFiles";
 import PublicationList from "../../../features/Login/PublicationList";
 import AnnouncementList from "../../../features/Login/AnnouncementList";
 import ActivitiesList from "../../../features/Login/ActivitiesList";
+import AnnouncementDetails from "../UserFeatures/Home/AnnouncementDetails";
+import ActivityDetails from "../UserFeatures/Home/ActivityDetails";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -492,6 +494,18 @@ const Dashboard = () => {
                                         <Route
                                             path="/account-settings"
                                             element={<AccountSetting />}
+                                        />
+                                        <Route
+                                            path="/publication/:id"
+                                            element={<PublicationDetails />}
+                                        />
+                                        <Route
+                                            path="/announcement/:id"
+                                            element={<AnnouncementDetails />}
+                                        />
+                                        <Route
+                                            path="/activity/:id"
+                                            element={<ActivityDetails />}
                                         />
                                     </Routes>
                                 }

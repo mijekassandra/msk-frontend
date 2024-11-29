@@ -10,6 +10,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { formatDateTime } from "../../utils/dateTimeUtil";
+import { useNavigate } from "react-router-dom";
 
 interface NotificationComponentProps {
     anchorEl: HTMLElement | null;
@@ -35,6 +36,7 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
 }) => {
     const open = Boolean(anchorEl);
     const id = open ? "notification-popover" : undefined;
+    const navigate = useNavigate(); // Hook to handle navigation
 
     // logged in user role
     const userDetail = useSelector((state: RootState) => state.auth.user);
@@ -48,13 +50,32 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
     });
     const [markNotificationAsRead] = useMarkNotificationAsReadMutation();
 
-    const handleMarkAsRead = async (id) => {
+    const handleMarkAsRead = async (id: any) => {
         try {
             // Call the mutation to mark the notification as read
             await markNotificationAsRead(id).unwrap();
             console.log(`Notification ${id} marked as read.`);
         } catch (error) {
             console.error("Failed to mark notification as read:", error);
+        }
+    };
+
+    // Define the onClick handler
+    const handleNotificationClick = async (type: any, id: number) => {
+        try {
+            // Mark notification as read first
+            await handleMarkAsRead(id);
+
+            // After marking as read, navigate to the appropriate page based on the type
+            if (type === "publication") {
+                navigate(`/publication/${id}`);
+            } else if (type === "announcement") {
+                navigate(`/announcement/${id}`);
+            } else if (type === "activity") {
+                navigate(`/activity/${id}`);
+            }
+        } catch (error) {
+            console.error("Error while handling notification click:", error);
         }
     };
 
@@ -115,7 +136,7 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                             <Stack
                                 key={notification.id}
                                 direction="row"
-                                justifyContent="space-between"
+                                // justifyContent="space-between"
                                 alignItems="center"
                                 gap={1}
                                 sx={{
@@ -125,10 +146,17 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                     background: notification.is_read
                                         ? "#ffffff"
                                         : "#f0f6ff",
+                                    cursor: "pointer",
                                 }}
+                                onClick={() =>
+                                    handleNotificationClick(
+                                        notification.type,
+                                        notification.id
+                                    )
+                                } // Handle routing on click
                             >
                                 <Avatar sx={{ width: 40, height: 40 }} />
-                                <Stack gap={0.5}>
+                                <Stack gap={0.5} width="-webkit-fill-available">
                                     <Typography
                                         variant="body2"
                                         fontWeight={600}
@@ -136,7 +164,7 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                         lineHeight={1.3}
                                         textTransform="uppercase"
                                     >
-                                        {notification.account_id !== null
+                                        {notification.brgy_id !== null
                                             ? "CHAIRPERSON"
                                             : "FEDERATION"}{" "}
                                         {notification.type}
@@ -179,11 +207,12 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                                     textDecoration: "underline",
                                                 },
                                             }}
-                                            onClick={() =>
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent triggering the onClick of the parent stack
                                                 handleMarkAsRead(
                                                     notification.id
-                                                )
-                                            }
+                                                );
+                                            }}
                                         >
                                             {notification.is_read
                                                 ? ""

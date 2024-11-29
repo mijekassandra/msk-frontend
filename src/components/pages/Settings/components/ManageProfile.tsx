@@ -125,6 +125,11 @@ const ManageProfile = () => {
 
     // update the profile button
     const handleProfileUpdate = async (formData: any) => {
+        if (!formData.first_name || !formData.last_name || !formData.email) {
+            setAlert("Please fill in all required fields.");
+            return;
+        }
+
         const formDataToSend = new FormData();
 
         // Append all fields to FormData
@@ -220,6 +225,13 @@ const ManageProfile = () => {
         }
     }, [formData.youth_organization]);
 
+    useEffect(() => {
+        if (alert) {
+            const timer = setTimeout(() => setAlert(null), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [alert]);
+
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">Manage Profile</Typography>
@@ -285,8 +297,10 @@ const ManageProfile = () => {
                                         variant="outlined"
                                         margin="dense"
                                         name="first_name"
+                                        required
                                         value={formData.first_name}
                                         onChange={handleInputChange}
+                                        error={!formData.first_name}
                                     />
                                 </Grid>
                                 <Grid item sm={2.6} xs={12}>
@@ -302,6 +316,8 @@ const ManageProfile = () => {
                                         name="last_name"
                                         value={formData.last_name}
                                         onChange={handleInputChange}
+                                        required
+                                        error={!formData.last_name}
                                     />
                                 </Grid>
                                 <Grid item sm={2.6} xs={12}>
@@ -348,9 +364,6 @@ const ManageProfile = () => {
                                             slotProps={{
                                                 textField: {
                                                     size: "small",
-                                                    // inputProps: {
-                                                    //     "aria-hidden": false,
-                                                    // },
                                                 },
                                             }}
                                             value={
@@ -502,6 +515,8 @@ const ManageProfile = () => {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
+                                        required
+                                        error={!formData.email}
                                     />
                                 </Grid>
                                 <Grid item sm={3.55} xs={12}>

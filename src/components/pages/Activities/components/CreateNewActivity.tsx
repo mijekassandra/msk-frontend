@@ -378,6 +378,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                                         textField: {
                                             size: "medium",
                                         },
+                                        popper: { placement: "auto" },
                                     }}
                                     value={
                                         formData.date_of_activity

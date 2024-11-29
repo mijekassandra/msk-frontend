@@ -3,51 +3,29 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Stack, Typography, Button, CircularProgress } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "../../../../assets/no-image.png";
+import { ArrowBackIos } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store.ts";
 
-// import components
-import PublicationCard from "../../../cards/PublicationCard";
-import FeedbackForm from "./FeedbackForm";
-import CommentsList from "./CommentsList";
-import { ArrowBackIos } from "@mui/icons-material";
+//import component
+import ActivitiesCard from "../../../cards/ActivitiesCard.tsx";
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
-const PublicationDetails = () => {
+const ActivityDetails = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Get the publication ID from the URL
     const location = useLocation();
-    const { publication } = location.state || {}; // Get publication data from the navigation state
-    const [activeModal, setActiveModal] = useState<null | {
-        name: string;
-        data?: any;
-    }>(null); // State to handle active modal
+    const { activity } = location.state || {}; // Get publication data from the navigation state
 
     const userDetail = useSelector((state: RootState) => state.auth.user);
-
-    const openModal = (modalName: string, data?: any) => {
-        setActiveModal({ name: modalName, data });
-    };
-
-    const closeModal = () => {
-        setActiveModal(null); // Close the active modal
-    };
-
-    // Handle Feedback click
-    const handleFeedbackClick = () => {
-        openModal("feedbackForm");
-    };
-
-    // Handle Comments click
-    const handleCommentsClick = () => {
-        openModal("commentForm", { comments: publication.comments });
-    };
 
     const handleNavigation = (path: string) => {
         navigate(path);
     };
+
+    console.log("activity", activity);
 
     return (
         <Stack gap={2}>
@@ -69,29 +47,26 @@ const PublicationDetails = () => {
             </Stack>
 
             <Stack>
-                {publication ? (
-                    <PublicationCard
+                {activity ? (
+                    <ActivitiesCard
+                        key={activity.id}
                         barangay={
-                            publication.type !== "Federation"
-                                ? publication.barangay
+                            activity.type !== "Federation"
+                                ? activity.barangay
                                 : "Federation"
                         }
-                        date={formatDate(publication.created_at)}
+                        date={formatDate(activity.created_at)}
                         cardImage={
-                            publication.attachment
-                                ? VITE_FILE_ENDPOINT + publication.attachment
+                            activity.attachment
+                                ? VITE_FILE_ENDPOINT + activity.attachment
                                 : NoImage
                         }
-                        title={publication.title}
-                        content={publication.content}
-                        type={publication.type}
-                        views={24}
-                        comments={5}
-                        rating={5}
-                        onFeedbackClick={handleFeedbackClick}
-                        onCommentsClick={handleCommentsClick}
-                        publicationID={publication.id}
-                    ></PublicationCard>
+                        title={activity.title}
+                        content={activity.content}
+                        type={activity.type}
+                        location={activity.location}
+                        date_of_activity={formatDate(activity.date_of_activity)}
+                    />
                 ) : (
                     <Stack
                         justifyContent="center"
@@ -102,40 +77,24 @@ const PublicationDetails = () => {
                         <img
                             src="\src\assets\void.png"
                             width="150px"
-                            alt="void"
+                            alt="No comment"
                         />
                         <Typography
                             variant="h4"
                             fontWeight={500}
                             align="center"
                         >
-                            Publication not Found
+                            Activity not Found
                         </Typography>
                         <Typography variant="subtitle1" align="center">
-                            This Publication post is no longer available. It may
+                            This activity post is no longer available. It may
                             have been removed or archived.
                         </Typography>
                     </Stack>
                 )}
             </Stack>
-
-            {/* Feedback Form Modal */}
-            {activeModal?.name === "feedbackForm" && (
-                <FeedbackForm
-                    onClose={closeModal}
-                    publicationID={publication.id}
-                />
-            )}
-
-            {/* Comments List Modal */}
-            {activeModal?.name === "commentForm" && (
-                <CommentsList
-                    onClose={closeModal}
-                    publicationID={publication.id}
-                />
-            )}
         </Stack>
     );
 };
 
-export default PublicationDetails;
+export default ActivityDetails;
