@@ -184,6 +184,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                             const notificationData = {
                                 type: "activity",
                                 message,
+                                source_id: response.data.source_id,
                                 brgy_id:
                                     userDetail.role === "Federation"
                                         ? null
@@ -232,6 +233,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                             const notificationData = {
                                 type: "activity",
                                 message,
+                                source_id: formData.id,
                                 brgy_id:
                                     userDetail.role === "Federation"
                                         ? null

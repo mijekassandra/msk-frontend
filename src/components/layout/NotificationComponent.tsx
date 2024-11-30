@@ -52,27 +52,56 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
 
     const handleMarkAsRead = async (id: any) => {
         try {
-            // Call the mutation to mark the notification as read
             await markNotificationAsRead(id).unwrap();
-            console.log(`Notification ${id} marked as read.`);
         } catch (error) {
             console.error("Failed to mark notification as read:", error);
         }
     };
 
-    // Define the onClick handler
-    const handleNotificationClick = async (type: any, id: number) => {
+    // const handleNotificationClick = async (type, notif_id, source_id) => {
+    //     try {
+    //         await handleMarkAsRead(notif_id);
+
+    //         const routes = {
+    //             publication: `/publication/${source_id}`,
+    //             announcement: `/announcement/${source_id}`,
+    //             activity: `/activity/${source_id}`,
+    //         };
+
+    //         if (routes[type]) {
+    //             navigate(routes[type]);
+    //             console.log("type", type);
+    //             console.log("notif_id", notif_id);
+    //             console.log("source_id", source_id);
+    //         } else {
+    //             navigate("/error");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error navigating to notification details:", error);
+    //     }
+    // };
+
+    const handleNotificationClick = async (
+        type: any,
+        notif_id: number,
+        source_id: number
+    ) => {
         try {
             // Mark notification as read first
-            await handleMarkAsRead(id);
+            await handleMarkAsRead(notif_id);
+
+            console.log("notif", notifications);
+            console.log("type", type);
+            console.log("notif_id", notif_id);
+            console.log("source_id", source_id);
 
             // After marking as read, navigate to the appropriate page based on the type
             if (type === "publication") {
-                navigate(`/publication/${id}`);
+                navigate(`/publication/${source_id}`);
             } else if (type === "announcement") {
-                navigate(`/announcement/${id}`);
+                navigate(`/announcement/${source_id}`);
             } else if (type === "activity") {
-                navigate(`/activity/${id}`);
+                navigate(`/activity/${source_id}`);
             }
         } catch (error) {
             console.error("Error while handling notification click:", error);
@@ -151,9 +180,10 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                 onClick={() =>
                                     handleNotificationClick(
                                         notification.type,
-                                        notification.id
+                                        notification.id,
+                                        notification.source_id
                                     )
-                                } // Handle routing on click
+                                }
                             >
                                 <Avatar sx={{ width: 40, height: 40 }} />
                                 <Stack gap={0.5} width="-webkit-fill-available">

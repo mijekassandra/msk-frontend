@@ -9,6 +9,7 @@ interface NotificationProps {
     message: string;
     is_read: boolean;
     created_at: string;
+    source_id: number;
 }
 
 interface NotifyRequest {

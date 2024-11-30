@@ -136,6 +136,7 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                         {location}
                     </Typography>
                 </Stack>
+                {/* <Typography>{content}</Typography> */}
                 {/* <Stack
                     direction="row"
                     justifyContent="flex-end"

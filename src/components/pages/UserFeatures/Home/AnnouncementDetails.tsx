@@ -10,16 +10,30 @@ import { RootState } from "../../../../store.ts";
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
-//import components
+// import components
 import AnnouncementCard from "../../../cards/AnnouncementCard";
+
+// import api
+import { useGetAnnouncementByIDQuery } from "../../Announcement/api/announcementApi.tsx";
 
 const AnnouncementDetails = () => {
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the publication ID from the URL
+    const { id } = useParams();
     const location = useLocation();
-    const { announcement } = location.state || {}; // Get publication data from the navigation state
+    const { announcement: stateAnnouncement } = location.state || {};
 
     const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    //! Fetch announcement data dynamically if not provided via location.state
+    const {
+        data: fetchedAnnouncement,
+        isLoading,
+        isError,
+    } = useGetAnnouncementByIDQuery(id, {
+        skip: !!stateAnnouncement, // Skip fetching if exists
+    });
+
+    const announcement = stateAnnouncement || fetchedAnnouncement;
 
     const handleNavigation = (path: string) => {
         navigate(path);
@@ -45,7 +59,21 @@ const AnnouncementDetails = () => {
             </Stack>
 
             <Stack>
-                {announcement ? (
+                {/* Show Loading Spinner */}
+                {isLoading ? (
+                    <Stack
+                        justifyContent="center"
+                        alignItems="center"
+                        height="300px"
+                        gap={2}
+                    >
+                        <CircularProgress />
+                        <Typography variant="subtitle1">
+                            Loading Activity Details...
+                        </Typography>
+                    </Stack>
+                ) : announcement ? (
+                    // Render Announcement Card
                     <AnnouncementCard
                         key={announcement.id}
                         barangay={

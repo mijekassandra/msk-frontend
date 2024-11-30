@@ -15,17 +15,31 @@ import { ArrowBackIos } from "@mui/icons-material";
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
+// import api
+import { useGetPublicationByIDQuery } from "../../Publication/api/publicationApi.tsx";
+
 const PublicationDetails = () => {
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the publication ID from the URL
+    const { id } = useParams();
     const location = useLocation();
-    const { publication } = location.state || {}; // Get publication data from the navigation state
+    const { publication: statePublication } = location.state || {};
     const [activeModal, setActiveModal] = useState<null | {
         name: string;
         data?: any;
     }>(null); // State to handle active modal
 
     const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    //! Fetch publication data dynamically if not provided via location.state
+    const {
+        data: fetchedPublication,
+        isLoading,
+        isError,
+    } = useGetPublicationByIDQuery(id, {
+        skip: !!statePublication, // Skip fetching if statePublication exists
+    });
+
+    const publication = statePublication || fetchedPublication;
 
     const openModal = (modalName: string, data?: any) => {
         setActiveModal({ name: modalName, data });
@@ -69,7 +83,21 @@ const PublicationDetails = () => {
             </Stack>
 
             <Stack>
-                {publication ? (
+                {/* Show Loading Spinner */}
+                {isLoading ? (
+                    <Stack
+                        justifyContent="center"
+                        alignItems="center"
+                        height="300px"
+                        gap={2}
+                    >
+                        <CircularProgress />
+                        <Typography variant="subtitle1">
+                            Loading Activity Details...
+                        </Typography>
+                    </Stack>
+                ) : publication ? (
+                    // Render Publication Card
                     <PublicationCard
                         barangay={
                             publication.type !== "Federation"

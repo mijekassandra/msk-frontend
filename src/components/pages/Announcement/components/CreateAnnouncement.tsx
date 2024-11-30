@@ -148,6 +148,8 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                         setAlert(null);
                     }, 4000);
                 } else if (response.data.status === "success") {
+                    // const createdAnnouncementId = response.data.id;
+
                     if (formData.status === "published") {
                         try {
                             // Determine the notification details
@@ -156,6 +158,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                             const notificationData = {
                                 type: "announcement",
                                 message,
+                                source_id: response.data.source_id,
                                 brgy_id:
                                     userDetail.role === "Federation"
                                         ? null
@@ -206,6 +209,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                             const notificationData = {
                                 type: "announcement",
                                 message,
+                                source_id: formData.id,
                                 brgy_id:
                                     userDetail.role === "Federation"
                                         ? null

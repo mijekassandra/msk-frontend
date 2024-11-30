@@ -140,7 +140,6 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
             if (mode === "create") {
                 const response = await addPublication(formSubmissionData);
 
-                // console.log("response here: ", response);
                 if (response.error) {
                     setAlert(response.error.data.message);
 
@@ -157,6 +156,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             const notificationData = {
                                 type: "publication",
                                 message,
+                                source_id: response.data.source_id,
                                 brgy_id:
                                     userDetail.role === "Federation"
                                         ? null
@@ -206,6 +206,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             const notificationData = {
                                 type: "publication",
                                 message,
+                                source_id: formData.id,
                                 brgy_id:
                                     userDetail.role === "Federation"
                                         ? null

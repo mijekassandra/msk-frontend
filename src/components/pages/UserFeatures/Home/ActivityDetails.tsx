@@ -13,19 +13,31 @@ import ActivitiesCard from "../../../cards/ActivitiesCard.tsx";
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
+// import api
+import { useGetActivityByIDQuery } from "../../Activities/api/activityApi.tsx";
+
 const ActivityDetails = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Get the publication ID from the URL
     const location = useLocation();
-    const { activity } = location.state || {}; // Get publication data from the navigation state
+    const { activity: stateActivity } = location.state || {}; // Get publication data from the navigation state
 
     const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    //! Fetch publication data dynamically if not provided via location.state
+    const {
+        data: fetchedActivity,
+        isLoading,
+        isError,
+    } = useGetActivityByIDQuery(id, {
+        skip: !!stateActivity, // Skip fetching if stateActivity exists
+    });
+
+    const activity = stateActivity || fetchedActivity;
 
     const handleNavigation = (path: string) => {
         navigate(path);
     };
-
-    console.log("activity", activity);
 
     return (
         <Stack gap={2}>
@@ -47,7 +59,21 @@ const ActivityDetails = () => {
             </Stack>
 
             <Stack>
-                {activity ? (
+                {/* Show Loading Spinner */}
+                {isLoading ? (
+                    <Stack
+                        justifyContent="center"
+                        alignItems="center"
+                        height="300px"
+                        gap={2}
+                    >
+                        <CircularProgress />
+                        <Typography variant="subtitle1">
+                            Loading Activity Details...
+                        </Typography>
+                    </Stack>
+                ) : activity ? (
+                    /* Render Activity Card */
                     <ActivitiesCard
                         key={activity.id}
                         barangay={
@@ -68,6 +94,7 @@ const ActivityDetails = () => {
                         date_of_activity={formatDate(activity.date_of_activity)}
                     />
                 ) : (
+                    /* Show Not Found/Error Message */
                     <Stack
                         justifyContent="center"
                         alignItems="center"
@@ -90,6 +117,12 @@ const ActivityDetails = () => {
                             This activity post is no longer available. It may
                             have been removed or archived.
                         </Typography>
+                        <Button
+                            variant="contained"
+                            onClick={() => navigate(-1)}
+                        >
+                            Go Back
+                        </Button>
                     </Stack>
                 )}
             </Stack>

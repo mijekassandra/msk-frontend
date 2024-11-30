@@ -500,6 +500,10 @@ const Dashboard = () => {
                                             element={<PublicationDetails />}
                                         />
                                         <Route
+                                            path="/pub/:id"
+                                            element={<PublicationDetails />}
+                                        />
+                                        <Route
                                             path="/announcement/:id"
                                             element={<AnnouncementDetails />}
                                         />
