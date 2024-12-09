@@ -10,6 +10,7 @@ interface NotificationProps {
     is_read: boolean;
     created_at: string;
     source_id: number;
+    barangay: string;
 }
 
 interface NotifyRequest {

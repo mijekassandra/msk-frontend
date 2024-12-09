@@ -24,16 +24,16 @@ const UserSKFiles = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
-    const [fileTypeFilter, setFileTypeFilter] = useState<string>(""); // New state for filtering by file type
+    const [fileTypeFilter, setFileTypeFilter] = useState<string>("");
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);
-        setCurrentPage(1); // Reset to the first page on a new search
+        setCurrentPage(1);
     };
 
     const handleFileTypeFilter = (type: string) => {
-        setFileTypeFilter(type); // Set the filter based on the selected file type
-        setCurrentPage(1); // Reset to the first page when the filter changes
+        setFileTypeFilter(type);
+        setCurrentPage(1);
     };
 
     // Filter SK files based on search query and selected file type
@@ -96,31 +96,24 @@ const UserSKFiles = () => {
                     >
                         ALL FILES
                     </Button>
-                    <Button
-                        variant={
-                            fileTypeFilter === "administrative"
-                                ? "outlined"
-                                : "text"
-                        }
-                        onClick={() => handleFileTypeFilter("administrative")}
-                    >
-                        ADMINISTRATIVE FILES
-                    </Button>
+
                     <Button
                         variant={
                             fileTypeFilter === "financial" ? "outlined" : "text"
                         }
-                        onClick={() => handleFileTypeFilter("financial")}
+                        onClick={() => handleFileTypeFilter("full disclosure")}
                     >
-                        FINANCIAL FILES
+                        FULL DISCLOSURE
                     </Button>
                     <Button
                         variant={
                             fileTypeFilter === "project" ? "outlined" : "text"
                         }
-                        onClick={() => handleFileTypeFilter("project")}
+                        onClick={() =>
+                            handleFileTypeFilter("learning materials")
+                        }
                     >
-                        PROJECT FILES
+                        LEARNING MATERIALS
                     </Button>
                 </Stack>
 

@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "./store";
@@ -13,18 +13,20 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state: RootState) => state.auth.token);
+  const alertShown = useRef(false); // Track if alert has been shown
 
   useEffect(() => {
     // Only show the alert if the token exists and is expired
     if (token) {
-      if (isTokenExpired(token)) {
+      if (isTokenExpired(token) && !alertShown.current) {
+        alertShown.current = true;  // Set the flag that alert has been shown
         alert("Your session has expired. Please log in again to continue.");
         dispatch(resetAdminState()); 
         navigate("/", { replace: true }); 
       }
     } else {
-      // If there's no token at all, just redirect silently
-      navigate("/", { replace: true });
+      navigate("/", { replace: true }); // If there's no token at all, just redirect silently
+
     }
   }, [token, navigate, dispatch]);
 

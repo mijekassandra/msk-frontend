@@ -194,6 +194,8 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
             return;
         }
 
+        setLoading(true); // Start loading
+
         try {
             const formDataToSend = new FormData();
             Object.entries(formData).forEach(([key, value]) => {
@@ -444,10 +446,10 @@ const CreateNewProfiling: React.FC<CreateNewProfilingProps> = ({
                                     value={formData.voter_status}
                                     error={fieldErrors?.voter_status}
                                     onChange={handleInputChange}
-                                    label="Select Status"
+                                    label="Select Voter Status"
                                 >
                                     <MenuItem value="" disabled>
-                                        Select Status
+                                        Selec Voter Status
                                     </MenuItem>
                                     <MenuItem value="active">Active</MenuItem>
                                     <MenuItem value="inactive">

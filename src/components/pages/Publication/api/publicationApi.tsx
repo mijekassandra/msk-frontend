@@ -62,7 +62,7 @@ export const publicationApi = createApi({
         }),
         addPublication: builder.mutation<void, FormData>({
             query: (formData) => {
-                console.log("Publication Details:", formData);
+                // console.log("Publication Details:", formData);
 
                 return {
                     url: "/publication",

@@ -30,6 +30,7 @@ const ActivitiesList = () => {
         name: string;
         data?: any;
     }>(null);
+    const userDetail = useSelector((state: RootState) => state.auth.user);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +41,7 @@ const ActivitiesList = () => {
         isSuccess: allActivitiesSuccess,
         isLoading: allActivitiesLoading,
         isFetching,
-        // refetch,
+        refetch,
     } = useGetActivtiesQuery();
 
     // Step 1: Filter publications for published status
@@ -86,9 +87,9 @@ const ActivitiesList = () => {
         navigate(path);
     };
 
-    // useEffect(() => {
-    //     refetch();
-    // }, []);
+    useEffect(() => {
+        refetch();
+    }, []);
 
     return (
         <Stack gap={2}>

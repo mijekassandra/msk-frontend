@@ -115,9 +115,9 @@ async function generatePDF(data: YouthProfilingProps | any) {
     doc.text(`${data.email}`, 43, 133);
 
     doc.setFont("helvetica", "normal");
-    doc.text("Purok: ", 15, 139);
+    doc.text("Address: ", 15, 139);
     doc.setFont("helvetica", "bold");
-    doc.text(`${data.address}`, 30, 139);
+    doc.text(`${data.address}`, 32, 139);
 
     doc.setFont("helvetica", "normal");
     doc.text("Highest Educational Attainment: ", 15, 145);

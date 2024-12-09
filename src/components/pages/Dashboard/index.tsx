@@ -230,7 +230,16 @@ const Dashboard = () => {
         if (userRole === "User") {
             // User-specific tabs
             return [
-                { tab: "/home", label: "HOME", icon: <HomeOutlined /> },
+                {
+                    tab: "/dashboard",
+                    label: "DASHBOARD",
+                    icon: <HomeOutlined />,
+                },
+                {
+                    tab: "/user-publications",
+                    label: "PUBLICATIONS",
+                    icon: <ArticleOutlined />,
+                },
                 {
                     tab: "/user-announcements",
                     label: "ANNOUNCEMENTS",
@@ -362,12 +371,7 @@ const Dashboard = () => {
                                                 "Chairperson") && (
                                             <>
                                                 <Route
-                                                    path="/dashboard"
-                                                    element={<DashboardHome />}
-                                                />
-
-                                                <Route
-                                                    path="/sk-files"
+                                                    path="/sk-files/"
                                                     element={<SKFiles />}
                                                 />
                                                 <Route
@@ -416,11 +420,11 @@ const Dashboard = () => {
                                         {userDetail?.role === "User" && (
                                             <>
                                                 <Route
-                                                    path="/home"
+                                                    path="/user-publications"
                                                     element={<UserHome />}
                                                 />
                                                 <Route
-                                                    path="/home/:id"
+                                                    path="/user-publications/:id"
                                                     element={
                                                         <PublicationDetails />
                                                     }
@@ -483,6 +487,10 @@ const Dashboard = () => {
                                             )}
 
                                         {/* Routes for all users */}
+                                        <Route
+                                            path="/dashboard"
+                                            element={<DashboardHome />}
+                                        />
                                         <Route
                                             path="/about-us"
                                             element={<AboutUs />}

@@ -195,7 +195,7 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                         textTransform="uppercase"
                                     >
                                         {notification.brgy_id !== null
-                                            ? "CHAIRPERSON"
+                                            ? notification.barangay
                                             : "FEDERATION"}{" "}
                                         {notification.type}
                                     </Typography>

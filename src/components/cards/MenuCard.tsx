@@ -10,7 +10,13 @@ interface MenuCardProps {
 }
 
 // Use this Card for Menu in Dashboard
-const MenuCard: React.FC<MenuCardProps> = ({ content, cardImage, imgWidth, url, onClick }) => {
+const MenuCard: React.FC<MenuCardProps> = ({
+    content,
+    cardImage,
+    imgWidth,
+    url,
+    onClick,
+}) => {
     return (
         <Card
             elevation={0}
@@ -25,7 +31,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ content, cardImage, imgWidth, url, 
                 border: "1px solid #e0e0e0",
                 transition: "box-shadow 0.3s ease", // Smooth transition
                 "&:hover": {
-                    boxShadow: 2, // Elevation 1 on hover
+                    boxShadow: 2,
                 },
             }}
             onClick={onClick}

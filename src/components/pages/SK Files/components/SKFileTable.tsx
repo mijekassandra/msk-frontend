@@ -31,7 +31,7 @@ import {
 
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
-const SKFileTable = () => {
+const SKFileTable = ({ filteredFiles }) => {
     // logged in user role
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
@@ -57,14 +57,32 @@ const SKFileTable = () => {
     const handleUploadFileClick = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
     const [alert, setAlert] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    //TODO Filter the files based on file_type if filteredFiles is provided
+    // Filter only if filteredFiles is defined and non-empty
+    const filteredRows =
+        filteredFiles && filteredFiles !== ""
+            ? allSkFiles.skFiles?.filter(
+                  (file) => file.file_type === filteredFiles
+              )
+            : allSkFiles.skFiles || [];
 
     //TODO UPLOAD
     const handleFileUpload = async (formData: FormData) => {
+        setLoading(true); // Start loading
+
         try {
             const response = await uploadSkFile(formData);
 
+            console.log("response is: ", response);
             if (response.error) {
-                setAlert(response.error.data.error.message);
+                const errorMessage =
+                    response.error.data.error?.message ||
+                    response.error.data.message;
+
+                setAlert(errorMessage);
+                console.log("error mess: ", alert);
                 setTimeout(() => {
                     setAlert(null);
                 }, 4000);
@@ -85,6 +103,8 @@ const SKFileTable = () => {
             }
         } catch (error) {
             console.error("Upload error:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -273,7 +293,7 @@ const SKFileTable = () => {
         <>
             {allSkFilesSuccess ? (
                 <CustomDataGrid
-                    rows={allSkFiles.skFiles}
+                    rows={filteredRows}
                     columns={columns}
                     isLoading={allSkFilesLoading}
                     tableLabel="LIST OF FILES"
@@ -300,6 +320,7 @@ const SKFileTable = () => {
                     onClose={handleCloseModal}
                     onUpload={handleFileUpload}
                     fileTypeError={alert}
+                    loading={loading}
                 />
             )}
 
@@ -309,7 +330,7 @@ const SKFileTable = () => {
                         position: "fixed",
                         bottom: 16,
                         right: 16,
-                        zIndex: 1000,
+                        zIndex: 100000,
                     }}
                 >
                     <Alert variant="filled" severity="error">

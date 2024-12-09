@@ -70,15 +70,7 @@ const Login = () => {
             setTimeout(() => {
                 const role = response.data?.role || userDetail?.role; // Ensure role is available
 
-                if (
-                    role === "Super Admin" ||
-                    role === "Federation" ||
-                    role === "Chairperson"
-                ) {
-                    navigate("/dashboard");
-                } else {
-                    navigate("/home");
-                }
+                navigate("/dashboard");
             }, 100); // Small delay to ensure state update
         } catch (error) {
             const typedError = error as {

@@ -150,6 +150,8 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
             return;
         }
 
+        setLoading(true); // Start loading
+
         try {
             const formSubmissionData = new FormData();
             formSubmissionData.append("title", formData.title);

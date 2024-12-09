@@ -27,6 +27,8 @@ const ITEMS_PER_PAGE = 3; // Define how many items per page
 const PublicationList = () => {
     const navigate = useNavigate();
 
+    const userDetail = useSelector((state: RootState) => state.auth.user);
+
     // State to handle active modal
     const [activeModal, setActiveModal] = useState<null | {
         name: string;
@@ -41,7 +43,7 @@ const PublicationList = () => {
         isError: allPublicationsError,
         isLoading: allPublicationsLoading,
         isFetching,
-        // refetch,
+        refetch,
     } = useGetPublicationsQuery();
 
     // Step 1: Filter publications for published status
@@ -104,9 +106,9 @@ const PublicationList = () => {
         setCurrentPage(1); // Reset to first page on new search
     };
 
-    // useEffect(() => {
-    //     refetch();
-    // }, []);
+    useEffect(() => {
+        refetch();
+    }, []);
 
     return (
         <Stack gap={2}>

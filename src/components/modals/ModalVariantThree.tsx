@@ -9,8 +9,6 @@ import {
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
-// import components
-
 // MODAL FOR UPLOADS
 
 interface ModalVariantThreeProps {

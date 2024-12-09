@@ -62,6 +62,11 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
     // Fetch adminMode and selectedBarangay from the Redux store
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
 
+    // find the image for seal
+    const matchingBarangay = !adminMode
+        ? barangays.Barangays.find((b) => b.barangayName === barangay)
+        : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+
     // authenticiation
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
@@ -70,26 +75,12 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
         null
     );
 
+    //! Feedbacks
     const {
         data: feedbacks = [],
         isLoading,
         isError,
     } = useGetAllFeedbacksByPublicationIdQuery(publicationID);
-
-    const { data: reactions = [] } =
-        useGetAllReactionsByPublicationIdQuery(publicationID);
-
-    const [addOrUpdateReaction] = useAddOrUpdateReactionMutation();
-    const [removeReaction] = useRemoveReactionMutation();
-
-    // const { data: userReactionData } = useGetUserReactionByPublicationIdQuery(publicationID, {
-    //     skip: !userDetail,  // Skip if there's no user logged in
-    // });
-
-    // find the image for seal
-    const matchingBarangay = !adminMode
-        ? barangays.Barangays.find((b) => b.barangayName === barangay)
-        : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
 
     // Calculate feedback count based on fetched data
     const feedbackCount = feedbacks ? feedbacks.length : 0;
@@ -102,7 +93,13 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
               ) / feedbacks.length
             : 0;
 
-    //! Reaction
+    //! Reactions
+
+    const { data: reactions = [] } =
+        useGetAllReactionsByPublicationIdQuery(publicationID);
+    const [addOrUpdateReaction] = useAddOrUpdateReactionMutation();
+    const [removeReaction] = useRemoveReactionMutation();
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const handleOpenPopover = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -112,53 +109,30 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
     };
     const open = Boolean(anchorEl);
 
-    // //! Reaction Function
-    // // Sync userReactionState with user-specific reaction data
-    // useEffect(() => {
-    //     if (userReactionData?.reaction) {
-    //         setUserReactionState(userReactionData.reaction);
-    //         console.log(
-    //             "Setting userReactionState from user-specific data:",
-    //             userReactionData.reaction
-    //         );
-    //     } else {
-    //         setUserReactionState(null);
-    //     }
-    // }, [userReactionData]);
-
-    // // Format reactions for FacebookCounter based on aggregated counts
-    // const formattedReactions = [
-    //     ...Object.entries(reactionCounts).map(([key, count]) => ({
-    //         emoji: key.replace("_count", ""), // Remove "_count" suffix for display
-    //         count: Number(count),
-    //     })),
-    // ];
-
-    // const handleSelectReaction = async (reaction: string) => {
-    //     if (userReactionState === reaction) {
-    //         const response = await removeReaction(publicationID);
-    //         if (response) {
-    //             setUserReactionState(null); // Clear local state if reaction is removed
-    //             console.log("Reaction removed, userReactionState set to null");
-    //         }
-    //     } else {
-    //         const response = await addOrUpdateReaction({
-    //             publicationId: publicationID,
-    //             reaction,
-    //         });
-    //         if (response) {
-    //             setUserReactionState(reaction); // Update local state to new reaction
-    //             console.log(
-    //                 "Reaction updated, userReactionState set to:",
-    //                 reaction
-    //             );
-    //         }
-    //     }
-    //     handleClosePopover();
-    // };
-
-    // console.log("Current userReactionState:", userReactionState);
-    // console.log("Reaction counts:", reactionCounts);
+    const handleSelectReaction = async (reaction: string) => {
+        if (userReactionState === reaction) {
+            const response = await removeReaction(publicationID);
+            if (response) {
+                setUserReactionState(null); // Clear local state if reaction is removed
+                console.log("Reaction removed, userReactionState set to null");
+            }
+            console.log("removed: ", response);
+        } else {
+            const response = await addOrUpdateReaction({
+                publicationId: publicationID,
+                reaction,
+            });
+            if (response) {
+                setUserReactionState(reaction); // Update local state to new reaction
+                console.log(
+                    "Reaction updated, userReactionState set to:",
+                    reaction
+                );
+            }
+            console.log("add/update: ", response);
+        }
+        handleClosePopover();
+    };
 
     return (
         <Grid
@@ -273,7 +247,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                         <>
                             <Stack direction="row" alignItems="center" gap={1}>
                                 {/* <FacebookCounter
-                                    counters={formattedReactions}
+                                // counters={formattedReactions}
                                 />
 
                                 <IconButton onClick={handleOpenPopover}>
@@ -301,10 +275,10 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                                             width: "200px",
                                             height: "85px",
                                             alignContent: "center",
-                                            // background: "pink",
                                         },
                                     }}
                                 >
+                                    
                                     <FacebookSelector
                                         iconSize={24}
                                         onSelect={handleSelectReaction}

@@ -102,7 +102,20 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
                             disabled={loading}
                         >
                             {loading ? (
-                                <CircularProgress size={20} color="inherit" />
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                    spacing={1}
+                                >
+                                    <Stack>Submitting</Stack>
+                                    <CircularProgress
+                                        size={16}
+                                        color="inherit"
+                                        sx={{
+                                            marginLeft: "6px",
+                                        }}
+                                    />
+                                </Stack>
                             ) : mode === "create" ? (
                                 "Publish"
                             ) : (

@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { Stack, Typography, Button, CircularProgress } from "@mui/material";
+import {
+    Stack,
+    Typography,
+    Button,
+    CircularProgress,
+    IconButton,
+} from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "../../../../assets/no-image.png";
-import { ArrowBackIos } from "@mui/icons-material";
+import { ArrowBack } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store.ts";
 
@@ -41,21 +47,18 @@ const ActivityDetails = () => {
 
     return (
         <Stack gap={2}>
-            <Stack sx={{ alignItems: "flex-end" }}>
-                <Button
-                    onClick={() =>
-                        userDetail.role === "Federation" ||
-                        userDetail.role === "Chairperson"
-                            ? handleNavigation("/dashboard")
-                            : userDetail.role === "User"
-                            ? handleNavigation("/home")
-                            : null
-                    }
-                    sx={{ paddingInline: "20px" }}
-                    startIcon={<ArrowBackIos />}
+            <Stack direction="row" gap={1}>
+                <IconButton
+                    aria-label="back"
+                    size="small"
+                    onClick={() => handleNavigation("/dashboard")}
                 >
-                    BACK TO DASHBOARD
-                </Button>
+                    <ArrowBack />
+                </IconButton>
+
+                <Typography variant="h2" textTransform="capitalize">
+                    Activity
+                </Typography>
             </Stack>
 
             <Stack>
@@ -72,7 +75,7 @@ const ActivityDetails = () => {
                             Loading Activity Details...
                         </Typography>
                     </Stack>
-                ) : activity ? (
+                ) : activity && activity.status === "published" ? (
                     /* Render Activity Card */
                     <ActivitiesCard
                         key={activity.id}
@@ -117,12 +120,6 @@ const ActivityDetails = () => {
                             This activity post is no longer available. It may
                             have been removed or archived.
                         </Typography>
-                        <Button
-                            variant="contained"
-                            onClick={() => navigate(-1)}
-                        >
-                            Go Back
-                        </Button>
                     </Stack>
                 )}
             </Stack>

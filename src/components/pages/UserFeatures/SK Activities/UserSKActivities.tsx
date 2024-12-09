@@ -81,7 +81,7 @@ const UserSKActivities = () => {
     // Navigation handler based on user role
     const handleNavigation = (path: string) => {
         if (userDetail?.role === "User") {
-            navigate("/home");
+            navigate("/dashboard");
         } else {
             navigate(path);
         }

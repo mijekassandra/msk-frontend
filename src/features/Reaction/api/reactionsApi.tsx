@@ -4,7 +4,7 @@ import { RootState } from "../../../store";
 interface ReactionProps {
     id: number;
     publication_id: number;
-    reaction: string;
+    reaction_type: string;
     account_id: number;
     created_at: string;
 }

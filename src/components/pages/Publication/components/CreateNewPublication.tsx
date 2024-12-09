@@ -126,6 +126,8 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
             return;
         }
 
+        setLoading(true);
+
         try {
             const formSubmissionData = new FormData();
             formSubmissionData.append("title", formData.title);

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Stack, Typography, TextField, MenuItem } from "@mui/material";
+import {
+    Stack,
+    Typography,
+    TextField,
+    MenuItem,
+    CircularProgress,
+} from "@mui/material";
 import ModalVariantThree from "../../../modals/ModalVariantThree";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 import { FileUploadOutlined } from "@mui/icons-material";
@@ -8,12 +14,14 @@ interface UploadSKFileProps {
     onClose: () => void;
     onUpload: (formData: FormData) => void;
     fileTypeError?: string | null;
+    loading: boolean;
 }
 
 const UploadSKFile: React.FC<UploadSKFileProps> = ({
     onClose,
     onUpload,
     fileTypeError,
+    loading = false,
 }) => {
     const [attachment, setAttachment] = useState<File | null>(null);
     const [fileName, setFileName] = useState<string>("");
@@ -71,7 +79,7 @@ const UploadSKFile: React.FC<UploadSKFileProps> = ({
             headerTitle="UPLOAD FILES"
             headerIcon={<FileUploadOutlined sx={{ fontSize: "16px" }} />}
             content={
-                <Stack gap={1.5}>
+                <Stack gap={1.5} padding="10px 0px">
                     <Stack>
                         <Stack
                             sx={{
@@ -117,13 +125,18 @@ const UploadSKFile: React.FC<UploadSKFileProps> = ({
                                     <MenuItem value="" disabled>
                                         Select File Type
                                     </MenuItem>
-                                    <MenuItem value="administrative">
-                                        Administrative
+                                    <MenuItem value="resolution and ordinance">
+                                        Resolution and Ordinance
                                     </MenuItem>
-                                    <MenuItem value="financial">
-                                        Financial
+                                    <MenuItem value="financial reports">
+                                        Financial Reports
                                     </MenuItem>
-                                    <MenuItem value="project">Project</MenuItem>
+                                    <MenuItem value="full disclosure">
+                                        Full Disclosure
+                                    </MenuItem>
+                                    <MenuItem value="learning materials">
+                                        Learning materials
+                                    </MenuItem>
                                 </TextField>
                             </Stack>
                         </Stack>
@@ -139,8 +152,29 @@ const UploadSKFile: React.FC<UploadSKFileProps> = ({
                             {error}
                         </Typography>
                     )}
-                    <PrimaryButton size="small" onClick={handleUploadClick}>
-                        UPLOAD FILE
+                    <PrimaryButton
+                        size="small"
+                        onClick={handleUploadClick}
+                        disabled={loading} // Disable the button when loading
+                    >
+                        {loading ? (
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={1}
+                            >
+                                <Stack>Uploading</Stack>
+                                <CircularProgress
+                                    size={16}
+                                    color="inherit"
+                                    sx={{
+                                        marginLeft: "6px",
+                                    }}
+                                />
+                            </Stack>
+                        ) : (
+                            "UPLOAD FILE"
+                        )}
                     </PrimaryButton>
                 </Stack>
             }

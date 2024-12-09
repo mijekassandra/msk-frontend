@@ -1,4 +1,4 @@
-import { Stack, CircularProgress } from "@mui/material";
+import { Stack, Typography, CircularProgress } from "@mui/material";
 import TertiaryButton from "./TertiaryButton";
 import PrimaryButton from "./PrimaryButton";
 import React, { MouseEvent } from "react";
@@ -51,7 +51,16 @@ const TwoChoice: React.FC<TwoChoiceProps> = ({
                 disabled={disabled}
             >
                 {loading ? (
-                    <CircularProgress size={20} color="inherit" />
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <Stack>Submitting</Stack>
+                        <CircularProgress
+                            size={16}
+                            color="inherit"
+                            sx={{
+                                marginLeft: "6px",
+                            }}
+                        />
+                    </Stack>
                 ) : (
                     rightText
                 )}

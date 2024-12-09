@@ -51,6 +51,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
         // barangay: false,
     });
     const [alert, setAlert] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | any
@@ -81,6 +82,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             setErrorDisplay("Please fill in all required fields");
             return;
         }
+        setLoading(true); // Start loading
 
         try {
             const accountData = {
@@ -167,6 +169,8 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
             setTimeout(() => {
                 setErrorDisplay("");
             }, 5000);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -174,6 +178,7 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
         <ModalVariantOne
             onClose={onClose}
             onSave={handleSubmitAccount}
+            loading={loading}
             headerTitle={
                 mode === "create"
                     ? "Create Account"

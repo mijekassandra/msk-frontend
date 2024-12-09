@@ -29,11 +29,11 @@ const UserHome = () => {
         isError: allPublicationsError,
         isLoading: allPublicationsLoading,
         isFetching,
-        // refetch
+        refetch,
     } = useGetPublicationsQuery();
 
     const handleReadMore = (publication: any) => {
-        navigate(`/home/${publication.id}`, {
+        navigate(`/user-publications/${publication.id}`, {
             state: { publication },
         });
     };
@@ -78,9 +78,9 @@ const UserHome = () => {
         setCurrentPage(1); // Reset to first page on new search
     };
 
-    // useEffect(() => {
-    //     refetch();
-    // }, []);
+    useEffect(() => {
+        refetch();
+    }, []);
 
     return (
         <Stack gap={3}>

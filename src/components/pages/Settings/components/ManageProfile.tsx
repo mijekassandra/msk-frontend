@@ -178,11 +178,7 @@ const ManageProfile = () => {
     };
 
     const handleBackToDashboard = () => {
-        if (userDetail.role === "User") {
-            navigate("/home");
-        } else {
-            navigate("/dashboard");
-        }
+        navigate("/dashboard");
     };
 
     // refetch when updated the profile

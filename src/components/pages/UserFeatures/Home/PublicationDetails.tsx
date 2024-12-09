@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { Stack, Typography, Button, CircularProgress } from "@mui/material";
+import {
+    Stack,
+    Typography,
+    Button,
+    CircularProgress,
+    IconButton,
+} from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "../../../../assets/no-image.png";
 import { useSelector } from "react-redux";
@@ -10,7 +16,7 @@ import { RootState } from "../../../../store.ts";
 import PublicationCard from "../../../cards/PublicationCard";
 import FeedbackForm from "./FeedbackForm";
 import CommentsList from "./CommentsList";
-import { ArrowBackIos } from "@mui/icons-material";
+import { ArrowBackIos, ArrowBack } from "@mui/icons-material";
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
@@ -65,21 +71,22 @@ const PublicationDetails = () => {
 
     return (
         <Stack gap={2}>
-            <Stack sx={{ alignItems: "flex-end" }}>
-                <Button
+            <Stack direction="row" gap={1}>
+                <IconButton
+                    aria-label="back"
+                    size="small"
                     onClick={() =>
-                        userDetail.role === "Federation" ||
-                        userDetail.role === "Chairperson"
-                            ? handleNavigation("/dashboard")
-                            : userDetail.role === "User"
-                            ? handleNavigation("/home")
-                            : null
+                        userDetail.role === "User"
+                            ? handleNavigation("/user-publications")
+                            : handleNavigation("/dashboard")
                     }
-                    sx={{ paddingInline: "20px" }}
-                    startIcon={<ArrowBackIos />}
                 >
-                    BACK TO DASHBOARD
-                </Button>
+                    <ArrowBack />
+                </IconButton>
+
+                <Typography variant="h2" textTransform="capitalize">
+                    Publication
+                </Typography>
             </Stack>
 
             <Stack>
@@ -96,7 +103,7 @@ const PublicationDetails = () => {
                             Loading Activity Details...
                         </Typography>
                     </Stack>
-                ) : publication ? (
+                ) : publication && publication.status === "published" ? (
                     // Render Publication Card
                     <PublicationCard
                         barangay={

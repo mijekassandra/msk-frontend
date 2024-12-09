@@ -127,6 +127,8 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
             return;
         }
 
+        setLoading(true); // Start loading
+
         try {
             const formSubmissionData = new FormData();
             formSubmissionData.append("title", formData.title);

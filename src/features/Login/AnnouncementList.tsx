@@ -80,15 +80,15 @@ const AnnouncementList = () => {
 
     const handleNavigation = (path: string) => {
         if (userDetail?.role === "User") {
-            navigate("/home");
+            navigate("/dashboard");
         } else {
             navigate(path);
         }
     };
 
-    // useEffect(() => {
-    //     refetch();
-    // }, []);
+    useEffect(() => {
+        refetch();
+    }, []);
 
     return (
         <Stack gap={2}>
