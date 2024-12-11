@@ -24,7 +24,8 @@ const UserSKFiles = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
-    const [fileTypeFilter, setFileTypeFilter] = useState<string>("");
+    const [fileTypeFilter, setFileTypeFilter] =
+        useState<string>("full disclosure");
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);
@@ -89,17 +90,12 @@ const UserSKFiles = () => {
                 }}
             >
                 {/* Filter buttons */}
-                <Stack direction="row" justifyContent="space-between" gap={5}>
-                    <Button
-                        variant={fileTypeFilter === "" ? "outlined" : "text"}
-                        onClick={() => handleFileTypeFilter("")}
-                    >
-                        ALL FILES
-                    </Button>
-
+                <Stack direction="row" justifyContent="center" gap={5}>
                     <Button
                         variant={
-                            fileTypeFilter === "financial" ? "outlined" : "text"
+                            fileTypeFilter === "full disclosure"
+                                ? "outlined"
+                                : "text"
                         }
                         onClick={() => handleFileTypeFilter("full disclosure")}
                     >
@@ -107,7 +103,9 @@ const UserSKFiles = () => {
                     </Button>
                     <Button
                         variant={
-                            fileTypeFilter === "project" ? "outlined" : "text"
+                            fileTypeFilter === "learning materials"
+                                ? "outlined"
+                                : "text"
                         }
                         onClick={() =>
                             handleFileTypeFilter("learning materials")
@@ -129,7 +127,7 @@ const UserSKFiles = () => {
                         justifyContent: {
                             xs: "start",
                             sm: "start",
-                            lg: "space-evenly",
+                            lg: "center",
                         },
                     }}
                 >

@@ -73,44 +73,6 @@ const ActivitiesTable = () => {
         setIsModalOpen(false);
     };
 
-    // const handleDeleteActivity = async (activity: any) => {
-    //     // confirmation dialog
-    //     const result = await Swal.fire({
-    //         title: "Delete Activity?",
-    //         text: "You won't be able to revert this!",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#d33",
-    //         confirmButtonText: "Delete!",
-    //         customClass: {
-    //             title: "my-swal-title",
-    //             htmlContainer: "my-swal-text",
-    //             popup: "my-swal-popup",
-    //         },
-    //     });
-
-    //     // final confirmation
-    //     if (result.isConfirmed) {
-    //         try {
-    //             await deleteActivity(activity.id);
-    //             Swal.fire({
-    //                 title: "Deleted!",
-    //                 text: "The activity has been deleted.",
-    //                 icon: "success",
-    //                 confirmButtonText: "OK",
-    //                 customClass: {
-    //                     title: "my-swal-title",
-    //                     htmlContainer: "my-swal-text",
-    //                     popup: "my-swal-popup",
-    //                     confirmButton: "my-swal-button",
-    //                 },
-    //             });
-    //         } catch (error) {
-    //             console.log("Error: ", error);
-    //         }
-    //     }
-    // };
-
     //   Filter activities based on user role (Super Admin, Federation)
     const filteredRows = React.useMemo(() => {
         if (adminMode && selectedBarangay) {
@@ -191,17 +153,6 @@ const ActivitiesTable = () => {
                                     }}
                                 />
                             </IconButton>
-                            {/* <IconButton
-                        aria-label="folder"
-                        onClick={() => handleDeleteActivity(params.row)}
-                    >
-                        <Delete
-                            sx={{
-                                color: "error.main",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton> */}
                         </>
                     ) : null}
                 </Box>

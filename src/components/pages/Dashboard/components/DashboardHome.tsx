@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stack, Typography, Box } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -15,15 +16,23 @@ import ChartsMainDash from "../../AdminFeatures/Analytics/ChartsMainDash";
 import AnalyticsCard from "../../../cards/AnalyticsCard";
 import MenuCardTwo from "../../../cards/MenuCardTwo";
 
+// import api slices
+import { useGetAnalyticsQuery } from "../components/analyticsApi";
+
 const DashboardHome = () => {
     const navigate = useNavigate();
 
     // logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
+    const { data: analytics, refetch } = useGetAnalyticsQuery();
+
     const handleNavigation = (path: string) => {
         navigate(path);
     };
+    useEffect(() => {
+        refetch();
+    }, []);
 
     return (
         <Stack rowGap={3}>
@@ -106,71 +115,7 @@ const DashboardHome = () => {
                             </Box>
                         </Stack>
 
-                        {/* <Grid item>
-                                <MenuCard
-                                    cardImage="src/assets/blogging.png"
-                                    imgWidth="120px"
-                                    content={
-                                        <Typography
-                                            variant="subtitle1"
-                                            textAlign="center"
-                                        >
-                                            PUBLICATION
-                                        </Typography>
-                                    }
-                                    onClick={() =>
-                                        handleNavigation(
-                                            userDetail.role === "User"
-                                                ? "/user-publications"
-                                                : "/publication-list"
-                                        )
-                                    }
-                                />
-                            </Grid>
-                            <Grid item>
-                                <MenuCard
-                                    cardImage="src/assets/announcements.png"
-                                    imgWidth="100px"
-                                    content={
-                                        <Typography
-                                            variant="subtitle1"
-                                            textAlign="center"
-                                        >
-                                            ANNOUNCEMENT
-                                        </Typography>
-                                    }
-                                    onClick={() =>
-                                        handleNavigation(
-                                            userDetail.role === "User"
-                                                ? "/user-announcements"
-                                                : "/announcement-list"
-                                        )
-                                    }
-                                />
-                            </Grid>
-
-                            <Grid item>
-                                <MenuCard
-                                    cardImage="src/assets/activities.png"
-                                    imgWidth="100px"
-                                    content={
-                                        <Typography
-                                            variant="subtitle1"
-                                            textAlign="center"
-                                        >
-                                            ACTIVITIES
-                                        </Typography>
-                                    }
-                                    onClick={() =>
-                                        handleNavigation(
-                                            userDetail.role === "User"
-                                                ? "/sk-activities"
-                                                : "/activities-list"
-                                        )
-                                    }
-                                />
-                            </Grid> */}
-                        {userDetail.role !== "User" && (
+                        {userDetail.role !== "User" && analytics && (
                             <>
                                 <Typography
                                     variant="h5"
@@ -201,20 +146,51 @@ const DashboardHome = () => {
                                     >
                                         <Stack gap={1} direction="row">
                                             <AnalyticsCard
-                                                cardTitle="Total KK Profile"
-                                                yesCount={123}
+                                                cardTitle={
+                                                    userDetail.role ===
+                                                    "Federation"
+                                                        ? `Federation Total KK Profile`
+                                                        : `${userDetail.barangay} Total KK Profile `
+                                                }
+                                                yesCount={
+                                                    analytics["Population"]
+                                                }
                                                 width="50%"
                                                 color="#e79e8f"
                                             />
                                             <AnalyticsCard
-                                                cardTitle="Total Active Voters"
-                                                yesCount={58}
-                                                noCount={14}
+                                                cardTitle="Working Individuals"
+                                                yesCount={
+                                                    analytics[
+                                                        "Working Individuals"
+                                                    ]
+                                                }
+                                                totalValue={
+                                                    analytics["Population"]
+                                                }
                                                 width="50%"
                                                 color="#dda85d"
                                             />
                                         </Stack>
-                                        <ChartsMainDash />
+                                        <ChartsMainDash
+                                            chartTitle="Voter Status"
+                                            data={[
+                                                {
+                                                    id: 0,
+                                                    value: analytics[
+                                                        "Active Voters"
+                                                    ],
+                                                    label: "Active",
+                                                },
+                                                {
+                                                    id: 1,
+                                                    value: analytics[
+                                                        "Inactive Voters"
+                                                    ],
+                                                    label: "Inactive",
+                                                },
+                                            ]}
+                                        />
                                     </Stack>
                                     <Stack
                                         gap={1.5}
@@ -226,20 +202,49 @@ const DashboardHome = () => {
                                     >
                                         <Stack gap={1} direction="row">
                                             <AnalyticsCard
-                                                cardTitle="Total KK Profile"
-                                                yesCount={123}
-                                                width="50%"
-                                                color="#D26A53"
-                                            />
-                                            <AnalyticsCard
-                                                cardTitle="Total Active Voters"
-                                                yesCount={58}
-                                                noCount={14}
+                                                cardTitle="Has Medical Condition"
+                                                yesCount={
+                                                    analytics[
+                                                        "Has Medical Condition"
+                                                    ]
+                                                }
+                                                totalValue={
+                                                    analytics["Population"]
+                                                }
                                                 width="50%"
                                                 color="#087BA7"
                                             />
+                                            <AnalyticsCard
+                                                cardTitle="No Disability"
+                                                yesCount={
+                                                    analytics["No Disability"]
+                                                }
+                                                totalValue={
+                                                    analytics["Population"]
+                                                }
+                                                width="50%"
+                                                color="#D26A53"
+                                            />
                                         </Stack>
-                                        <ChartsMainDash />
+                                        <ChartsMainDash
+                                            chartTitle="Educational Status"
+                                            data={[
+                                                {
+                                                    id: 0,
+                                                    value: analytics[
+                                                        "In School Youth"
+                                                    ],
+                                                    label: "In School Youth",
+                                                },
+                                                {
+                                                    id: 1,
+                                                    value: analytics[
+                                                        "Out of School Youth"
+                                                    ],
+                                                    label: "Out of School ",
+                                                },
+                                            ]}
+                                        />
                                     </Stack>
                                 </Stack>
                             </>

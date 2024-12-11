@@ -329,6 +329,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
                             date_of_activity={formatDate(
                                 formData.date_of_activity
                             )}
+                            content={formData.content}
                         ></ActivitiesCard>
                     </>
                 ) : (

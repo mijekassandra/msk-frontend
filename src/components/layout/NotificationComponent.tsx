@@ -58,29 +58,6 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
         }
     };
 
-    // const handleNotificationClick = async (type, notif_id, source_id) => {
-    //     try {
-    //         await handleMarkAsRead(notif_id);
-
-    //         const routes = {
-    //             publication: `/publication/${source_id}`,
-    //             announcement: `/announcement/${source_id}`,
-    //             activity: `/activity/${source_id}`,
-    //         };
-
-    //         if (routes[type]) {
-    //             navigate(routes[type]);
-    //             console.log("type", type);
-    //             console.log("notif_id", notif_id);
-    //             console.log("source_id", source_id);
-    //         } else {
-    //             navigate("/error");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error navigating to notification details:", error);
-    //     }
-    // };
-
     const handleNotificationClick = async (
         type: any,
         notif_id: number,
@@ -89,11 +66,6 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
         try {
             // Mark notification as read first
             await handleMarkAsRead(notif_id);
-
-            console.log("notif", notifications);
-            console.log("type", type);
-            console.log("notif_id", notif_id);
-            console.log("source_id", source_id);
 
             // After marking as read, navigate to the appropriate page based on the type
             if (type === "publication") {

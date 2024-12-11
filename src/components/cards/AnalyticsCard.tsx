@@ -2,11 +2,10 @@ import React from "react";
 import { Card, Typography, Stack } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 
-// Interface for the Props
 interface AnalyticsCardProps {
     cardTitle: string;
-    yesCount: string | number;
-    noCount?: string | number;
+    yesCount: number;
+    totalValue?: number;
     width?: string;
     color?: string;
 }
@@ -14,17 +13,17 @@ interface AnalyticsCardProps {
 const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
     cardTitle,
     yesCount,
-    noCount = 0,
+    totalValue,
     width = 170,
     color = "#A1B2D4",
 }) => {
     // Convert yesCount and noCount to numbers
     const yesValue = Number(yesCount);
-    const noValue = Number(noCount);
+    const noValue = Number(totalValue) - yesValue;
 
     // Create data array based on whether noCount is passed
     const data = [
-        { value: yesValue, id: "Yes", fill: color }, // Active segment (Yes)
+        { value: yesValue, id: "Yes", fill: color },
         ...(noValue > 0 ? [{ value: noValue, id: "No", fill: "" }] : []),
     ];
 
@@ -48,7 +47,7 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
                     variant="body1"
                     textAlign="start"
                     lineHeight={1.2}
-                    sx={{ maxWidth: "85px" }}
+                    sx={{ maxWidth: "90px" }}
                 >
                     {cardTitle}
                 </Typography>

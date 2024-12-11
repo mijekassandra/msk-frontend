@@ -1,12 +1,15 @@
 import { Stack, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 
-const data = [
-    { id: 0, value: 20, label: "Active" },
-    { id: 1, value: 45, label: "Inactive" },
-];
+interface ChartsMainDashProps {
+    data: { id: number; value: number; label: string }[];
+    chartTitle: string;
+}
 
-const ChartsMainDash = () => {
+const ChartsMainDash: React.FC<ChartsMainDashProps> = ({
+    data,
+    chartTitle,
+}) => {
     return (
         <Stack>
             <Stack
@@ -21,7 +24,7 @@ const ChartsMainDash = () => {
                 }}
             >
                 <Typography variant="body1" textAlign="start">
-                    Voter Status
+                    {chartTitle}
                 </Typography>
                 <PieChart
                     colors={["#A1B2D4", "#F28C92"]}
@@ -39,6 +42,17 @@ const ChartsMainDash = () => {
                             },
                         },
                     ]}
+                    slotProps={{
+                        legend: {
+                            labelStyle: {
+                                fontSize: 11,
+                            },
+                            itemMarkWidth: 10,
+                            itemMarkHeight: 10,
+                            markGap: 5,
+                            itemGap: 5,
+                        },
+                    }}
                     width={330}
                     height={160}
                 />

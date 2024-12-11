@@ -1,6 +1,6 @@
 import React, { MouseEvent } from "react";
 import { Stack, Grid, Typography } from "@mui/material";
-import { CalendarMonth, LocationOn } from "@mui/icons-material/";
+import { CalendarMonth, LocationOn, FormatQuote } from "@mui/icons-material/";
 import barangays from "../../mockData/Barangay.json";
 import DefaultLogo from "../../assets/SKFed.png";
 import { useSelector } from "react-redux";
@@ -54,33 +54,53 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                 borderRadius: "4px",
                 border: "1px solid #CCCCCC",
                 padding: "20px 30px 40px 30px",
+                overflowY: "auto",
+                maxHeight: "70vh",
+                background: "#f9f9f9",
             }}
         >
             <Grid
+                container
                 item
                 xs={12}
                 sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
+                    xs: {
+                        gap: 2,
+                    },
                 }}
             >
-                <img
-                    src={
-                        type === "Federation"
-                            ? DefaultLogo
-                            : matchingBarangay?.logo
-                            ? `/${matchingBarangay.logo}`
-                            : DefaultLogo
-                    }
-                    height="40px"
-                />
-                <Stack>
-                    <Typography variant="subtitle1">{barangay}</Typography>
-                    <Typography variant="body1" color={"gray"}>
-                        {date}
+                <Grid item xs={12} md={6}>
+                    <Stack direction="row" gap={1.5}>
+                        <img
+                            src={
+                                type === "Federation"
+                                    ? DefaultLogo
+                                    : matchingBarangay?.logo
+                                    ? `/${matchingBarangay.logo}`
+                                    : DefaultLogo
+                            }
+                            height="40px"
+                        />
+                        <Stack>
+                            <Typography variant="subtitle1">
+                                {barangay}
+                            </Typography>
+                            <Typography variant="body1" color={"gray"}>
+                                {date}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6} sx={{ alignContent: "center" }}>
+                    <Typography
+                        variant="h3"
+                        fontWeight={600}
+                        textAlign={"center"}
+                        textTransform="uppercase"
+                    >
+                        {title}
                     </Typography>
-                </Stack>
+                </Grid>
             </Grid>
             <Grid
                 item
@@ -110,30 +130,40 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                 sx={{
                     display: "grid",
                     alignContent: "flex-start",
-                    gap: "32px",
+                    gap: 2,
                 }}
                 md={5.5}
                 sm={12}
                 xs={12}
             >
-                <Typography
-                    variant="h3"
-                    fontWeight={600}
-                    textAlign={"center"}
-                    textTransform="uppercase"
-                >
-                    {title}
-                </Typography>
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <CalendarMonth />
-                    <Typography variant="h5" fontFamily="Poppins">
+                    <Typography
+                        variant="h5"
+                        fontWeight={400}
+                        fontFamily="Poppins"
+                    >
                         {date_of_activity}
                     </Typography>
                 </Stack>
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction="row" alignItems="start" spacing={1}>
                     <LocationOn />
-                    <Typography variant="h5" fontFamily="Poppins">
+                    <Typography
+                        variant="h5"
+                        fontWeight={400}
+                        fontFamily="Poppins"
+                    >
                         {location}
+                    </Typography>
+                </Stack>
+                <Stack direction="row" alignItems="start" spacing={1}>
+                    <FormatQuote />
+                    <Typography
+                        variant="h5"
+                        fontWeight={400}
+                        fontFamily="Poppins"
+                    >
+                        {content}
                     </Typography>
                 </Stack>
                 {/* <Typography>{content}</Typography> */}

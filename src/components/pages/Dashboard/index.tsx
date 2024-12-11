@@ -16,7 +16,7 @@ import {
     GroupOutlined,
     HomeOutlined,
     InfoOutlined,
-    ArrowBackIos,
+    Home,
 } from "@mui/icons-material";
 
 // Import components
@@ -305,12 +305,11 @@ const Dashboard = () => {
                                 left: "50%",
                                 transform: "translateX(-50%)",
                                 zIndex: 1000,
-                                padding: "7px 20px",
-                                fontSize: "14px",
+                                padding: "20px 15px",
+                                // fontSize: "14px",
                             }}
                         >
-                            <ArrowBackIos sx={{ fontSize: "16px" }} />
-                            Back to Super Admin View
+                            <Home sx={{ fontSize: "26px" }} />
                         </Fab>
                     )}
 

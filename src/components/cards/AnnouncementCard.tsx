@@ -42,6 +42,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
                 padding: "20px 30px 40px 30px",
                 overflowY: "auto",
                 maxHeight: "70vh",
+                background: "#f9f9f9",
             }}
         >
             <Grid
