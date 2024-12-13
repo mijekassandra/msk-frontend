@@ -11,7 +11,6 @@ import {
 
 // import components
 import DashboardCard from "../../../cards/DashboardCard";
-import MenuCard from "../../../cards/MenuCard";
 import ChartsMainDash from "../../AdminFeatures/Analytics/ChartsMainDash";
 import AnalyticsCard from "../../../cards/AnalyticsCard";
 import MenuCardTwo from "../../../cards/MenuCardTwo";

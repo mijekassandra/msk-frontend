@@ -90,7 +90,8 @@ const UploadSKFile: React.FC<UploadSKFileProps> = ({
                             <Typography>
                                 File Type:{" "}
                                 <span style={{ color: "red" }}>
-                                    .docx .doc .pptx .ppt .xlsx .xls .pdf .odt
+                                    .docx .doc .pptx .ppt .xlsx .xls .pdf .jpeg
+                                    .jpg .png
                                 </span>
                             </Typography>
                         </Stack>

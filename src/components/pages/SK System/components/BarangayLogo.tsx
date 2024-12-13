@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Stack, Typography, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setAdminMode, setSelectedBarangay } from "../../../../../slice/adminSlice";
+import {
+    setAdminMode,
+    setSelectedBarangay,
+} from "../../../../../slice/adminSlice";
 
 import barangays from "../../../../mockData/Barangay.json";
 
@@ -29,9 +32,9 @@ const BarangayLogo = () => {
     }, []);
 
     const handleBarangayClick = (barangayName: string) => {
-        dispatch(setAdminMode(true)); // Enable admin mode
-        dispatch(setSelectedBarangay(barangayName)); // Set the selected barangay
-        navigate(`/view/${barangayName}/sk-files`); // Navigate to the barangay-specific view
+        dispatch(setAdminMode(true));
+        dispatch(setSelectedBarangay(barangayName));
+        navigate(`/view/${barangayName}/sk-files`);
     };
 
     return (
@@ -55,10 +58,20 @@ const BarangayLogo = () => {
                             display: "grid",
                             justifyContent: "center",
                         }}
-                        onClick={() => handleBarangayClick(barangay.barangayName)} // Handle click
+                        onClick={() =>
+                            handleBarangayClick(barangay.barangayName)
+                        } // Handle click
                     >
-                        <StyledLogo src={barangay.logo} alt={barangay.barangayName} width="130" />
-                        <Typography variant="h5" textAlign="center" marginTop={2}>
+                        <StyledLogo
+                            src={barangay.logo}
+                            alt={barangay.barangayName}
+                            width="130"
+                        />
+                        <Typography
+                            variant="h5"
+                            textAlign="center"
+                            marginTop={2}
+                        >
                             {"BRGY."} {barangay.barangayName.toUpperCase()}
                         </Typography>
                     </Grid>

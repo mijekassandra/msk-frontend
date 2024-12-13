@@ -31,7 +31,7 @@ import {
 
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 
-const SKFileTable = ({ filteredFiles }) => {
+const SKFileTable = ({ filteredFiles }: { filteredFiles: string }) => {
     // logged in user role
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
@@ -43,7 +43,7 @@ const SKFileTable = ({ filteredFiles }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const {
-        data: allSkFiles = [],
+        data: allSkFiles = { skFiles: [] },
         isError: allSkFilesError,
         isSuccess: allSkFilesSuccess,
         isLoading: allSkFilesLoading,
@@ -59,21 +59,23 @@ const SKFileTable = ({ filteredFiles }) => {
     const [alert, setAlert] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    console.log("all sk files", allSkFiles);
+
     //TODO Filter the files based on file_type if filteredFiles is provided
     // Filter only if filteredFiles is defined and non-empty
     const filteredRows =
-        filteredFiles && filteredFiles !== ""
-            ? allSkFiles.skFiles?.filter(
+        allSkFiles && "skFiles" in allSkFiles
+            ? allSkFiles.skFiles.filter(
                   (file) => file.file_type === filteredFiles
               )
-            : allSkFiles.skFiles || [];
+            : [];
 
     //TODO UPLOAD
     const handleFileUpload = async (formData: FormData) => {
         setLoading(true); // Start loading
 
         try {
-            const response = await uploadSkFile(formData);
+            const response: any = await uploadSkFile(formData);
 
             console.log("response is: ", response);
             if (response.error) {
@@ -133,7 +135,7 @@ const SKFileTable = ({ filteredFiles }) => {
         // if final confirmation
         if (result.isConfirmed) {
             try {
-                const response = await deleteSkFile(file.id);
+                const response: any = await deleteSkFile(file.id);
 
                 if (response.error) {
                     setAlert(response.error.data.message);
@@ -198,7 +200,7 @@ const SKFileTable = ({ filteredFiles }) => {
 
     const columns = [
         {
-            // field: "file_type",
+            field: "file_format", // Add a unique field for this column
             headerName: "File Format",
             maxWidth: 120,
             renderCell: (params: any) => {

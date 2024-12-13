@@ -4,9 +4,16 @@ import { RootState } from "../../../../store";
 interface SkFileApiProps {
     id: number;
     file_name: string;
+    file_type: string;
     attachment: string;
     description: string;
     account_id: number;
+}
+
+interface AllSkFilesProps {
+    status: string;
+    message: string;
+    skFiles: SkFileApiProps[];
 }
 
 const { VITE_APP_ENDPOINT } = import.meta.env;
@@ -29,12 +36,12 @@ export const skFileApi = createApi({
     baseQuery,
     tagTypes: ["SKFile"],
     endpoints: (builder) => ({
-        getSkFiles: builder.query<SkFileApiProps[], void>({
+        getSkFiles: builder.query<AllSkFilesProps, void>({
             query: () => "/sk-file",
             providesTags: (result) =>
-                Array.isArray(result)
+                result?.skFiles
                     ? [
-                          ...result.map(
+                          ...result.skFiles.map(
                               ({ id }) => ({ type: "SKFile", id } as const)
                           ),
                           { type: "SKFile", id: "LIST" },
@@ -48,7 +55,7 @@ export const skFileApi = createApi({
                 body: formData,
             }),
             invalidatesTags: [{ type: "SKFile", id: "LIST" }],
-            async onQueryStarted(arg, { queryFulfilled }) {
+            async onQueryStarted(_arg, { queryFulfilled }) {
                 try {
                     await queryFulfilled;
                 } catch (error) {
@@ -66,7 +73,7 @@ export const skFileApi = createApi({
                 method: "PUT",
                 body: uploadedFile,
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "SKFile", id: "LIST" },
                 { type: "SKFile", id },
             ],
@@ -76,7 +83,7 @@ export const skFileApi = createApi({
                 url: `/sk-file/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: (result, error, id) => [
+            invalidatesTags: (_result, _error, id) => [
                 { type: "SKFile", id: "LIST" },
                 { type: "SKFile", id },
             ],

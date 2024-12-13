@@ -47,9 +47,12 @@ export const activityApi = createApi({
                       ]
                     : [{ type: "Activity", id: "LIST" }],
         }),
-        getActivityByID: builder.query<ActivityApiProps, number>({
+        getActivityByID: builder.query<
+            ActivityApiProps,
+            number | string | undefined
+        >({
             query: (id) => `/activity/${id}`, // Use id in the URL
-            providesTags: (result, error, id) => [{ type: "Activity", id }],
+            providesTags: (_result, _error, id) => [{ type: "Activity", id }],
         }),
         addActivity: builder.mutation<void, Partial<ActivityApiProps>>({
             query: (formData) => {
@@ -67,7 +70,7 @@ export const activityApi = createApi({
                 method: "PUT",
                 body: activity,
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "Activity", id: "LIST" },
                 { type: "Activity", id },
             ],

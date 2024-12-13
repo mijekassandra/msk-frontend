@@ -5,7 +5,6 @@ import "./App.css";
 import Login from "./features/Login/Login";
 import Dashboard from "./components/pages/Dashboard/index";
 import ProtectedRoute from "./ProtectedRoute";
-import PageNotFound from "./components/pages/PageNotFound";
 
 function App() {
     return (

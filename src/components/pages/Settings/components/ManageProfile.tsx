@@ -16,8 +16,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store";
 
 // import components
 import DashboardCard from "../../../cards/DashboardCard";
@@ -36,16 +34,13 @@ const { VITE_FILE_ENDPOINT } = import.meta.env;
 const ManageProfile = () => {
     const navigate = useNavigate();
 
-    // logged in user details
-    const userDetail = useSelector((state: RootState) => state.auth.user);
-
     const [avatarPreview, setAvatarPreview] = useState("");
-    const [alert, setAlert] = useState(null);
+    const [customAlert, setCustomAlert] = useState("");
     const [isMember, setIsMember] = useState("");
 
     // get and update profile
     const { data: userProfile, isLoading: userProfileLoading } =
-        useGetUserProfileQuery();
+        useGetUserProfileQuery({});
     const [updateProfile, { isLoading: updateProfileLoading }] =
         useUpdateProfileMutation();
 
@@ -61,7 +56,7 @@ const ManageProfile = () => {
         address: "",
         contact_number: "",
         email: "",
-        date_of_birth: null,
+        date_of_birth: "",
         civil_status: "",
         religion: "",
         voter_status: "",
@@ -103,12 +98,12 @@ const ManageProfile = () => {
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
                 // Check if file exceeds 5MB
-                alert("File size exceeds 5MB");
+                setCustomAlert("File size exceeds 5MB");
                 return;
             }
             if (!["image/jpeg", "image/png"].includes(file.type)) {
                 // Check for valid file type
-                alert("Only JPG or PNG files are allowed");
+                setCustomAlert("Only JPG or PNG files are allowed");
                 return;
             }
             // Create a temporary URL for the selected file
@@ -126,7 +121,7 @@ const ManageProfile = () => {
     // update the profile button
     const handleProfileUpdate = async (formData: any) => {
         if (!formData.first_name || !formData.last_name || !formData.email) {
-            setAlert("Please fill in all required fields.");
+            setCustomAlert("Please fill in all required fields.");
             return;
         }
 
@@ -136,22 +131,27 @@ const ManageProfile = () => {
         for (const [key, value] of Object.entries(formData)) {
             if (key === "profile_img" && value instanceof File) {
                 formDataToSend.append(key, value);
-            } else if (key === "date_of_birth" && value) {
+            } else if (
+                key === "date_of_birth" &&
+                typeof value === "string" &&
+                value.trim()
+            ) {
                 // Only append date_of_birth if it is not blank
                 formDataToSend.append(key, value);
-            } else if (key !== "date_of_birth") {
+            } else if (typeof value === "string") {
+                // Append other fields if they are strings
                 formDataToSend.append(key, value);
             }
         }
 
         try {
-            const response = await updateProfile(formDataToSend);
+            const response: any = await updateProfile(formDataToSend);
 
             if (response.error) {
-                setAlert(response.error.data.message);
+                setCustomAlert(response.error.data.message);
 
                 setTimeout(() => {
-                    setAlert(null);
+                    setCustomAlert("");
                 }, 4000);
             } else if (response.data.status === "success") {
                 Swal.fire({
@@ -222,8 +222,8 @@ const ManageProfile = () => {
     }, [formData.youth_organization]);
 
     useEffect(() => {
-        if (alert) {
-            const timer = setTimeout(() => setAlert(null), 5000);
+        if (customAlert) {
+            const timer = setTimeout(() => setCustomAlert(""), 5000);
             return () => clearTimeout(timer);
         }
     }, [alert]);
@@ -858,7 +858,7 @@ const ManageProfile = () => {
                     </Stack>
                 }
             ></DashboardCard>
-            {alert && (
+            {customAlert && (
                 <Box
                     sx={{
                         position: "fixed",
@@ -868,7 +868,7 @@ const ManageProfile = () => {
                     }}
                 >
                     <Alert variant="filled" severity="error">
-                        {alert}
+                        {customAlert}
                     </Alert>
                 </Box>
             )}

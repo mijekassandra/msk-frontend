@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     Popover,
     Stack,
@@ -16,9 +16,6 @@ interface NotificationComponentProps {
     anchorEl: HTMLElement | null;
     onClose: () => void;
     name?: string;
-    action?: string;
-    time?: string;
-    viewed?: boolean;
 }
 
 // api service
@@ -30,13 +27,10 @@ import {
 const NotificationComponent: React.FC<NotificationComponentProps> = ({
     anchorEl,
     onClose,
-    action,
-    time,
-    viewed,
 }) => {
     const open = Boolean(anchorEl);
     const id = open ? "notification-popover" : undefined;
-    const navigate = useNavigate(); // Hook to handle navigation
+    const navigate = useNavigate();
 
     // logged in user role
     const userDetail = useSelector((state: RootState) => state.auth.user);
@@ -137,7 +131,6 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                             <Stack
                                 key={notification.id}
                                 direction="row"
-                                // justifyContent="space-between"
                                 alignItems="center"
                                 gap={1}
                                 sx={{
@@ -148,6 +141,9 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                         ? "#ffffff"
                                         : "#f0f6ff",
                                     cursor: "pointer",
+                                    "&:hover": {
+                                        background: "#f0f6ff",
+                                    },
                                 }}
                                 onClick={() =>
                                     handleNotificationClick(
@@ -201,7 +197,7 @@ const NotificationComponent: React.FC<NotificationComponentProps> = ({
                                                 notification.is_read
                                                     ? "text.secondary"
                                                     : "primary.main"
-                                            } // Change color based on read status
+                                            }
                                             sx={{
                                                 "&:hover": {
                                                     cursor: "pointer",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Stack,
     TextField,
@@ -200,16 +200,6 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                         error={fieldErrors.username}
                         disabled={mode === "view"}
                     />
-                    {/* <TextField
-                        id="outlined-email"
-                        name="email"
-                        label="Email"
-                        variant="outlined"
-                        value={formData.email}
-                        error={fieldErrors.email}
-                        onChange={handleInputChange}
-                        disabled={mode === "view"}
-                    /> */}
 
                     {(userDetail?.role === "Super Admin" ||
                         userDetail?.role === "Federation") && (
@@ -221,7 +211,6 @@ const CreateNewAdmin: React.FC<CreateNewAdminProps> = ({
                             name="barangay"
                             placeholder="Select Barangay"
                             value={formData.barangay}
-                            // error={fieldErrors?.barangay}
                             onChange={handleInputChange}
                             disabled={mode === "view"}
                         >

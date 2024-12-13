@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Stack, Typography, Grid, TextField } from "@mui/material";
-import Swal from "sweetalert2"; // Assuming you have Swal imported
+import Swal from "sweetalert2";
 
 // import components
 import DashboardCard from "../../../cards/DashboardCard";

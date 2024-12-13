@@ -1,4 +1,6 @@
-export const formatDate = (isoDateString) => {
+export const formatDate = (isoDateString: string | null | undefined): string => {
+  if (!isoDateString) return "";
+
   const date = new Date(isoDateString);
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",

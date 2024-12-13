@@ -64,7 +64,7 @@ export const userApi = createApi({
         // Fetch a user by ID
         getUserByID: builder.query<UserProps, number>({
             query: (id) => `/users/${id}`,
-            providesTags: (result, error, id) => [{ type: "User", id }],
+            providesTags: (_result, _error, id) => [{ type: "User", id }],
         }),
 
         // Register a new user
@@ -90,7 +90,7 @@ export const userApi = createApi({
                 method: "PUT",
                 body: account,
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "User", id },
                 { type: "User", id: "LIST" },
             ],
@@ -102,7 +102,7 @@ export const userApi = createApi({
                 url: `/user/${id}/change-status`,
                 method: "PUT",
             }),
-            invalidatesTags: (result, error, id) => [
+            invalidatesTags: (_result, _error, id) => [
                 { type: "User", id },
                 { type: "User", id: "LIST" },
             ],

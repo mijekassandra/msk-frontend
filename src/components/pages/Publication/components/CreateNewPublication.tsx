@@ -60,7 +60,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
 
     // form data to populate form with selected data
     const [formData, setFormData] = useState({
-        id: initialData.id || "" || null || undefined,
+        id: initialData.id || "",
         title: initialData.title || "",
         content: initialData.content || "",
         attachment: initialData.attachment || null,
@@ -71,8 +71,10 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
     });
     const [fileName, setFileName] = useState<string | null>(
         initialData.attachment
-            ? initialData.attachment.split(/[/\\]/).pop()
-            : null // Extract file name from path
+            ? typeof initialData.attachment === "string"
+                ? initialData.attachment.split(/[/\\]/).pop() || null
+                : initialData.attachment.name
+            : null
     );
     const [errorDisplay, setErrorDisplay] = useState("");
     const [fieldErrors, setFieldErrors] = useState({
@@ -302,7 +304,7 @@ const CreateNewPublication: React.FC<CreateNewPublicationProps> = ({
                             rating={5}
                             mode={mode}
                             selectedBarangay={selectedBarangay}
-                            publicationID={formData.id}
+                            publicationID={Number(formData.id)}
                         ></PublicationCard>
                     </>
                 ) : (

@@ -5,11 +5,13 @@ import { CloudUpload } from "@mui/icons-material";
 
 interface CustomUploadProps {
     label?: string;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void; // Handler for file input change
-    accept?: string; // File types to accept
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    accept?: string;
 }
 
-const CustomUpload: React.FC<CustomUploadProps> = (props: CustomUploadProps) => {
+const CustomUpload: React.FC<CustomUploadProps> = (
+    props: CustomUploadProps
+) => {
     return (
         <Button
             component="label"
@@ -35,7 +37,12 @@ const CustomUpload: React.FC<CustomUploadProps> = (props: CustomUploadProps) => 
             }}
         >
             {props.label}
-            <input type="file" hidden onChange={props.onChange} accept={props.accept} />
+            <input
+                type="file"
+                hidden
+                onChange={props.onChange}
+                accept={props.accept}
+            />
         </Button>
     );
 };

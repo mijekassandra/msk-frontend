@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stack, Button, Pagination } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store.js";
 import { formatDate } from "../../utils/dateUtil.ts";
 import NoImage from "../../assets/no-image.png";
 
@@ -26,8 +24,6 @@ const ITEMS_PER_PAGE = 3; // Define how many items per page
 
 const PublicationList = () => {
     const navigate = useNavigate();
-
-    const userDetail = useSelector((state: RootState) => state.auth.user);
 
     // State to handle active modal
     const [activeModal, setActiveModal] = useState<null | {
@@ -82,7 +78,7 @@ const PublicationList = () => {
 
     // Handle MUI Pagination change
     const handlePageChange = (
-        event: React.ChangeEvent<unknown>,
+        _event: React.ChangeEvent<unknown>,
         value: number
     ) => {
         setCurrentPage(value);
@@ -103,7 +99,7 @@ const PublicationList = () => {
     //! Search function to update search query and reset pagination
     const handleSearch = (query: string) => {
         setSearchQuery(query);
-        setCurrentPage(1); // Reset to first page on new search
+        setCurrentPage(1);
     };
 
     useEffect(() => {

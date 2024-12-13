@@ -16,6 +16,7 @@ interface PublicationProps {
 interface FeedbackProps {
     id: number;
     feedback: string;
+    rating: number;
     created_at: string;
     updated_at: string;
     publication_id: number;
@@ -56,9 +57,14 @@ export const publicationApi = createApi({
                       ]
                     : [{ type: "Publication", id: "LIST" }],
         }),
-        getPublicationByID: builder.query<PublicationProps, number>({
+        getPublicationByID: builder.query<
+            PublicationProps,
+            number | string | undefined
+        >({
             query: (id) => `/publication/${id}`,
-            providesTags: (result, error, id) => [{ type: "Publication", id }],
+            providesTags: (_result, _error, id) => [
+                { type: "Publication", id },
+            ],
         }),
         addPublication: builder.mutation<void, FormData>({
             query: (formData) => {
@@ -82,7 +88,7 @@ export const publicationApi = createApi({
                 method: "PUT",
                 body: publication,
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "Publication", id: "LIST" },
                 { type: "Publication", id },
             ],
@@ -91,11 +97,11 @@ export const publicationApi = createApi({
 
         getAllFeedbacksByPublicationId: builder.query<FeedbackProps, number>({
             query: (id) => `/publication/${id}/feedbacks`,
-            providesTags: (result, error, id) => [{ type: "Feedback", id }],
+            providesTags: (_result, _error, id) => [{ type: "Feedback", id }],
         }),
         getFeedbackById: builder.query<FeedbackProps, number>({
             query: (id) => `/feedback/${id}`,
-            providesTags: (result, error, id) => [{ type: "Feedback", id }],
+            providesTags: (_result, _error, id) => [{ type: "Feedback", id }],
         }),
         createFeedback: builder.mutation({
             query: ({ id, feedback, rating }) => ({
@@ -103,7 +109,7 @@ export const publicationApi = createApi({
                 method: "POST",
                 body: { feedback, rating },
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "Feedback", id: "LIST" },
                 { type: "Feedback", id },
             ],
@@ -114,7 +120,7 @@ export const publicationApi = createApi({
                 method: "PUT",
                 body: { feedback }, // Nested feedback structure
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "Feedback", id: "LIST" },
                 { type: "Feedback", id },
             ],
@@ -124,7 +130,7 @@ export const publicationApi = createApi({
                 url: `/feedback/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "Feedback", id },
             ],
         }),

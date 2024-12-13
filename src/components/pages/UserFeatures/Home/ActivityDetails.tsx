@@ -1,17 +1,8 @@
-import { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import {
-    Stack,
-    Typography,
-    Button,
-    CircularProgress,
-    IconButton,
-} from "@mui/material";
+import { Stack, Typography, CircularProgress, IconButton } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "../../../../assets/no-image.png";
 import { ArrowBack } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store.ts";
 
 //import component
 import ActivitiesCard from "../../../cards/ActivitiesCard.tsx";
@@ -28,14 +19,8 @@ const ActivityDetails = () => {
     const location = useLocation();
     const { activity: stateActivity } = location.state || {}; // Get publication data from the navigation state
 
-    const userDetail = useSelector((state: RootState) => state.auth.user);
-
     //! Fetch publication data dynamically if not provided via location.state
-    const {
-        data: fetchedActivity,
-        isLoading,
-        isError,
-    } = useGetActivityByIDQuery(id, {
+    const { data: fetchedActivity, isLoading } = useGetActivityByIDQuery(id, {
         skip: !!stateActivity, // Skip fetching if stateActivity exists
     });
 

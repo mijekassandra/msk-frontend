@@ -6,9 +6,6 @@ import DefaultLogo from "../../assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
-// import components
-import TertiaryButton from "../buttons/TertiaryButton";
-
 interface ActivitiesCardProps {
     barangay: string | null;
     date: string;
@@ -31,11 +28,9 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
     title,
     location,
     date_of_activity,
-    mode,
     type,
     selectedBarangay,
     content,
-    onClick,
 }) => {
     // Fetch adminMode and selectedBarangay from the Redux store
     const adminMode = useSelector((state: RootState) => state.admin.adminMode);
@@ -166,21 +161,6 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                         {content}
                     </Typography>
                 </Stack>
-                {/* <Typography>{content}</Typography> */}
-                {/* <Stack
-                    direction="row"
-                    justifyContent="flex-end"
-                    marginRight="20px"
-                >
-                    <TertiaryButton
-                        variant="text"
-                        color="primary"
-                        size="large"
-                        onClick={onClick}
-                    >
-                        VIEW
-                    </TertiaryButton>
-                </Stack> */}
             </Grid>
         </Grid>
     );

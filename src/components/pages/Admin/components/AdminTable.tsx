@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, IconButton, Alert } from "@mui/material";
-import {
-    Visibility,
-    BorderColor,
-    ToggleOff,
-    ToggleOn,
-    AddCircle,
-} from "@mui/icons-material";
+import { ToggleOff, ToggleOn, AddCircle } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
-import Swal from "sweetalert2";
 
 //import components
 import CustomDataGrid from "../../../layout/CustomDataGrid";
@@ -64,31 +57,15 @@ const AdminTable = () => {
         setIsModalOpen(true);
     };
 
-    const handleEditAccountClick = (account: any) => {
-        setModalMode("edit");
-        setCurrentAccount(account);
-        setIsModalOpen(true);
-    };
-
-    const handleViewAccountClick = (account: any) => {
-        setModalMode("view");
-        setCurrentAccount(account);
-        setIsModalOpen(true);
-    };
-
     const handleToggleAccountStatus = async (account: any) => {
         try {
-            const updatedAccount = await changeAccountStatus(
-                account.account_id
-            ).unwrap();
+            await changeAccountStatus(account.account_id).unwrap();
 
             // Set the success alert
             setAlert({
                 type: "success",
-                message: updatedAccount.message,
+                message: `Account status updated successfully.`,
             });
-
-            console.log("updated account ", account);
         } catch (error) {
             console.error("Error changing status:", error);
 
@@ -168,7 +145,7 @@ const AdminTable = () => {
         selectedBarangay,
     ]);
 
-    // // When the user role changes, refetch
+    // When the user role changes, refetch
     // useEffect(() => {
     //     refetch();
     // }, [userDetail?.role, refetch]);
@@ -221,33 +198,8 @@ const AdminTable = () => {
             cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
-                    {/* <IconButton
-                        aria-label="view"
-                        onClick={() => handleViewAccountClick(params.row)}
-                    >
-                        <Visibility
-                            sx={{
-                                color: "primary.dark",
-                                fontSize: "22px",
-                            }}
-                        />
-                    </IconButton> */}
-
                     {!adminMode && !selectedBarangay ? (
                         <>
-                            {/* <IconButton
-                                aria-label="edit"
-                                onClick={() =>
-                                    handleEditAccountClick(params.row)
-                                }
-                            >
-                                <BorderColor
-                                    sx={{
-                                        color: "secondary.light",
-                                        fontSize: "22px",
-                                    }}
-                                />
-                            </IconButton> */}
                             <IconButton
                                 aria-label="toggle-status"
                                 onClick={() => {
@@ -287,8 +239,8 @@ const AdminTable = () => {
             {allUsersSuccess ? (
                 <CustomDataGrid
                     rows={filteredRows}
-                    getRowId={(row: any, index: number) =>
-                        row.id ?? `${row.username}-${index}`
+                    getRowId={(row: any) =>
+                        row.id ?? `${row.username}-${filteredRows.indexOf(row)}`
                     }
                     isLoading={allUsersLoading}
                     columns={columns}

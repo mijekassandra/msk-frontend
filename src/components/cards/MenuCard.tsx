@@ -14,7 +14,6 @@ const MenuCard: React.FC<MenuCardProps> = ({
     content,
     cardImage,
     imgWidth,
-    url,
     onClick,
 }) => {
     return (
@@ -29,7 +28,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
                 justifyContent: "center",
                 alignContent: "end",
                 border: "1px solid #e0e0e0",
-                transition: "box-shadow 0.3s ease", // Smooth transition
+                transition: "box-shadow 0.3s ease",
                 "&:hover": {
                     boxShadow: 2,
                 },

@@ -33,9 +33,7 @@ interface CustomDataGridProps {
 const CustomDataGrid: React.FC<CustomDataGridProps> = ({
     rows,
     columns,
-    changePage,
     onClickEvent,
-    isNotPaginationModeServer,
     tableLabel,
     actionButton,
     isLoading,
@@ -91,9 +89,6 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                 rows={rows}
                 getRowId={getRowId}
                 autoHeight={true}
-                // onRowClick={(params) => {
-                //     console.log("Row data:", params.row); // log row data
-                // }}
                 onRowClick={onClickEvent}
                 loading={isLoading}
                 columns={columns.map((column) => ({
@@ -107,10 +102,6 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                     },
                 }}
                 pageSizeOptions={[5, 10, 15, 20]}
-                // rowCount={rows.length}
-                onPaginationModelChange={(model) => {
-                    // If handling pagination on the frontend, no need to update this
-                }}
                 paginationMode="client"
                 slots={{
                     toolbar: () => (
@@ -221,10 +212,6 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                 <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                                     {dataType}
                                 </Typography>
-
-                                {/* <Typography variant="body2" sx={{ mb: 2 }}>
-                                    Total of Female Katipunan ng Kabataan
-                                </Typography> */}
                             </Box>
                         </GridToolbarContainer>
                     ),

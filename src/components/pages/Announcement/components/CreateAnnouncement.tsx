@@ -32,7 +32,7 @@ interface CreateAnnouncementProps {
         content?: string;
         status?: "draft" | "archived" | "published";
         type?: "Federation" | "Chairperson";
-        attachment?: File | null;
+        attachment?: File | null | string;
         created_at?: string;
         barangay?: string;
     };
@@ -72,8 +72,10 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
 
     const [fileName, setFileName] = useState<string | null>(
         initialData.attachment
-            ? initialData.attachment.split(/[/\\]/).pop()
-            : null // Extract file name from path
+            ? typeof initialData.attachment === "string"
+                ? initialData.attachment.split(/[/\\]/).pop() || null
+                : initialData.attachment.name
+            : null
     );
     const [errorDisplay, setErrorDisplay] = useState("");
     const [fieldErrors, setFieldErrors] = useState({
@@ -168,9 +170,7 @@ const CreateAnnouncement: React.FC<CreateAnnouncementProps> = ({
                             };
 
                             //! Send notification
-                            const res = await postNotification(
-                                notificationData
-                            );
+                            await postNotification(notificationData);
                         } catch (error) {
                             console.error("Error sending notification:", error);
                         }

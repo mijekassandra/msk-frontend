@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Stack, Typography, Avatar } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -69,10 +69,6 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
                 : "User";
         finalLogo = "";
     }
-
-    // useEffect(() => {
-    //     console.log("User details updated in sidebar:", userDetail);
-    // }, [userDetail]);
 
     return (
         <Stack

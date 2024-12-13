@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, KeyboardEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stack, Pagination } from "@mui/material";
 import NoImage from "../../../../assets/no-image.png";
@@ -66,7 +66,7 @@ const UserHome = () => {
 
     // Handle page change for pagination
     const handlePageChange = (
-        event: React.ChangeEvent<unknown>,
+        _event: React.ChangeEvent<unknown>,
         value: number
     ) => {
         setCurrentPage(value);

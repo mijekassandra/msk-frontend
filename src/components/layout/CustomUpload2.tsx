@@ -16,7 +16,7 @@ const CustomUpload2: React.FC<CustomUpload2Props> = (
 ) => {
     const [displayFileName, setDisplayFileName] = useState<string | null>(
         props.fileName || null
-    ); // Use prop fileName
+    );
     const inputFileRef = useRef<HTMLInputElement | null>(null);
 
     // Handle file input change
@@ -74,7 +74,6 @@ const CustomUpload2: React.FC<CustomUpload2Props> = (
                     },
                 }}
             >
-                {/* Show the file name if it exists, otherwise show the label */}
                 {displayFileName || props.label || "Upload"}
                 <input
                     type="file"

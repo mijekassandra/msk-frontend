@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stack, Button, Pagination } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store.js";
 import { formatDate } from "../../utils/dateUtil.ts";
 import NoImage from "../../assets/no-image.png";
 
@@ -20,17 +18,10 @@ import { useGetActivtiesQuery } from "../../components/pages/Activities/api/acti
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
-const ITEMS_PER_PAGE = 3; // Define how many items per page
+const ITEMS_PER_PAGE = 3;
 
 const ActivitiesList = () => {
     const navigate = useNavigate();
-
-    // State to handle active modal
-    const [activeModal, setActiveModal] = useState<null | {
-        name: string;
-        data?: any;
-    }>(null);
-    const userDetail = useSelector((state: RootState) => state.auth.user);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
@@ -38,7 +29,6 @@ const ActivitiesList = () => {
     const {
         data: allActivities = [],
         isError: allActivitiesError,
-        isSuccess: allActivitiesSuccess,
         isLoading: allActivitiesLoading,
         isFetching,
         refetch,
@@ -71,7 +61,7 @@ const ActivitiesList = () => {
     const totalPages = Math.ceil(filteredActivities.length / ITEMS_PER_PAGE);
 
     const handlePageChange = (
-        event: React.ChangeEvent<unknown>,
+        _event: React.ChangeEvent<unknown>,
         value: number
     ) => {
         setCurrentPage(value);

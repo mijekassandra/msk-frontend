@@ -1,17 +1,8 @@
-import { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import {
-    Stack,
-    Typography,
-    Button,
-    CircularProgress,
-    IconButton,
-} from "@mui/material";
+import { Stack, Typography, CircularProgress, IconButton } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil";
 import NoImage from "../../../../assets/no-image.png";
 import { ArrowBack } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store.ts";
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
@@ -28,16 +19,11 @@ const AnnouncementDetails = () => {
     const location = useLocation();
     const { announcement: stateAnnouncement } = location.state || {};
 
-    const userDetail = useSelector((state: RootState) => state.auth.user);
-
     //! Fetch announcement data dynamically if not provided via location.state
-    const {
-        data: fetchedAnnouncement,
-        isLoading,
-        isError,
-    } = useGetAnnouncementByIDQuery(id, {
-        skip: !!stateAnnouncement, // Skip fetching if exists
-    });
+    const { data: fetchedAnnouncement, isLoading } =
+        useGetAnnouncementByIDQuery(id, {
+            skip: !!stateAnnouncement, // Skip fetching if exists
+        });
 
     const announcement = stateAnnouncement || fetchedAnnouncement;
 

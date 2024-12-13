@@ -1,4 +1,4 @@
-export const formatDateTime = (isoDateString) => {
+export const formatDateTime = (isoDateString: string | null | undefined): string => {
   if (!isoDateString) return ""; // Handle null or undefined values
 
   const date = new Date(isoDateString);

@@ -26,7 +26,6 @@ const theme = createTheme({
                 root: {
                     borderRadius: "8px",
                     background: "white",
-                    // fontFamily: "Helvetica Neue",
                 },
             },
         },
@@ -50,7 +49,9 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: ["Poppins", "Helvetica Neue", "Roboto", "sans-serif"].join(","),
+        fontFamily: ["Poppins", "Helvetica Neue", "Roboto", "sans-serif"].join(
+            ","
+        ),
         button: {
             fontWeight: 400,
             fontSize: 16,

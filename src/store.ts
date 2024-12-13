@@ -13,7 +13,6 @@ import { skFileApi } from "./components/pages/SK Files/api/skFileApi";
 import { youthProfilingApi } from "./components/pages/AdminFeatures/Profiling/api/profilingApi";
 import { apiSlice } from "../slice/apiSlice";
 import { userProfile } from "./components/pages/Settings/components/api/userProfileApi";
-import { reactionsApi } from "./features/Reaction/api/reactionsApi";
 import { notificationApi } from "./features/Notification/api/notificationApi";
 import { analyticsApi } from "./components/pages/Dashboard/components/analyticsApi";
 
@@ -29,7 +28,6 @@ export const store = configureStore({
     [youthProfilingApi.reducerPath]: youthProfilingApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     [userProfile.reducerPath]: userProfile.reducer,
-    [reactionsApi.reducerPath]: reactionsApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
   },
@@ -44,7 +42,6 @@ export const store = configureStore({
       youthProfilingApi.middleware,
       apiSlice.middleware,
       userProfile.middleware,
-      reactionsApi.middleware,
       notificationApi.middleware,
       analyticsApi.middleware,
     ),

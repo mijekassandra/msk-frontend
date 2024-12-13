@@ -7,7 +7,7 @@ interface NotificationProps {
     brgy_id: number | null;
     type: string;
     message: string;
-    is_read: boolean;
+    is_read: number;
     created_at: string;
     source_id: number;
     barangay: string;
@@ -37,7 +37,7 @@ const baseQuery = fetchBaseQuery({
 export const notificationApi = createApi({
     reducerPath: "notificationApi",
     baseQuery,
-    tagTypes: ["Notifications"], // Adjusted for consistency
+    tagTypes: ["Notifications"],
     endpoints: (builder) => ({
         //! Fetch notifications for a user
         getNotifications: builder.query<

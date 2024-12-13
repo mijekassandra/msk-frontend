@@ -12,12 +12,9 @@ import {
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import { formatDistanceStrict } from "date-fns";
 
-// import components
-import PrimaryButton from "../buttons/PrimaryButton";
-
 interface BlogCardProps {
     bgColor: string;
-    cardImage?: File | string | null;
+    cardImage: File;
     cardTitle: string;
     cardContent: string;
     cardBarangay: string;
@@ -27,11 +24,9 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({
-    bgColor,
     cardImage,
     cardTitle,
     cardContent,
-    cardBarangay,
     cardDate,
     onClick,
 }) => {
@@ -54,7 +49,11 @@ const BlogCard: React.FC<BlogCardProps> = ({
             <CardMedia
                 component="img"
                 height="160px"
-                image={cardImage}
+                image={
+                    cardImage instanceof File
+                        ? URL.createObjectURL(cardImage)
+                        : cardImage
+                }
                 alt="Publication Image"
             />
             <CardActionArea>

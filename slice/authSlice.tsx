@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const persistedToken = localStorage.getItem("token");
 const persistedUser = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
+    ? JSON.parse(localStorage.getItem("user") || "")
     : null;
 
 const initialState = {
@@ -33,8 +33,6 @@ const authSlice = createSlice({
             localStorage.removeItem("user");
         },
         updateProfileSuccess: (state, action) => {
-            // console.log("Before mutation, state.user:", state.user);
-
             // Check if action.payload contains a `data` field, then flatten it
             const updatedUser = action.payload.data
                 ? { ...action.payload.data }
@@ -47,9 +45,6 @@ const authSlice = createSlice({
                     action.payload.data?.profileImgPath ||
                     state.user.profile_img,
             };
-
-            // console.log("After mutation, state.user:", state.user);
-            // localStorage.setItem("user", JSON.stringify(state.user)); // Persist in localStorage
         },
         clearSuccessMessage: (state) => {
             state.successMessage = null;

@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, IconButton } from "@mui/material";
-import {
-    Visibility,
-    BorderColor,
-    Delete,
-    AddCircle,
-} from "@mui/icons-material";
-import Swal from "sweetalert2";
+import { Visibility, BorderColor, AddCircle } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { formatDateTime } from "../../../../utils/dateTimeUtil";

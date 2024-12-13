@@ -85,8 +85,9 @@ const ProfilingTable = () => {
         // if final confirmation
         if (result.isConfirmed) {
             try {
-                const response = await deleteYouthProfiling(profile.id);
+                const response: any = await deleteYouthProfiling(profile.id);
 
+                console.log("response: ", response);
                 if (response.error) {
                     setAlert(response.error.data.message);
 
@@ -112,12 +113,6 @@ const ProfilingTable = () => {
             }
         }
     };
-
-    // const handleViewProfilingClick = (profile: any) => {
-    //     setModalMode("view");
-    //     setCurrentProfiling(profile);
-    //     setIsModalOpen(true);
-    // };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -186,17 +181,6 @@ const ProfilingTable = () => {
             cellClassName: "print-hidden",
             renderCell: (params: any) => (
                 <Box>
-                    {/* <IconButton
-                        aria-label="view"
-                        onClick={() => handleViewProfilingClick(params.row)}
-                    >
-                        <Download
-                            sx={{
-                                color: "primary.dark",
-                                fontSize: "20px",
-                            }}
-                        />
-                    </IconButton> */}
                     <IconButton
                         aria-label="view"
                         onClick={() => generatePDF(params.row)}

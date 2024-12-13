@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import {
-    Stack,
-    Typography,
-    Button,
-    CircularProgress,
-    IconButton,
-} from "@mui/material";
+import { Stack, Typography, CircularProgress, IconButton } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "../../../../assets/no-image.png";
 import { useSelector } from "react-redux";
@@ -16,7 +10,7 @@ import { RootState } from "../../../../store.ts";
 import PublicationCard from "../../../cards/PublicationCard";
 import FeedbackForm from "./FeedbackForm";
 import CommentsList from "./CommentsList";
-import { ArrowBackIos, ArrowBack } from "@mui/icons-material";
+import { ArrowBack } from "@mui/icons-material";
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
@@ -37,13 +31,12 @@ const PublicationDetails = () => {
     const userDetail = useSelector((state: RootState) => state.auth.user);
 
     //! Fetch publication data dynamically if not provided via location.state
-    const {
-        data: fetchedPublication,
-        isLoading,
-        isError,
-    } = useGetPublicationByIDQuery(id, {
-        skip: !!statePublication, // Skip fetching if statePublication exists
-    });
+    const { data: fetchedPublication, isLoading } = useGetPublicationByIDQuery(
+        id,
+        {
+            skip: !!statePublication, // Skip fetching if statePublication exists
+        }
+    );
 
     const publication = statePublication || fetchedPublication;
 

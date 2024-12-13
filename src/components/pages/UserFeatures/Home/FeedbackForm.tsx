@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Stack,
     TextField,
@@ -8,8 +8,6 @@ import {
     Alert,
 } from "@mui/material";
 import Swal from "sweetalert2";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store";
 import { ThumbsUpDownOutlined } from "@mui/icons-material";
 
 // import components
@@ -21,8 +19,6 @@ import {
     useCreateFeedbackMutation,
     useEditFeedbackMutation,
 } from "../../Publication/api/publicationApi";
-
-import { useNotifyUsersMutation } from "../../../../features/Notification/api/notificationApi";
 
 interface FeedbackFormProps {
     onClose: () => void;
@@ -41,12 +37,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     onSubmitSuccess,
     onCloseComment,
 }) => {
-    // notification api
-    const [postNotification] = useNotifyUsersMutation();
-
-    // logged in user role
-    const userDetail = useSelector((state: RootState) => state.auth.user);
-
     const [feedback, setFeedback] = useState({
         rating: initialFeedback?.rating || 0,
         comment: initialFeedback?.comment || "",
@@ -97,7 +87,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         }
 
         try {
-            const response = isEdit
+            const response: any = isEdit
                 ? await editFeedback({
                       id: publicationID,
                       feedback: feedback.comment,
@@ -108,11 +98,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                       rating: feedback.rating,
                   });
 
-            // console.log("response: ", response);
-
             if (response.error) {
-                // console.log("error: ", response.error);
-
                 setAlert(response.error.data.message);
 
                 setTimeout(() => {
@@ -135,7 +121,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 });
                 onSubmitSuccess?.();
                 onClose();
-                if (isEdit) {
+                if (isEdit && onCloseComment) {
                     onCloseComment();
                 }
             }
@@ -172,7 +158,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                     <Rating
                         name="feedback-rating"
                         value={feedback.rating}
-                        onChange={(event, newValue) =>
+                        onChange={(_event, newValue) =>
                             handleChange("rating", newValue)
                         }
                         size="large"

@@ -1,4 +1,4 @@
-import React, { ReactNode, MouseEvent } from "react";
+import React, { ReactNode } from "react";
 import {
     Modal,
     Box,
@@ -32,7 +32,6 @@ const ModalVariantTwo: React.FC<ModalVariantTwoProps> = ({
     onSave,
     mode,
     maxWidth = "600px",
-    subheader,
     loading = false,
 }) => {
     return (

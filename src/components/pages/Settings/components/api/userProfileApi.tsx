@@ -37,7 +37,7 @@ export const userProfile = createApi({
                 body: formData,
             }),
             invalidatesTags: ["UserProfile"],
-            async onQueryStarted(formData, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_formData, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
                     dispatch(updateProfileSuccess(data));

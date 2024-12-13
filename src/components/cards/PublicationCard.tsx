@@ -1,29 +1,15 @@
-import React, { MouseEvent, useState, useEffect } from "react";
-import {
-    Stack,
-    Grid,
-    Typography,
-    Rating,
-    Popover,
-    IconButton,
-} from "@mui/material";
+import React, { MouseEvent } from "react";
+import { Stack, Grid, Typography, Rating } from "@mui/material";
 import barangays from "../../mockData/Barangay.json";
 import DefaultLogo from "../../assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { FacebookCounter, FacebookSelector } from "@charkour/react-reactions";
-import { AddReactionOutlined } from "@mui/icons-material";
 
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
 
 // api service
 import { useGetAllFeedbacksByPublicationIdQuery } from "../pages/Publication/api/publicationApi";
-import {
-    useAddOrUpdateReactionMutation,
-    useGetAllReactionsByPublicationIdQuery,
-    useRemoveReactionMutation,
-} from "../../features/Reaction/api/reactionsApi";
 
 interface PublicationCardProps {
     publicationID: number;
@@ -39,8 +25,8 @@ interface PublicationCardProps {
     selectedBarangay?: string | null;
     type?: string | null;
 
-    onFeedbackClick?: (event: MouseEvent<HTMLButtonElement>) => void; // Separate handler for feedback
-    onCommentsClick?: (event: MouseEvent<HTMLDivElement>) => void; // Separate handler for comments
+    onFeedbackClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+    onCommentsClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
 const PublicationCard: React.FC<PublicationCardProps> = ({
@@ -50,9 +36,6 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
     cardImage,
     title,
     content,
-    views,
-    comments,
-    rating,
     mode,
     type,
     onFeedbackClick,
@@ -67,72 +50,23 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
         ? barangays.Barangays.find((b) => b.barangayName === barangay)
         : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
 
-    // authenticiation
-    const userDetail = useSelector((state: RootState) => state.auth.user);
-
-    // state for user reaction
-    const [userReactionState, setUserReactionState] = useState<string | null>(
-        null
-    );
+    //! authenticiation
+    // const userDetail = useSelector((state: RootState) => state.auth.user);
 
     //! Feedbacks
-    const {
-        data: feedbacks = [],
-        isLoading,
-        isError,
-    } = useGetAllFeedbacksByPublicationIdQuery(publicationID);
+    const { data: feedbacks = [] } =
+        useGetAllFeedbacksByPublicationIdQuery(publicationID);
 
     // Calculate feedback count based on fetched data
-    const feedbackCount = feedbacks ? feedbacks.length : 0;
+    const feedbackCount = Array.isArray(feedbacks) ? feedbacks.length : 0;
 
     const averageRating =
-        feedbacks.length > 0
+        Array.isArray(feedbacks) && feedbacks.length > 0
             ? feedbacks.reduce(
                   (sum: number, feedback: any) => sum + feedback.rating,
                   0
               ) / feedbacks.length
             : 0;
-
-    //! Reactions
-
-    const { data: reactions = [] } =
-        useGetAllReactionsByPublicationIdQuery(publicationID);
-    const [addOrUpdateReaction] = useAddOrUpdateReactionMutation();
-    const [removeReaction] = useRemoveReactionMutation();
-
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const handleOpenPopover = (event: MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClosePopover = () => {
-        setAnchorEl(null);
-    };
-    const open = Boolean(anchorEl);
-
-    const handleSelectReaction = async (reaction: string) => {
-        if (userReactionState === reaction) {
-            const response = await removeReaction(publicationID);
-            if (response) {
-                setUserReactionState(null); // Clear local state if reaction is removed
-                console.log("Reaction removed, userReactionState set to null");
-            }
-            console.log("removed: ", response);
-        } else {
-            const response = await addOrUpdateReaction({
-                publicationId: publicationID,
-                reaction,
-            });
-            if (response) {
-                setUserReactionState(reaction); // Update local state to new reaction
-                console.log(
-                    "Reaction updated, userReactionState set to:",
-                    reaction
-                );
-            }
-            console.log("add/update: ", response);
-        }
-        handleClosePopover();
-    };
 
     return (
         <Grid
@@ -247,52 +181,6 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                     {mode !== "view" ? (
                         <>
                             <Stack direction="row" alignItems="center" gap={1}>
-                                {/* <FacebookCounter
-                                // counters={formattedReactions}
-                                />
-
-                                <IconButton onClick={handleOpenPopover}>
-                                    <AddReactionOutlined
-                                        sx={{ fontSize: "24px" }}
-                                    />
-                                </IconButton>
-                                <Popover
-                                    open={open}
-                                    anchorEl={anchorEl}
-                                    onClose={handleClosePopover}
-                                    anchorOrigin={{
-                                        vertical: "center",
-                                        horizontal: "left",
-                                    }}
-                                    transformOrigin={{
-                                        vertical: "center",
-                                        horizontal: "right",
-                                    }}
-                                    sx={{
-                                        "& .MuiPaper-root": {
-                                            backgroundColor: "transparent",
-                                            boxShadow: "none",
-                                            paddingBlock: "10px",
-                                            width: "200px",
-                                            height: "85px",
-                                            alignContent: "center",
-                                        },
-                                    }}
-                                >
-                                    
-                                    <FacebookSelector
-                                        iconSize={24}
-                                        onSelect={handleSelectReaction}
-                                        reactions={[
-                                            "like",
-                                            "love",
-                                            "haha",
-                                            "wow",
-                                            "sad",
-                                            "angry",
-                                        ]}
-                                    />
-                                </Popover> */}
                                 <Typography
                                     variant="h5"
                                     onClick={onCommentsClick}

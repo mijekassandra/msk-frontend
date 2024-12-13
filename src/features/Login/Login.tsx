@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../slice/authSlice";
 import { userProfile } from "../../components/pages/Settings/components/api/userProfileApi";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
 
 import {
     Stack,
@@ -33,9 +31,6 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [login, { isLoading }] = useLoginMutation(); // Use RTK Query mutation
-
-    // logged in user details
-    const userDetail = useSelector((state: RootState) => state.auth.user);
 
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState("");
@@ -68,8 +63,6 @@ const Login = () => {
 
             // Delay navigation to ensure that userDetail is updated
             setTimeout(() => {
-                const role = response.data?.role || userDetail?.role; // Ensure role is available
-
                 navigate("/dashboard");
             }, 100); // Small delay to ensure state update
         } catch (error) {
@@ -209,9 +202,7 @@ const Login = () => {
                                     {errorDisplay}
                                 </Typography>
                             )}
-                            {/* <Typography variant="body1" textAlign="center">
-                                Forgot Password?
-                            </Typography> */}
+
                             <Stack sx={{ marginTop: "25px" }}>
                                 <PrimaryButton
                                     size="large"

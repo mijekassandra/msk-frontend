@@ -73,7 +73,6 @@ const CommentsList: React.FC<CommentsListProps> = ({
     };
 
     const handleEdit = (comment: any) => {
-        console.log("Selected comment for editing:", comment);
         setEditComment({
             rating: comment.rating,
             comment: comment.feedback,
@@ -112,7 +111,7 @@ const CommentsList: React.FC<CommentsListProps> = ({
 
         if (result.isConfirmed) {
             try {
-                const response = await deleteFeedbackById(commentId);
+                await deleteFeedbackById(commentId);
 
                 Swal.fire({
                     title: "Deleted!",
@@ -153,7 +152,7 @@ const CommentsList: React.FC<CommentsListProps> = ({
                     <Typography color="error">
                         Failed to load comments.
                     </Typography>
-                ) : allComments.length === 0 ? (
+                ) : Array.isArray(allComments) && allComments.length === 0 ? (
                     <Stack alignItems="center" gap={1} margin={1}>
                         <img
                             src="\src\assets\no-comment.png"
@@ -166,150 +165,127 @@ const CommentsList: React.FC<CommentsListProps> = ({
                     </Stack>
                 ) : (
                     <Stack spacing={2}>
-                        {allComments.map((comment: any) => (
-                            <Box
-                                key={comment.id}
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    border: "1px solid #e0e0e0",
-                                    borderRadius: "8px",
-                                    gap: "8px",
-                                    padding: "12px 8px",
-                                    boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.1)",
-                                }}
-                            >
-                                <Avatar
+                        {Array.isArray(allComments) &&
+                            allComments.map((comment: any) => (
+                                <Box
+                                    key={comment.id}
                                     sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        marginTop: "6px",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        border: "1px solid #e0e0e0",
+                                        borderRadius: "8px",
+                                        gap: "8px",
+                                        padding: "12px 8px",
+                                        boxShadow:
+                                            "0px 1px 4px rgba(0, 0, 0, 0.1)",
                                     }}
                                 >
-                                    {comment.feedback_by?.charAt(0) || "A"}
-                                </Avatar>
-                                <Stack spacing={0.5} flexGrow={1}>
-                                    <Stack
-                                        direction="row"
-                                        alignItems="center"
-                                        spacing={1}
-                                        justifyContent="space-between"
+                                    <Avatar
+                                        sx={{
+                                            width: "35px",
+                                            height: "35px",
+                                            marginTop: "6px",
+                                        }}
                                     >
+                                        {comment.feedback_by?.charAt(0) || "A"}
+                                    </Avatar>
+                                    <Stack spacing={0.5} flexGrow={1}>
                                         <Stack
                                             direction="row"
                                             alignItems="center"
                                             spacing={1}
+                                            justifyContent="space-between"
                                         >
-                                            <Typography
-                                                variant="body1"
-                                                fontWeight={600}
+                                            <Stack
+                                                direction="row"
+                                                alignItems="center"
+                                                spacing={1}
                                             >
-                                                {comment.feedback_by ||
-                                                    "Anonymous"}
-                                            </Typography>
-                                            <Typography
-                                                variant="caption"
-                                                color="textSecondary"
-                                            >
-                                                •{" "}
-                                                {comment.updated_at
-                                                    ? formatTimeAgo(
-                                                          comment.updated_at
-                                                      )
-                                                    : "Just now"}
-                                            </Typography>
-                                        </Stack>
+                                                <Typography
+                                                    variant="body1"
+                                                    fontWeight={600}
+                                                >
+                                                    {comment.feedback_by ||
+                                                        "Anonymous"}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                    color="textSecondary"
+                                                >
+                                                    •{" "}
+                                                    {comment.updated_at
+                                                        ? formatTimeAgo(
+                                                              comment.updated_at
+                                                          )
+                                                        : "Just now"}
+                                                </Typography>
+                                            </Stack>
 
-                                        {userDetail.id ===
-                                            comment.account_id && (
-                                            <Stack direction="row" spacing={1}>
-                                                <IconButton
-                                                    sx={{ padding: "0" }}
-                                                    onClick={(e) =>
-                                                        handleClick(
-                                                            e,
-                                                            comment.id
-                                                        )
+                                            {userDetail.id ===
+                                                comment.account_id && (
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={1}
+                                                >
+                                                    <IconButton
+                                                        sx={{ padding: "0" }}
+                                                        onClick={(e) =>
+                                                            handleClick(
+                                                                e,
+                                                                comment.id
+                                                            )
+                                                        }
+                                                    >
+                                                        <MoreHoriz
+                                                            sx={{
+                                                                color: "#606060",
+                                                                fontSize:
+                                                                    "18px",
+                                                            }}
+                                                        />
+                                                    </IconButton>
+                                                </Stack>
+                                            )}
+
+                                            <Menu
+                                                anchorEl={
+                                                    anchorEl[comment.id] || null
+                                                }
+                                                open={Boolean(
+                                                    anchorEl[comment.id]
+                                                )}
+                                                onClose={() =>
+                                                    handleCloseMenu(comment.id)
+                                                }
+                                                PaperProps={{
+                                                    sx: {
+                                                        boxShadow:
+                                                            "0px 1px 3px rgba(0, 0, 0, 0.1)",
+                                                    },
+                                                }}
+                                            >
+                                                <MenuItem
+                                                    onClick={() =>
+                                                        handleEdit(comment)
                                                     }
                                                 >
-                                                    <MoreHoriz
-                                                        sx={{
-                                                            color: "#606060",
-                                                            fontSize: "18px",
-                                                        }}
-                                                    />
-                                                </IconButton>
-                                            </Stack>
-                                        )}
-
-                                        {/* <Menu
-                                            anchorEl={
-                                                anchorEl[comment.id] || null
-                                            }
-                                            open={Boolean(anchorEl[comment.id])}
-                                            onClose={() =>
-                                                handleCloseMenu(comment.id)
-                                            }
-                                            PaperProps={{
-                                                sx: {
-                                                    boxShadow:
-                                                        "0px 1px 3px rgba(0, 0, 0, 0.1)",
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem
-                                                onClick={() =>
-                                                    handleEdit(comment)
-                                                }
-                                            >
-                                                Edit
-                                            </MenuItem>
-                                            <MenuItem
-                                                onClick={() =>
-                                                    handleDelete(comment.id)
-                                                }
-                                            >
-                                                Delete
-                                            </MenuItem>
-                                        </Menu> */}
-
-                                        <Menu
-                                            anchorEl={
-                                                anchorEl[comment.id] || null
-                                            }
-                                            open={Boolean(anchorEl[comment.id])}
-                                            onClose={() =>
-                                                handleCloseMenu(comment.id)
-                                            }
-                                            PaperProps={{
-                                                sx: {
-                                                    boxShadow:
-                                                        "0px 1px 3px rgba(0, 0, 0, 0.1)",
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem
-                                                onClick={() =>
-                                                    handleEdit(comment)
-                                                }
-                                            >
-                                                Edit
-                                            </MenuItem>
-                                            <MenuItem
-                                                onClick={() =>
-                                                    handleDelete(comment.id)
-                                                }
-                                            >
-                                                Delete
-                                            </MenuItem>
-                                        </Menu>
+                                                    Edit
+                                                </MenuItem>
+                                                <MenuItem
+                                                    onClick={() =>
+                                                        handleDelete(comment.id)
+                                                    }
+                                                >
+                                                    Delete
+                                                </MenuItem>
+                                            </Menu>
+                                        </Stack>
+                                        <Typography variant="body1">
+                                            {comment.feedback}
+                                        </Typography>
                                     </Stack>
-                                    <Typography variant="body1">
-                                        {comment.feedback}
-                                    </Typography>
-                                </Stack>
-                            </Box>
-                        ))}
+                                </Box>
+                            ))}
                     </Stack>
                 )
             }

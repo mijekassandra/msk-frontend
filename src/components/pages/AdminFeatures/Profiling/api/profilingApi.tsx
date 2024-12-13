@@ -82,7 +82,7 @@ export const youthProfilingApi = createApi({
                 method: "PUT",
                 body: data,
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "YouthProfiling", id: "LIST" },
                 { type: "YouthProfiling", id },
             ],
@@ -93,7 +93,7 @@ export const youthProfilingApi = createApi({
                 url: `profiling/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: (result, error, id) => [
+            invalidatesTags: (_result, _error, id) => [
                 { type: "YouthProfiling", id },
                 { type: "YouthProfiling", id: "LIST" },
             ],

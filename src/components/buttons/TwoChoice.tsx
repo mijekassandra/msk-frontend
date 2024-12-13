@@ -1,4 +1,4 @@
-import { Stack, Typography, CircularProgress } from "@mui/material";
+import { Stack, CircularProgress } from "@mui/material";
 import TertiaryButton from "./TertiaryButton";
 import PrimaryButton from "./PrimaryButton";
 import React, { MouseEvent } from "react";

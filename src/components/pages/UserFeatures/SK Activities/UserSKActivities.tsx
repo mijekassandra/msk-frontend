@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -66,7 +66,7 @@ const UserSKActivities = () => {
 
     // Handle pagination change
     const handlePageChange = (
-        event: React.ChangeEvent<unknown>,
+        _event: React.ChangeEvent<unknown>,
         value: number
     ) => {
         setCurrentPage(value);

@@ -66,7 +66,7 @@ const AnnouncementList = () => {
 
     // Handle MUI Pagination change
     const handlePageChange = (
-        event: React.ChangeEvent<unknown>,
+        _event: React.ChangeEvent<unknown>,
         value: number
     ) => {
         setCurrentPage(value);

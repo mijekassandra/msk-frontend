@@ -8,7 +8,7 @@ import {
     Alert,
     Box,
 } from "@mui/material";
-import { LocationOn, Event } from "@mui/icons-material";
+import { LocationOn } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import "../../../../index.css";
 import { useSelector } from "react-redux";
@@ -84,9 +84,12 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
 
     const [fileName, setFileName] = useState<string | null>(
         initialData.attachment
-            ? initialData.attachment.split(/[/\\]/).pop()
-            : null // Extract file name from path
+            ? typeof initialData.attachment === "string"
+                ? initialData.attachment.split(/[/\\]/).pop() || null
+                : initialData.attachment.name
+            : null
     );
+
     const [errorDisplay, setErrorDisplay] = useState("");
     const [fieldErrors, setFieldErrors] = useState({
         title: false,
@@ -137,7 +140,7 @@ const CreateNewActivity: React.FC<CreateNewActivityProps> = ({
         };
 
         setFieldErrors(errors);
-
+        console.log(fieldErrors);
         // Check if any errors exist
         return !Object.values(errors).some((error) => error === true);
     };

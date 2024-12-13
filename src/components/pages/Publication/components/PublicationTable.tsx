@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, IconButton } from "@mui/material";
-import {
-    Visibility,
-    BorderColor,
-    Archive,
-    AddCircle,
-} from "@mui/icons-material";
+import { Visibility, BorderColor, AddCircle } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { formatDateTime } from "../../../../utils/dateTimeUtil.ts";
@@ -153,14 +148,6 @@ const PublicationTable = () => {
                                     }}
                                 />
                             </IconButton>
-                            {/* <IconButton aria-label="archive">
-                                <Archive
-                                    sx={{
-                                        color: "secondary.main",
-                                        fontSize: "22px",
-                                    }}
-                                />
-                            </IconButton> */}
                         </>
                     ) : null}
                 </Box>

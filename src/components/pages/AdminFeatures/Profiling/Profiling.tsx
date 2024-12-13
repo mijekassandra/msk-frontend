@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Typography } from "@mui/material";
 
 // import components
@@ -9,7 +8,10 @@ const Profiling = () => {
     return (
         <Stack rowGap={3}>
             <Typography variant="h2">PROFILING</Typography>
-            <DashboardCard padding="0px 0px 0px 0px" content={<ProfilingTable />} />
+            <DashboardCard
+                padding="0px 0px 0px 0px"
+                content={<ProfilingTable />}
+            />
         </Stack>
     );
 };

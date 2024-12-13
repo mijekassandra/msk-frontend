@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Stack, Button, Divider, Typography, Pagination } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store";
 
 // Import components
 import LogoHeader from "../../../displays/LogoHeader";
@@ -61,7 +59,7 @@ const UserSKFiles = () => {
 
     // Handle MUI Pagination change
     const handlePageChange = (
-        event: React.ChangeEvent<unknown>,
+        _event: React.ChangeEvent<unknown>,
         value: number
     ) => {
         setCurrentPage(value);

@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Typography } from "@mui/material";
 
 // import components
@@ -12,7 +11,6 @@ const AboutUs = () => {
                     height: "250px",
                     objectFit: "cover",
                     textAlign: "center",
-                    // objectPosition: "center",
                 }}
             />
             <Stack spacing={1}>
@@ -42,10 +40,8 @@ const AboutUs = () => {
                     src="src\assets\organizational-chart.png"
                     style={{
                         borderRadius: "8px",
-                        // height: "250px",
                         objectFit: "cover",
                         textAlign: "center",
-                        // objectPosition: "center",
                     }}
                 />
             </Stack>

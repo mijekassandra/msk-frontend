@@ -46,9 +46,14 @@ export const announcementApi = createApi({
                       ]
                     : [{ type: "Announcement", id: "LIST" }],
         }),
-        getAnnouncementByID: builder.query<AnnouncementProps, number>({
+        getAnnouncementByID: builder.query<
+            AnnouncementProps,
+            number | string | undefined
+        >({
             query: (id) => `/announcement/${id}`,
-            providesTags: (result, error, id) => [{ type: "Announcement", id }],
+            providesTags: (_result, _error, id) => [
+                { type: "Announcement", id },
+            ],
         }),
         addAnnouncement: builder.mutation<void, FormData>({
             query: (formData) => {
@@ -69,7 +74,7 @@ export const announcementApi = createApi({
                 method: "PUT",
                 body: announcement,
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (_result, _error, { id }) => [
                 { type: "Announcement", id: "LIST" },
                 { type: "Announcement", id },
             ],
@@ -79,7 +84,7 @@ export const announcementApi = createApi({
                 url: `/announcement/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: (result, error, id) => [
+            invalidatesTags: (_result, _error, id) => [
                 { type: "Announcement", id },
                 { type: "Announcement", id: "LIST" },
             ],
