@@ -131,7 +131,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                         height="200px"
                         style={{
                             borderRadius: "16px",
-                            objectFit: "cover",
+                            objectFit: "contain",
                             width: "100%",
                         }}
                     />

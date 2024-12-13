@@ -47,6 +47,7 @@ const SKFileTable = ({ filteredFiles }: { filteredFiles: string }) => {
         isError: allSkFilesError,
         isSuccess: allSkFilesSuccess,
         isLoading: allSkFilesLoading,
+        refetch,
     } = useGetSkFilesQuery();
 
     // mutations
@@ -58,8 +59,6 @@ const SKFileTable = ({ filteredFiles }: { filteredFiles: string }) => {
     const handleCloseModal = () => setIsModalOpen(false);
     const [alert, setAlert] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
-    console.log("all sk files", allSkFiles);
 
     //TODO Filter the files based on file_type if filteredFiles is provided
     // Filter only if filteredFiles is defined and non-empty
@@ -77,14 +76,12 @@ const SKFileTable = ({ filteredFiles }: { filteredFiles: string }) => {
         try {
             const response: any = await uploadSkFile(formData);
 
-            console.log("response is: ", response);
             if (response.error) {
                 const errorMessage =
                     response.error.data.error?.message ||
                     response.error.data.message;
 
                 setAlert(errorMessage);
-                console.log("error mess: ", alert);
                 setTimeout(() => {
                     setAlert(null);
                 }, 4000);
@@ -111,10 +108,8 @@ const SKFileTable = ({ filteredFiles }: { filteredFiles: string }) => {
     };
 
     useEffect(() => {
-        if (alert) {
-            console.log("Alert updated:", alert);
-        }
-    }, [alert]);
+        refetch();
+    }, []);
 
     //TODO DELETE
     const handleDeleteFile = async (file: any) => {
