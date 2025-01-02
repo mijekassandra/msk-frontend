@@ -1,7 +1,7 @@
 import jsPDF from "jspdf";
 import { YouthProfilingProps } from "../components/pages/AdminFeatures/Profiling/api/profilingApi";
 import { formatDate } from "./dateUtil";
-import barangays from "../mockData/Barangay.json"
+import { Barangays } from "../mockData/Barangay"
 
 // Helper function to convert an image to base64
 function loadImageToBase64(url: string): Promise<string> {
@@ -31,12 +31,10 @@ async function generatePDF(data: YouthProfilingProps | any) {
     const doc = new jsPDF();
 
     // format functions
-    const matchingBarangay = barangays.Barangays.find((b) => b.barangayName === data.barangay)
+    const matchingBarangay = Barangays.find((b) => b.barangayName === data.barangay)
     const middleInitial = data.middle_name ? `${data.middle_name.charAt(0)}.` : '';
     const formattedBirthDate = formatDate(data.date_of_birth);
 
-
-    console.log("data: ", data)
     const skfedlogo = await loadImageToBase64('/src/assets/SKFed.png');
     const barangayLogo = await loadImageToBase64(`/src/assets/${matchingBarangay?.logo.split('/').pop()}`);
 
@@ -49,7 +47,7 @@ async function generatePDF(data: YouthProfilingProps | any) {
     doc.text("Republic of the Philippines", 105, 15, { align: "center" });
     doc.text("Province of Misamis Oriental", 105, 22, { align: "center" });
     doc.text("Municipality of Lagonglong", 105, 29, { align: "center" });
-    doc.text("Barangay Gaston", 105, 36, { align: "center" });
+    doc.text(`Barangay ${matchingBarangay?.barangayName}`, 105, 36, { align: "center" });
 
     doc.setFontSize(14);
     doc.text("OFFICE OF THE SANGGUNIANG KABATAAN", 105, 50, {

@@ -1,7 +1,7 @@
 import React, { MouseEvent, useState } from "react";
 import { Stack, Grid, Typography } from "@mui/material";
 import { CalendarMonth, LocationOn, FormatQuote } from "@mui/icons-material/";
-import barangays from "../../mockData/Barangay.json";
+import { Barangays } from "../../mockData/Barangay";
 import DefaultLogo from "/src/assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -38,8 +38,8 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
 
     // find the image for seal
     const matchingBarangay = !adminMode
-        ? barangays.Barangays.find((b) => b.barangayName === barangay)
-        : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+        ? Barangays.find((b) => b.barangayName === barangay)
+        : Barangays.find((b) => b.barangayName === selectedBarangay);
 
     //! Modal image
     const [open, setOpen] = useState(false);
@@ -78,7 +78,7 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                                 type === "Federation"
                                     ? DefaultLogo
                                     : matchingBarangay?.logo
-                                    ? `/${matchingBarangay.logo}`
+                                    ? `${matchingBarangay.logo}`
                                     : DefaultLogo
                             }
                             height="40px"

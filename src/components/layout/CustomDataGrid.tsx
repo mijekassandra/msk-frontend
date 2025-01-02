@@ -12,7 +12,7 @@ import { Typography, Stack, Box, Divider } from "@mui/material";
 import { TocOutlined } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import barangays from "../../mockData/Barangay.json";
+import { Barangays } from "../../mockData/Barangay";
 import DefaultLogo from "/src/assets/SKFed.png";
 import SKLogo from "/src/assets/Sangguniang_Kabataan_logo.jpg";
 
@@ -52,13 +52,11 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
     let matchingBarangay: any;
 
     if (adminMode && selectedBarangay) {
-        matchingBarangay = barangays.Barangays.find(
+        matchingBarangay = Barangays.find(
             (b) => b.barangayName === selectedBarangay
         );
     } else {
-        matchingBarangay = barangays.Barangays.find(
-            (b) => b.barangayName === barangay
-        );
+        matchingBarangay = Barangays.find((b) => b.barangayName === barangay);
     }
 
     return (
@@ -198,7 +196,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                                 !adminMode &&
                                                 !selectedBarangay)
                                                 ? DefaultLogo
-                                                : `/${matchingBarangay?.logo}`
+                                                : `${matchingBarangay?.logo}`
                                         }
                                         alt="Right Logo"
                                         style={{

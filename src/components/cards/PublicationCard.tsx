@@ -1,6 +1,7 @@
 import React, { MouseEvent, useState } from "react";
 import { Stack, Grid, Typography, Rating } from "@mui/material";
-import barangays from "../../mockData/Barangay.json";
+// import { Barangay } from "../../mockData/Barangay";
+import { Barangays } from "../../mockData/Barangay";
 import DefaultLogo from "/src/assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -48,8 +49,8 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
 
     // find the image for seal
     const matchingBarangay = !adminMode
-        ? barangays.Barangays.find((b) => b.barangayName === barangay)
-        : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+        ? Barangays.find((b) => b.barangayName === barangay)
+        : Barangays.find((b) => b.barangayName === selectedBarangay);
 
     //! authenticiation
     // const userDetail = useSelector((state: RootState) => state.auth.user);
@@ -113,7 +114,7 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                             type === "Federation"
                                 ? DefaultLogo
                                 : matchingBarangay?.logo
-                                ? `/${matchingBarangay.logo}`
+                                ? `${matchingBarangay.logo}`
                                 : DefaultLogo
                         }
                         height="40px"

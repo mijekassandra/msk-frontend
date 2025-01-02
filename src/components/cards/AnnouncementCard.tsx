@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Grid, Stack, Typography } from "@mui/material";
-import barangays from "../../mockData/Barangay.json";
+import { Barangays } from "../../mockData/Barangay";
 import DefaultLogo from "/src/assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -29,8 +29,8 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
 
     // find the image for seal
     const matchingBarangay = !adminMode
-        ? barangays.Barangays.find((b) => b.barangayName === barangay)
-        : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+        ? Barangays.find((b) => b.barangayName === barangay)
+        : Barangays.find((b) => b.barangayName === selectedBarangay);
 
     //! Modal image
     const [open, setOpen] = useState(false);
@@ -66,7 +66,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
                         type === "Federation"
                             ? DefaultLogo
                             : matchingBarangay?.logo
-                            ? `/${matchingBarangay.logo}`
+                            ? `${matchingBarangay.logo}`
                             : DefaultLogo
                     }
                     height="40px"

@@ -5,7 +5,7 @@ import { RootState } from "../../store";
 
 // import default image
 import DefaultLogo from "/src/assets/SKFed.png";
-import barangays from "../../mockData/Barangay.json";
+import { Barangays } from "../../mockData/Barangay";
 
 interface BarangaySealProps {
     barangay?: string;
@@ -32,19 +32,20 @@ const BarangaySeal: React.FC<BarangaySealProps> = ({
 
     // TODO If adminMode is true and a selectedBarangay exists, update the finalBarangay and finalLogo
     if (adminMode && selectedBarangay) {
-        const matchingBarangay = barangays.Barangays.find(
+        const matchingBarangay = Barangays.find(
             (b) => b.barangayName === selectedBarangay
         );
 
         if (matchingBarangay) {
             finalBarangay = `Sangguniang Kabataan Barangay ${matchingBarangay.barangayName}`;
-            finalLogo = `/${matchingBarangay.logo}`;
+            finalLogo = `${matchingBarangay.logo}`;
         }
     }
+
     // TODO If the user is a Chairperson, append their barangay
     else if (userDetail?.role === "Chairperson") {
         const userBarangay = userDetail.barangay;
-        const matchingBarangay = barangays.Barangays.find(
+        const matchingBarangay = Barangays.find(
             (b) => b.barangayName === userBarangay
         );
 
