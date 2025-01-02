@@ -3,6 +3,7 @@ import { Stack, Typography, CircularProgress, IconButton } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "/src/assets/no-image.png";
 import { ArrowBack } from "@mui/icons-material";
+import Void from "/src/assets/void.png";
 
 //import component
 import ActivitiesCard from "../../../cards/ActivitiesCard.tsx";
@@ -89,11 +90,7 @@ const ActivityDetails = () => {
                         height="300px"
                         gap={1}
                     >
-                        <img
-                            src="\src\assets\void.png"
-                            width="150px"
-                            alt="No comment"
-                        />
+                        <img src={Void} width="150px" alt="No comment" />
                         <Typography
                             variant="h4"
                             fontWeight={500}

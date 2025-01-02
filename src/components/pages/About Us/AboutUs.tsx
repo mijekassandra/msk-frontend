@@ -1,11 +1,14 @@
 import { Stack, Typography } from "@mui/material";
 
+import SKCouncil from "/src/assets/federation-aboutus.jpeg";
+import OrganizationalCover from "/src/assets/organizational-chart.png";
+
 // import components
 const AboutUs = () => {
     return (
         <Stack rowGap={5} padding="5px 10px">
             <img
-                src="src\assets\federation-aboutus.jpeg"
+                src={SKCouncil}
                 style={{
                     borderRadius: "8px",
                     height: "250px",
@@ -37,7 +40,7 @@ const AboutUs = () => {
                     ORGANIZATIONAL CHART
                 </Typography>
                 <img
-                    src="src\assets\organizational-chart.png"
+                    src={OrganizationalCover}
                     style={{
                         borderRadius: "8px",
                         objectFit: "cover",

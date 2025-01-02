@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import barangays from "../../mockData/Barangay.json";
 import DefaultLogo from "/src/assets/SKFed.png";
+import SKLogo from "/src/assets/Sangguniang_Kabataan_logo.jpg";
 
 interface CustomDataGridProps {
     rows: readonly any[];
@@ -153,7 +154,7 @@ const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                 >
                                     {/* Left Logo */}
                                     <img
-                                        src="\src\assets\Sangguniang_Kabataan_logo.jpg"
+                                        src={SKLogo}
                                         alt="Left Logo"
                                         style={{
                                             width: "80px",

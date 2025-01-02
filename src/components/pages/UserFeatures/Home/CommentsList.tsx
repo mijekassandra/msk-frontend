@@ -14,6 +14,7 @@ import { formatDistanceStrict } from "date-fns";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import Swal from "sweetalert2";
+import NoComment from "/src/assets/no-comment.png";
 
 // import components
 import ModalVariantThree from "../../../modals/ModalVariantThree";
@@ -154,11 +155,7 @@ const CommentsList: React.FC<CommentsListProps> = ({
                     </Typography>
                 ) : Array.isArray(allComments) && allComments.length === 0 ? (
                     <Stack alignItems="center" gap={1} margin={1}>
-                        <img
-                            src="\src\assets\no-comment.png"
-                            width="150px"
-                            alt="No comment"
-                        />
+                        <img src={NoComment} width="150px" alt="No comment" />
                         <Typography variant="subtitle1" textAlign="center">
                             No comments
                         </Typography>

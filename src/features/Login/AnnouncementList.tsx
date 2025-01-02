@@ -5,7 +5,7 @@ import { ArrowBackIos } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store.js";
 import { formatDate } from "../../utils/dateUtil.ts";
-import NoImage from "../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 
 // import components
 import LogoHeader from "../../components/displays/LogoHeader";

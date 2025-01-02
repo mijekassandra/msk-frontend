@@ -5,6 +5,7 @@ import { formatDate } from "../../../../utils/dateUtil.ts";
 import NoImage from "/src/assets/no-image.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store.ts";
+import Void from "/src/assets/void.png";
 
 // import components
 import PublicationCard from "../../../cards/PublicationCard";
@@ -127,11 +128,7 @@ const PublicationDetails = () => {
                         height="300px"
                         gap={1}
                     >
-                        <img
-                            src="\src\assets\void.png"
-                            width="150px"
-                            alt="void"
-                        />
+                        <img src={Void} width="150px" alt="void" />
                         <Typography
                             variant="h4"
                             fontWeight={500}
