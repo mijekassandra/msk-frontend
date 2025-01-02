@@ -14,7 +14,7 @@ import "../../../../index.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { formatDate } from "../../../../utils/dateUtil";
-import NoImage from "../../../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";

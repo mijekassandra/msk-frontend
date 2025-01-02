@@ -5,7 +5,7 @@ import { RootState } from "../../../../store";
 import { Stack, Button, Pagination } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
 import { formatDate } from "../../../../utils/dateUtil";
-import NoImage from "../../../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 
 // import components
 import LogoHeader from "../../../displays/LogoHeader";
@@ -154,10 +154,11 @@ const UserSKActivities = () => {
                                         : NoImage
                                 }
                                 title={activity.title}
-                                location="Brgy. Gaston, Lagonglong Mis. Or"
+                                location={activity.location}
                                 date_of_activity={formatDate(
                                     activity.date_of_activity
                                 )}
+                                content={activity.content}
                             />
                         ))}
                     </Stack>

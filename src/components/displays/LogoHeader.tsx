@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, Typography, Divider } from "@mui/material";
 
 // import assets
-import SKLogo from "../../assets/Sangguniang_Kabataan_logo.jpg";
+import SKLogo from "/src/assets/Sangguniang_Kabataan_logo.jpg";
 
 interface LogoHeaderProps {
     header: string;

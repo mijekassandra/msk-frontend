@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Stack, Typography, CircularProgress, IconButton } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil.ts";
-import NoImage from "../../../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store.ts";
 

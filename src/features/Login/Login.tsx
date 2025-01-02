@@ -17,8 +17,8 @@ import {
 import { Person, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 
 // import images
-import BackgroundImage from "../../assets/login_bg.jpg";
-import SKLogo from "../../assets/Sangguniang_Kabataan_logo.jpg";
+import BackgroundImage from "/src/assets/login_bg.jpg";
+import SKLogo from "/src/assets/Sangguniang_Kabataan_logo.jpg";
 
 // import components
 import PrimaryButton from "../../components/buttons/PrimaryButton";
@@ -126,7 +126,7 @@ const Login = () => {
                                 title={
                                     <Typography variant="h4" textAlign="center">
                                         Municipal Sangguniang Kabataan
-                                        Management System - Federation
+                                        Management System
                                     </Typography>
                                 }
                             />

@@ -9,6 +9,12 @@ import DashboardCard from "../../cards/DashboardCard";
 import SKFileTable from "./components/SKFileTable";
 import MenuCard from "../../cards/MenuCard";
 
+//import image
+import ResolutionAndOrdinance from "/src/assets/resolution-and-ordinance.png";
+import FinancialReports from "/src/assets/financial-reports.png";
+import FullDisclosure from "/src/assets/full-disclosure.png";
+import LearningMaterials from "/src/assets/learning-materials.png";
+
 const SKFiles = () => {
     // logged in user details
     const userDetail = useSelector((state: RootState) => state.auth.user);
@@ -74,7 +80,7 @@ const SKFiles = () => {
                             >
                                 <Grid item>
                                     <MenuCard
-                                        cardImage="/src/assets/resolution-and-ordinance.png"
+                                        cardImage={ResolutionAndOrdinance}
                                         imgWidth="80px"
                                         content={
                                             <Typography
@@ -94,7 +100,7 @@ const SKFiles = () => {
                                 </Grid>
                                 <Grid item>
                                     <MenuCard
-                                        cardImage="/src/assets/financial-reports.png"
+                                        cardImage={FinancialReports}
                                         imgWidth="85px"
                                         content={
                                             <Typography
@@ -113,7 +119,7 @@ const SKFiles = () => {
                                 </Grid>
                                 <Grid item>
                                     <MenuCard
-                                        cardImage="/src/assets/full-disclosure.png"
+                                        cardImage={FullDisclosure}
                                         imgWidth="85px"
                                         content={
                                             <Typography
@@ -132,7 +138,7 @@ const SKFiles = () => {
                                 </Grid>
                                 <Grid item>
                                     <MenuCard
-                                        cardImage="/src/assets/learning-materials.png"
+                                        cardImage={LearningMaterials}
                                         imgWidth="85px"
                                         content={
                                             <Typography

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Stack, Button, Pagination } from "@mui/material";
 import { ArrowBackIos } from "@mui/icons-material";
 import { formatDate } from "../../utils/dateUtil.ts";
-import NoImage from "../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 
 // import components
 import LogoHeader from "../../components/displays/LogoHeader";

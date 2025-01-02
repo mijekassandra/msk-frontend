@@ -13,7 +13,7 @@ import { TocOutlined } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import barangays from "../../mockData/Barangay.json";
-import DefaultLogo from "../../assets/SKFed.png";
+import DefaultLogo from "/src/assets/SKFed.png";
 
 interface CustomDataGridProps {
     rows: readonly any[];

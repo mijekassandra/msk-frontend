@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
 // import default image
-import DefaultLogo from "../../assets/SKFed.png";
+import DefaultLogo from "/src/assets/SKFed.png";
 import barangays from "../../mockData/Barangay.json";
 
 interface BarangaySealProps {

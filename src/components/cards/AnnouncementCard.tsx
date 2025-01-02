@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Stack, Typography } from "@mui/material";
 import barangays from "../../mockData/Barangay.json";
-import DefaultLogo from "../../assets/SKFed.png";
+import DefaultLogo from "/src/assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import ModalImage from "../modals/ModalImage";
 
 interface AnnouncementCardProps {
     barangay: string;
@@ -30,6 +31,12 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
     const matchingBarangay = !adminMode
         ? barangays.Barangays.find((b) => b.barangayName === barangay)
         : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+
+    //! Modal image
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return (
         <Grid
@@ -90,7 +97,15 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
                             borderRadius: "16px",
                             objectFit: "cover",
                             width: "100%",
+                            cursor: "pointer",
                         }}
+                        onClick={handleOpen}
+                    />
+                    <ModalImage
+                        image={cardImage}
+                        altText="Card Image"
+                        open={open}
+                        onClose={handleClose}
                     />
                 </Stack>
             </Grid>
@@ -108,7 +123,11 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
                 <Typography variant="h4" fontWeight={600} textAlign={"center"}>
                     {title}
                 </Typography>
-                <Typography variant="body1" fontFamily="Poppins">
+                <Typography
+                    variant="body1"
+                    fontFamily="Poppins"
+                    whiteSpace="pre-line"
+                >
                     {content}
                 </Typography>
             </Grid>

@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { formatDate } from "../../../../utils/dateUtil.ts";
-import NoImage from "../../../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 
 // Import components
 import ModalVariantTwo from "../../../modals/ModalVariantTwo";

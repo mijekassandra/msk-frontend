@@ -24,6 +24,7 @@ import {
     AccountBox,
     Settings,
     Logout,
+    Home,
 } from "@mui/icons-material/";
 
 // import components
@@ -50,6 +51,12 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
 
     // authenticiation
     const userDetail = useSelector((state: RootState) => state.auth.user);
+
+    // Fetch adminMode and selectedBarangay from the Redux store
+    const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+    // const selectedBarangay = useSelector(
+    //     (state: RootState) => state.admin.selectedBarangay
+    // );
 
     //! anchor for notif
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -111,6 +118,11 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
         setAnchorNotifEl(null);
     };
 
+    const handleBackToDashboard = () => {
+        dispatch(resetAdminState());
+        navigate("/sk-system");
+    };
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar
@@ -130,6 +142,17 @@ const MiniAppbar: React.FC<MiniAppbarProps> = ({ toggleSidebar }) => {
                         <Menu />
                     </IconButton>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        {adminMode && (
+                            <IconButton
+                                onClick={handleBackToDashboard}
+                                sx={{
+                                    color: "primary.light",
+                                }}
+                            >
+                                <Home sx={{ fontSize: "26px" }} />
+                            </IconButton>
+                        )}
+
                         <IconButton onClick={handleClickNotif}>
                             {unreadNotificationsCount !== 0 ? (
                                 <Badge

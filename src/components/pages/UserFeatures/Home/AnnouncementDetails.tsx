@@ -1,7 +1,7 @@
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Stack, Typography, CircularProgress, IconButton } from "@mui/material";
 import { formatDate } from "../../../../utils/dateUtil";
-import NoImage from "../../../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 import { ArrowBack } from "@mui/icons-material";
 
 // file endpoint

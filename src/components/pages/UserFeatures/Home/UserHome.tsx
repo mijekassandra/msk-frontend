@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stack, Pagination } from "@mui/material";
-import NoImage from "../../../../assets/no-image.png";
+import NoImage from "/src/assets/no-image.png";
 
 // import components
 import LogoHeader from "../../../displays/LogoHeader";

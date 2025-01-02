@@ -3,7 +3,6 @@ import { Stack, Grid, Fab, Snackbar, Alert } from "@mui/material";
 import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
-import { resetAdminState } from "../../../../slice/adminSlice";
 import { clearSuccessMessage } from "../../../../slice/authSlice";
 
 import {
@@ -16,7 +15,6 @@ import {
     GroupOutlined,
     HomeOutlined,
     InfoOutlined,
-    Home,
 } from "@mui/icons-material";
 
 // Import components
@@ -111,6 +109,11 @@ const Dashboard = () => {
             if (adminMode && selectedBarangay) {
                 // Generate barangay-specific view tabs
                 return [
+                    {
+                        tab: `/view/${selectedBarangay}/dashboard`,
+                        label: "DASHBOARD",
+                        icon: <FolderOutlined />,
+                    },
                     {
                         tab: `/view/${selectedBarangay}/sk-files`,
                         label: "SK FILES",
@@ -268,11 +271,6 @@ const Dashboard = () => {
         userDetail?.role
     );
 
-    const handleBackToDashboard = () => {
-        dispatch(resetAdminState()); // Reset admin mode and selected barangay
-        navigate("/sk-system");
-    };
-
     return (
         <BodyContainer
             content={
@@ -291,27 +289,6 @@ const Dashboard = () => {
                             {successMessage}
                         </Alert>
                     </Snackbar>
-
-                    {adminMode && (
-                        <Fab
-                            size="small"
-                            variant="extended"
-                            aria-label="back-to-dashboard"
-                            onClick={handleBackToDashboard}
-                            sx={{
-                                color: "primary.light",
-                                position: "fixed",
-                                bottom: "40px",
-                                left: "50%",
-                                transform: "translateX(-50%)",
-                                zIndex: 1000,
-                                padding: "20px 15px",
-                                // fontSize: "14px",
-                            }}
-                        >
-                            <Home sx={{ fontSize: "26px" }} />
-                        </Fab>
-                    )}
 
                     <Grid container sx={{ height: "100%" }}>
                         <Grid
@@ -454,6 +431,12 @@ const Dashboard = () => {
                                             adminMode &&
                                             selectedBarangay && (
                                                 <>
+                                                    <Route
+                                                        path="/view/:barangayName/dashboard"
+                                                        element={
+                                                            <DashboardHome />
+                                                        }
+                                                    />
                                                     <Route
                                                         path="/view/:barangayName/sk-files"
                                                         element={<SKFiles />}

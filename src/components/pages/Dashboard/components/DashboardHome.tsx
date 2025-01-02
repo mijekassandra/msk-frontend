@@ -123,7 +123,7 @@ const DashboardHome = () => {
                                         width: "full-width",
                                     }}
                                 >
-                                    Analytics
+                                    Statistics
                                 </Typography>
                                 <Stack
                                     justifyContent="center"

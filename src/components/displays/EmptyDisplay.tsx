@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, Typography } from "@mui/material";
 
 // import image
-import EmptyImage from "../../assets/EmptyPage.png";
+import EmptyImage from "/src/assets/EmptyPage.png";
 
 interface EmptyDisplayProps {
     label?: string;

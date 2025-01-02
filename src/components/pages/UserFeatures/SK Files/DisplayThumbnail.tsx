@@ -2,10 +2,10 @@ import React from "react";
 import { Box, Stack, Typography } from "@mui/material";
 
 // Import icons
-import pdfLogo from "../../../../assets/pdf-logo.png";
-import docxLogo from "../../../../assets/doc-logo.png";
-import excelLogo from "../../../../assets/excel-logo.png";
-import defaultLogo from "../../../../assets/default-logo.png";
+import pdfLogo from "/src/assets/pdf-logo.png";
+import docxLogo from "/src/assets/doc-logo.png";
+import excelLogo from "/src/assets/excel-logo.png";
+import defaultLogo from "/src/assets/default-logo.png";
 
 interface DisplayThumbnailProps {
     fileUrl: string; // URL or path to the file

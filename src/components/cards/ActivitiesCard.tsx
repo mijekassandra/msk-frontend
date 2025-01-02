@@ -1,15 +1,16 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useState } from "react";
 import { Stack, Grid, Typography } from "@mui/material";
 import { CalendarMonth, LocationOn, FormatQuote } from "@mui/icons-material/";
 import barangays from "../../mockData/Barangay.json";
-import DefaultLogo from "../../assets/SKFed.png";
+import DefaultLogo from "/src/assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import ModalImage from "../modals/ModalImage";
 
 interface ActivitiesCardProps {
     barangay: string | null;
     date: string;
-    cardImage?: string;
+    cardImage: string;
     title: string;
     location?: string;
     mode?: string;
@@ -39,6 +40,12 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
     const matchingBarangay = !adminMode
         ? barangays.Barangays.find((b) => b.barangayName === barangay)
         : barangays.Barangays.find((b) => b.barangayName === selectedBarangay);
+
+    //! Modal image
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return (
         <Grid
@@ -116,7 +123,15 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                             borderRadius: "16px",
                             objectFit: "cover",
                             width: "100%",
+                            cursor: "pointer",
                         }}
+                        onClick={handleOpen}
+                    />
+                    <ModalImage
+                        image={cardImage}
+                        altText="Card Image"
+                        open={open}
+                        onClose={handleClose}
                     />
                 </Stack>
             </Grid>
@@ -157,6 +172,7 @@ const ActivitiesCard: React.FC<ActivitiesCardProps> = ({
                         variant="h5"
                         fontWeight={400}
                         fontFamily="Poppins"
+                        whiteSpace="pre-line"
                     >
                         {content}
                     </Typography>

@@ -1,12 +1,13 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useState } from "react";
 import { Stack, Grid, Typography, Rating } from "@mui/material";
 import barangays from "../../mockData/Barangay.json";
-import DefaultLogo from "../../assets/SKFed.png";
+import DefaultLogo from "/src/assets/SKFed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
 // import components
 import PrimaryButton from "../buttons/PrimaryButton";
+import ModalImage from "../modals/ModalImage";
 
 // api service
 import { useGetAllFeedbacksByPublicationIdQuery } from "../pages/Publication/api/publicationApi";
@@ -67,6 +68,12 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                   0
               ) / feedbacks.length
             : 0;
+
+    //! Modal image
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return (
         <Grid
@@ -131,10 +138,19 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                         height="200px"
                         style={{
                             borderRadius: "16px",
-                            objectFit: "contain",
+                            objectFit: "cover",
                             width: "100%",
+                            cursor: "pointer",
                         }}
+                        onClick={handleOpen}
                     />
+                    <ModalImage
+                        image={cardImage}
+                        altText="Card Image"
+                        open={open}
+                        onClose={handleClose}
+                    />
+
                     {mode !== "view" ? (
                         <Stack>
                             <PrimaryButton
@@ -162,7 +178,11 @@ const PublicationCard: React.FC<PublicationCardProps> = ({
                 <Typography variant="h4" fontWeight={600} textAlign={"center"}>
                     {title}
                 </Typography>
-                <Typography variant="body1" fontFamily="Poppins">
+                <Typography
+                    variant="body1"
+                    fontFamily="Poppins"
+                    whiteSpace="pre-line"
+                >
                     {content}
                 </Typography>
                 <Stack
