@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Box, Typography } from "@mui/material";
+import { Modal } from "@mui/material";
 
 interface ModalImageProps {
     image: string;

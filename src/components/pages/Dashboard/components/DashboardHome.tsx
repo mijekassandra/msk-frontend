@@ -147,7 +147,9 @@ const DashboardHome = () => {
                                             <AnalyticsCard
                                                 cardTitle={
                                                     userDetail.role ===
-                                                    "Federation"
+                                                        "Federation" ||
+                                                    userDetail.role ===
+                                                        "Super Admin"
                                                         ? `Federation Total KK Profile`
                                                         : `${userDetail.barangay} Total KK Profile `
                                                 }
