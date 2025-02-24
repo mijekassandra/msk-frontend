@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 // auth
 import authReducer from "../slice/authSlice";
-import adminReducer from "../slice/adminSlice"
+import adminReducer from "../slice/adminSlice";
 
 // queries
 import { announcementApi } from "./components/pages/Announcement/api/announcementApi";
@@ -15,6 +15,7 @@ import { apiSlice } from "../slice/apiSlice";
 import { userProfile } from "./components/pages/Settings/components/api/userProfileApi";
 import { notificationApi } from "./features/Notification/api/notificationApi";
 import { analyticsApi } from "./components/pages/Dashboard/components/analyticsApi";
+import { attendanceApi } from "./components/pages/Settings/components/api/attendanceApi";
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ export const store = configureStore({
     [userProfile.reducerPath]: userProfile.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
+    [attendanceApi.reducerPath]: attendanceApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query
   middleware: (getDefaultMiddleware) =>
@@ -44,6 +46,7 @@ export const store = configureStore({
       userProfile.middleware,
       notificationApi.middleware,
       analyticsApi.middleware,
+      attendanceApi.middleware
     ),
 });
 
