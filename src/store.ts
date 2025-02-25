@@ -16,6 +16,7 @@ import { userProfile } from "./components/pages/Settings/components/api/userProf
 import { notificationApi } from "./features/Notification/api/notificationApi";
 import { analyticsApi } from "./components/pages/Dashboard/components/analyticsApi";
 import { attendanceApi } from "./components/pages/Settings/components/api/attendanceApi";
+import { activityFeedbackApi } from "./components/pages/Activities/api/activityCommentApi";
 
 export const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
     [attendanceApi.reducerPath]: attendanceApi.reducer,
+    [activityFeedbackApi.reducerPath]: activityFeedbackApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query
   middleware: (getDefaultMiddleware) =>
@@ -46,7 +48,8 @@ export const store = configureStore({
       userProfile.middleware,
       notificationApi.middleware,
       analyticsApi.middleware,
-      attendanceApi.middleware
+      attendanceApi.middleware,
+      activityFeedbackApi.middleware
     ),
 });
 

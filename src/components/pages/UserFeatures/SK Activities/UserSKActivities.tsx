@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
@@ -14,181 +14,223 @@ import LoadingDisplay from "../../../displays/LoadingDisplay";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import EmptyDisplay from "../../../displays/EmptyDisplay";
 import SearchInput from "../../../displays/SearchInput";
+import FeedbackActivity from "../Home/FeedbackActivity";
+import ActivityCommentList from "../Home/ActivityCommentList";
 
 // import api
 import { useGetActivtiesQuery } from "../../Activities/api/activityApi";
+import { useGetAllAttendanceQuery } from "../../Settings/components/api/attendanceApi";
 
 // file endpoint
 const { VITE_FILE_ENDPOINT } = import.meta.env;
 const ITEMS_PER_PAGE = 3;
 
 const UserSKActivities = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    // Get user details from Redux state
-    const userDetail = useSelector((state: RootState) => state.auth.user);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
+  // Get user details from Redux state
+  const userDetail = useSelector((state: RootState) => state.auth.user);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeModal, setActiveModal] = useState<null | {
+    name: string;
+    data?: any;
+  }>(null);
 
-    const {
-        data: allActivities = [],
-        isError: allActivitiesError,
-        isLoading: allActivitiesLoading,
-        isFetching,
-        // refetch,
-    } = useGetActivtiesQuery();
+  const {
+    data: allActivities = [],
+    isError: allActivitiesError,
+    isLoading: allActivitiesLoading,
+    isFetching,
+    refetch,
+  } = useGetActivtiesQuery();
 
-    // Step 1: Filter activities for published status
-    const publishedActivities = allActivities.filter(
-        (activity) => activity.status === "published"
-    );
+  const { data: allAttendance = [] } = useGetAllAttendanceQuery();
 
-    // Step 2: Sort the filtered activities by date (latest first)
-    const sortedActivities = [...publishedActivities].sort(
-        (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    );
+  // Step 1: Filter activities for published status
+  const publishedActivities = allActivities.filter(
+    (activity) => activity.status === "published"
+  );
 
-    //! Filter activities based on search query
-    const filteredActivities = sortedActivities.filter((activity) =>
-        activity.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // Step 2: Sort the filtered activities by date (latest first)
+  const sortedActivities = [...publishedActivities].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 
-    // Step 3: Paginate the filtered and sorted activities
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const paginatedActivities = filteredActivities.slice(
-        startIndex,
-        startIndex + ITEMS_PER_PAGE
-    );
+  //! Filter activities based on search query
+  const filteredActivities = sortedActivities.filter((activity) =>
+    activity.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-    // Calculate total number of pages based on the filtered and sorted activities
-    const totalPages = Math.ceil(filteredActivities.length / ITEMS_PER_PAGE);
+  // Step 3: Paginate the filtered and sorted activities
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedActivities = filteredActivities.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
-    // Handle pagination change
-    const handlePageChange = (
-        _event: React.ChangeEvent<unknown>,
-        value: number
-    ) => {
-        setCurrentPage(value);
-    };
+  // Calculate total number of pages based on the filtered and sorted activities
+  const totalPages = Math.ceil(filteredActivities.length / ITEMS_PER_PAGE);
 
-    //! Search function to update search query and reset pagination
-    const handleSearch = (query: string) => {
-        setSearchQuery(query);
-        setCurrentPage(1); // Reset to first page on new search
-    };
+  const openModal = (modalName: string, data?: any) => {
+    setActiveModal({ name: modalName, data });
+  };
 
-    // Navigation handler based on user role
-    const handleNavigation = (path: string) => {
-        if (userDetail?.role === "User") {
-            navigate("/dashboard");
-        } else {
-            navigate(path);
-        }
-    };
+  const closeModal = () => {
+    setActiveModal(null); // Close the active modal
+  };
 
-    // // Refetch data on mount
-    // useEffect(() => {
-    //     refetch();
-    // }, []);
+  // Handle pagination change
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setCurrentPage(value);
+  };
 
-    return (
-        <Stack gap={2}>
-            <LogoHeader header="SK ACTIVITIES" />
+  //! Search function to update search query and reset pagination
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1); // Reset to first page on new search
+  };
 
-            <Stack
-                direction="row"
-                sx={{ alignItems: "center", justifyContent: "space-between" }}
-            >
-                <Button
-                    onClick={() => handleNavigation("/dashboard")}
-                    sx={{ paddingInline: "20px" }}
-                    startIcon={<ArrowBackIos />}
-                >
-                    BACK TO DASHBOARD
-                </Button>
-                <Stack
-                    direction="row"
-                    justifyContent="flex-end"
-                    marginBlock={1}
-                    marginLeft={1}
-                >
-                    <SearchInput
-                        placeholder="Search activity title"
-                        onSearch={handleSearch}
-                    />
-                </Stack>
-            </Stack>
+  // Navigation handler based on user role
+  const handleNavigation = (path: string) => {
+    if (userDetail?.role === "User") {
+      navigate("/dashboard");
+    } else {
+      navigate(path);
+    }
+  };
 
-            {/* Conditional displays for activities */}
-            {!allActivitiesLoading &&
-                !isFetching &&
-                !allActivitiesError &&
-                paginatedActivities.length === 0 && (
-                    <EmptyDisplay label="No activity content found" />
-                )}
+  const handleFeedbackClick = (activityID: number) => {
+    openModal("feedbackForm", { activityID });
+  };
 
-            {!allActivitiesLoading &&
-                !isFetching &&
-                !allActivitiesError &&
-                paginatedActivities.length > 0 && (
-                    <Stack
-                        gap={2}
-                        direction="row"
-                        flexWrap="wrap"
-                        justifyContent="space-evenly"
-                    >
-                        {paginatedActivities.map((activity) => (
-                            <ActivitiesCard
-                                key={activity.id}
-                                barangay={
-                                    activity.type !== "Federation"
-                                        ? activity.barangay
-                                        : "Federation"
-                                }
-                                date={formatDate(activity.created_at)}
-                                cardImage={
-                                    activity.attachment
-                                        ? VITE_FILE_ENDPOINT +
-                                          activity.attachment
-                                        : NoImage
-                                }
-                                title={activity.title}
-                                location={activity.location}
-                                date_of_activity={formatDate(
-                                    activity.date_of_activity
-                                )}
-                                content={activity.content}
-                            />
-                        ))}
-                    </Stack>
-                )}
+  const handleCommentsClick = (activityID: number) => {
+    openModal("commentForm", { activityID });
+  };
 
-            {allActivitiesError && <ErrorDisplay />}
-            {(allActivitiesLoading || isFetching) && (
-                <LoadingDisplay open={true} />
-            )}
+  useEffect(() => {
+    refetch();
+  }, []);
 
-            {/* Pagination controls */}
-            {filteredActivities.length > 0 && (
-                <Stack
-                    direction="row"
-                    justifyContent="center"
-                    sx={{ marginTop: "20px" }}
-                >
-                    <Pagination
-                        count={totalPages}
-                        page={currentPage}
-                        onChange={handlePageChange}
-                        color="primary"
-                        size="large"
-                        variant="outlined"
-                        shape="rounded"
-                    />
-                </Stack>
-            )}
+  return (
+    <Stack gap={2}>
+      <LogoHeader header="SK ACTIVITIES" />
+
+      <Stack
+        direction="row"
+        sx={{ alignItems: "center", justifyContent: "space-between" }}
+      >
+        <Button
+          onClick={() => handleNavigation("/dashboard")}
+          sx={{ paddingInline: "20px" }}
+          startIcon={<ArrowBackIos />}
+        >
+          BACK TO DASHBOARD
+        </Button>
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          marginBlock={1}
+          marginLeft={1}
+        >
+          <SearchInput
+            placeholder="Search activity title"
+            onSearch={handleSearch}
+          />
         </Stack>
-    );
+      </Stack>
+
+      {/* Conditional displays for activities */}
+      {!allActivitiesLoading &&
+        !isFetching &&
+        !allActivitiesError &&
+        paginatedActivities.length === 0 && (
+          <EmptyDisplay label="No activity content found" />
+        )}
+
+      {!allActivitiesLoading &&
+        !isFetching &&
+        !allActivitiesError &&
+        paginatedActivities.length > 0 && (
+          <Stack gap={5}>
+            {paginatedActivities.map((activity) => {
+              const filteredAttendance = allAttendance.filter(
+                (attendee: any) =>
+                  Number(attendee.activity_id) === Number(activity.id)
+              );
+              return (
+                <ActivitiesCard
+                  key={activity.id}
+                  barangay={
+                    activity.type !== "Federation"
+                      ? activity.barangay
+                      : "Federation"
+                  }
+                  date={formatDate(activity.created_at)}
+                  cardImage={
+                    activity.attachment
+                      ? VITE_FILE_ENDPOINT + activity.attachment
+                      : NoImage
+                  }
+                  title={activity.title}
+                  content={activity.content}
+                  type={activity.type}
+                  location={activity.location}
+                  date_of_activity={formatDate(activity.date_of_activity)}
+                  activityID={activity.id}
+                  onFeedbackClick={() => handleFeedbackClick(activity.id)}
+                  onCommentsClick={() => handleCommentsClick(activity.id)}
+                  attendanceData={filteredAttendance}
+                />
+              );
+            })}
+          </Stack>
+        )}
+
+      {/* Feedback Form Modal */}
+      {activeModal?.name === "feedbackForm" && (
+        <FeedbackActivity
+          onClose={closeModal}
+          activityID={activeModal.data.activityID}
+          userDetail={userDetail}
+        />
+      )}
+
+      {/* Comments List Modal */}
+      {activeModal?.name === "commentForm" && (
+        <ActivityCommentList
+          onClose={closeModal}
+          activityID={activeModal.data.activityID}
+        />
+      )}
+
+      {allActivitiesError && <ErrorDisplay />}
+      {(allActivitiesLoading || isFetching) && <LoadingDisplay open={true} />}
+
+      {/* Pagination controls */}
+      {sortedActivities.length > 0 && (
+        <Stack
+          direction="row"
+          justifyContent="center"
+          sx={{ marginTop: "20px" }}
+        >
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            size="large"
+            variant="outlined"
+            shape="rounded"
+          />
+        </Stack>
+      )}
+    </Stack>
+  );
 };
 
 export default UserSKActivities;

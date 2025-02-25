@@ -53,15 +53,13 @@ const AttendanceMonitoring: React.FC<AttendanceMonitoringProps> = ({
   // logged in user details
   const userDetail = useSelector((state: RootState) => state.auth.user);
 
-  // Fetch adminMode and selectedBarangay from the Redux store
-  const adminMode = useSelector((state: RootState) => state.admin.adminMode);
-  const selectedBarangay = useSelector(
-    (state: RootState) => state.admin.selectedBarangay
-  );
+  // // Fetch adminMode and selectedBarangay from the Redux store
+  // const adminMode = useSelector((state: RootState) => state.admin.adminMode);
+  // const selectedBarangay = useSelector(
+  //   (state: RootState) => state.admin.selectedBarangay
+  // );
 
   const [loading, setLoading] = useState(false);
-
-  console.log(userDetail);
 
   //! modals
   const [isAttendanceOpen, setIsAttendanceOpen] = useState(true);
@@ -119,12 +117,15 @@ const AttendanceMonitoring: React.FC<AttendanceMonitoringProps> = ({
     onClose();
   };
 
+  console.log("selectedNames", selectedNames);
+
   //! Submit New Attendance
   const handleAddAttendance = async () => {
     const newAttendance = selectedNames.map((profile, index) => ({
       attendance_id: allAttendance.length + index + 1,
       activity_id: activityId,
       profiling_id: profile.id,
+      account_id: profile.account_id,
       first_name: profile.first_name,
       last_name: profile.last_name,
       barangay: profile.barangay,
@@ -247,7 +248,7 @@ const AttendanceMonitoring: React.FC<AttendanceMonitoringProps> = ({
                   .filter((profile) => {
                     // Exclude profiles already in attendance
                     const isAlreadyInAttendance = attendanceRecords.some(
-                      (record) =>
+                      (record: any) =>
                         record.activity_id === activityId &&
                         record.profiling_id === profile.id
                     );
